@@ -10,7 +10,7 @@
             <ul class="navbar-nav">
                 {% for page in pages %}
                 <li class="nav-item">
-                    <a class="nav-link"  href="/{{page}}">{{ page }}</a>
+                    <a class="nav-link"  href="{{pages[page]}}">{{ page }}</a>
                 </li>
                 {% endfor %}
             </ul>

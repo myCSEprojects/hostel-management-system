@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>admin login page</title>
+{% endblock %}
+
+{% block body %}
+<p>{{error}}</p>
+<form action="/admin/login" method="post">
+    <input type="text" name="ID" placeholder="ID">
+    <input type="password" name="password" placeholder="password">
+    <input type="submit" value="login">
+</form>
+{% endblock %}

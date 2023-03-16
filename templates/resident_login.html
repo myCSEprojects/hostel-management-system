@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title> resident login page</title>
+{% endblock %}
+
+{% block body %}
+<form action="/resident/login" method="post">
+    <input type="text" name="ID" placeholder="ID">
+    <input type="password" name="password" placeholder="password">
+    <input type="submit" value="login">
+</form>
+{% endblock %}
