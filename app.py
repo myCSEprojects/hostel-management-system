@@ -19,6 +19,14 @@ app.config["MYSQL_DB"] = "hostelmng"
 
 mysql = MySQL(app)
 
+# Mapping for room types
+room_types = {
+    "single": 1,
+    "double": 2,
+    "triple": 3,
+}
+
+
 # Defining the pages to support
 pages = {
     "home" : "/home"
@@ -26,6 +34,7 @@ pages = {
 
 admin_pages = {
     "logout": "/admin/logout",
+    "dashboard": "/admin/dashboard",
 }
 
 resident_pages = {
@@ -44,13 +53,14 @@ def resident_page(page_name = None):
     if page_name not in ['login', 'dashboard', 'logout']:
         return redirect('/resident/login')
     
+    cur = mysql.connection.cursor()
+    
     if (page_name == 'login'):
         if (request.method == 'GET'):
-            return render_template('resident_login.html', pages = pages, error=None)
+            return render_template('resident_login.html', pages = pages, error='')
         else:
             id = request.form['ID'] 
             password = request.form['password']
-            cur = mysql.connection.cursor()
             cur.execute("SELECT key_ FROM users WHERE id = %s;", (id,))
             actual_key = cur.fetchone()
             if actual_key == None:
@@ -79,9 +89,11 @@ def admin_page(page_name = None):
     if page_name not in ['login', 'dashboard', 'logout']:
         return redirect('/admin/login')
     
+    cur = mysql.connection.cursor()
+    
     if (page_name == 'login'):
         if (request.method == 'GET'):
-            return render_template('admin_login.html', pages = pages, error=None)
+            return render_template('admin_login.html', pages = pages, error='')
         else:
             id = request.form['ID'] 
             password = request.form['password']
@@ -94,7 +106,22 @@ def admin_page(page_name = None):
                 return render_template('admin_login.html', pages = pages, error="Invalid Username or Password")
     elif (page_name == 'dashboard'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
-            return render_template('admin_dashboard.html', pages = admin_pages)
+            cur.execute(""" SELECT hostel_name, occupied, room_type, COUNT(hostel_name)
+                        FROM ROOM
+                        where room_type = "triple" or room_type = "single" or room_type = "double"
+                        GROUP BY occupied, room_type, hostel_name
+                        ORDER BY hostel_name;""")
+            stats = cur.fetchall()
+            stats_dict = {}
+            for i, j, k, l in stats:
+                if j == room_types[k]:
+                    continue
+                if i not in stats_dict:
+                    stats_dict[i] = [(j,k,l)]
+                else:
+                    stats_dict[i].append((j,k,l))
+            app.logger.info(stats_dict)
+            return render_template('admin_dashboard.html', pages = admin_pages, stats = stats_dict)
         else:
             return redirect('/admin/login')
     elif (page_name == 'logout'):
@@ -102,6 +129,8 @@ def admin_page(page_name = None):
         session.pop('id', None)
         session.pop('name', None)
         return redirect('/')
+        
+        
 # Running the app
 if __name__ == '__main__':
     app.run(debug=True)

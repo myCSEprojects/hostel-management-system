@@ -4,5 +4,13 @@
 {% endblock %}
 {% block body %}
     <!-- Code for the admin page goes here -->
-    <h1>Admin dashboard</h1>
+    <!-- vacancies + 0 in 1 + 1 in 2 + 0 in 2 + 1 in 3 + 0 in 3 + 2 in 3 -->
+    {% for hostel in stats: %}
+    <div>
+        <p>{{hostel}}</p>
+        {% for stat in stats[hostel]: %}
+            <p>{{stat[0]}} students in {{stat[1]}} room: {{stat[2]}}</p>
+        {% endfor %}
+    </div>
+    {% endfor %}
 {% endblock %}
