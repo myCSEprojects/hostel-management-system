@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Admin</title>
+{% endblock %}
+
+{% block body %}
+    <!-- Resident type, hostel, program, branch, gender, joining year, pending dues, pending payment -->
+    <!-- The form for the search query -->
+    <form action="/admin/residents" method = "get">
+        <!-- Search for the ID -->
+        <label for="search_ID">ID: </label>
+        <input type="number" name="search_ID" id = "search_ID" placeholder="ID">
+        
+        <!-- Currently allocated filter -->
+        <input type="checkbox" name="is_allocated" for="is_allocated">
+        <label for="is_allocated">currently allocated</label>
+
+        <!-- Resident type -->
+        <label for="resident_type">Resident Type</label>
+        <select name="resident_type" id="resident_type">
+            <option value="all">All</option>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
+            <option value="visitor">Visitor</option>
+        </select>
+
+        <!-- Hostel -->
+        <label for="hostel">Hostel</label>
+        <select name="hostel" id="hostel">
+            <option value="all">All</option>
+            {% for hostel_name in hostel_names: %}
+                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+            {% endfor %}
+        </select>  
+
+        <!-- Program -->
+        <label for="program">Program</label>
+        <select name="program" id="program">
+            <option value="all">All</option>
+            {% for program_type in program_types: %}
+                <option value="{{program_type[0]}}">{{program_type[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Branch -->
+        <label for="branch">Branch</label>
+        <select name="branch" id="branch">
+            <option value="all">All</option>
+            {% for branch_type in branch_types: %}
+                <option value="{{branch_type[0]}}">{{branch_type[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <!-- gender -->
+        <label for="gender">Gender</label>
+        <select name="gender" id="gender">
+            <option value="all">All</option>
+            {% for gender in gender_types: %}
+                <option value="{{gender}}">{{gender}}</option>
+            {% endfor %}
+        </select>
+
+        <!-- joining year -->
+        <label for="join_year">Joining Year</label>
+        <select name="join_year" id="join_year">
+            <option value="all">All</option>
+            {% for year in years: %}
+                <option value="{{year[0]}}">{{year[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Pending dues filter -->
+        <input type="checkbox" name="pending_fees" for="pending_fees">
+        <label for="pending_fees">Fee pending</label>
+
+        <!-- Pending dues filter -->
+        <input type="checkbox" name="pending_dues" for="pending_dues">
+        <label for="pending_dues">Due pending</label>
+
+        <!-- Submit button -->
+        <input type="submit" value="Filter">
+    </form>
+
+    {% for resident in residents: %}
+        <p>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#{{resident[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadResident('{{resident[0]}}')">
+                {{resident[0]}} {{resident[1]}}
+            </button>
+        </p>
+        <div class="collapse" id="{{resident[0]}}">
+            <div class="card card-body">
+                <!-- <form action="/admin/residents" method="post">
+                    <input type="number" value={{resident[0]}} id="{{resident[0]}}-{{field_names[0]}}" disabled>
+                    <label for="{{resident[0]}}-{{field_names[0]}}">{{field_names[0]}}</label>
+
+                    <select type="number" id="{{resident[0]}}-{{field_names[2]}}">
+                        <option selected="selected">{{resident[2]}}</option>
+                        {% for semester_type in semester_types: %}
+                            <option value="{{semester_type[0]}}">{{semester_type[0]}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="{{resident[0]}}-{{field_names[2]}}">{{field_names[2]}}</label>
+                    
+                    <select type="number" id="{{resident[0]}}-{{field_names[3]}}">
+                        <option selected="selected">{{resident[3]}}</option>
+                        {% for year in years: %}
+                            <option value="{{year[0]}}">{{year[0]}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="{{resident[0]}}-{{field_names[3]}}">{{field_names[3]}}</label>
+
+                    <input type="number" value={{resident[4]}} id="{{resident[0]}}-{{field_names[4]}}">
+                    <label for="{{resident[0]}}-{{field_names[4]}}">{{field_names[4]}}</label>
+
+                    <select type="text" id="{{resident[0]}}-{{field_names[5]}}">
+                        <option selected="selected">{{resident[5]}}</option>
+                        {% for hostel_name in hostel_names: %}
+                            <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="{{resident[0]}}-{{field_names[5]}}">{{field_names[5]}}</label>
+
+                    <input type="date" value={{resident[6]}} id="{{resident[0]}}-{{field_names[6]}}">
+                    <label for="{{resident[0]}}-{{field_names[6]}}">{{field_names[6]}}</label>
+
+                    <input type="number" value={{resident[7]}} id="{{resident[0]}}-{{field_names[7]}}">
+                    <label for="{{resident[0]}}-{{field_names[7]}}">{{field_names[7]}}</label>
+
+                    <input type="number" value={{resident[8]}} id="{{resident[0]}}-{{field_names[8]}}">
+                    <label for="{{resident[0]}}-{{field_names[8]}}">{{field_names[8]}}</label>
+
+                    <input type="number" value={{resident[9]}} id="{{resident[0]}}-{{field_names[9]}}">
+                    <label for="{{resident[0]}}-{{field_names[9]}}">{{field_names[9]}}</label>
+
+                    <input type="number" value={{resident[10]}} id="{{resident[0]}}-{{field_names[10]}}">
+                    <label for="{{resident[0]}}-{{field_names[10]}}">{{field_names[10]}}</label10>
+
+                    <input type="text" value={{resident[11]}} id="{{resident[0]}}-{{field_names[11]}}">
+                    <label for="{{resident[0]}}-{{field_names[11]}}">{{field_names[11]}}</label>
+
+                    <input type="text" value={{resident[12]}} id="{{resident[0]}}-{{field_names[12]}}">
+                    <label for="{{resident[0]}}-{{field_names[12]}}">{{field_names[12]}}</label>
+
+                    <input type="text" value={{resident[13]}} id="{{resident[0]}}-{{field_names[13]}}">
+                    <label for="{{resident[0]}}-{{field_names[13]}}">{{field_names[13]}}</label>
+
+                    <select type="text" id="{{resident[0]}}-{{field_names[14]}}">
+                        <option selected="selected">{{resident[14]}}</option>
+                        {% for gender in gender_types: %}
+                            <option value="{{gender}}">{{gender}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="{{resident[0]}}-{{field_names[14]}}">{{field_names[14]}}</label>
+
+                    <select type="text" id="{{resident[0]}}-{{field_names[15]}}" ">
+                        <option selected="selected">{{resident[15]}}</option>
+                        {% for blood_type in blood_types: %}
+                            <option value="{{blood_type}}">{{blood_type}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="{{resident[0]}}-{{field_names[15]}}">{{field_names[15]}}</label>
+
+                    <input type="text" value={{resident[16]}} id="{{resident[0]}}-{{field_names[16]}}">
+                    <label for="{{resident[0]}}-{{field_names[16]}}">{{field_names[16]}}</label>
+
+                    <input type="email" value={{resident[17]}} id="{{resident[0]}}-{{field_names[17]}}">
+                    <label for="{{resident[0]}}-{{field_names[17]}}">{{field_names[17]}}</label>
+
+                    <input type="number" value={{resident[18]}} id="{{resident[0]}}-{{field_names[18]}}">
+                    <label for="{{resident[0]}}-{{field_names[18]}}">{{field_names[18]}}</label>
+
+                    <input type="number" value={{resident[19]}} id="{{resident[0]}}-{{field_names[19]}}">
+                    <label for="{{resident[0]}}-{{field_names[19]}}">{{field_names[19]}}</label>
+
+                    <select type="text" id="{{resident[0]}}-{{field_names[20]}}">
+                        <option selected="selected">{{resident[20]}}</option>
+                        {% for resident_type in resident_types: %}
+                            <option value="{{resident_type}}">{{resident_type}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="{{resident[0]}}-{{field_names[20]}}">{{field_names[20]}}</label>
+                </form> -->
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,145 @@
+<div>
+    <form action="/admin/residents/{{resident_data[0]}}/update_details" method="post">
+        <h1>Resident Details</h1>s
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[0]}}">{{resident_data_field_names[0]}}</label>
+        <input type="number" value={{resident_data[0]}} id="{{resident_data[0]}}-{{resident_data_field_names[0]}}" disabled>
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[1]}}">{{resident_data_field_names[1]}}</label>
+        <input type="text" value={{resident_data[1]}} id="{{resident_data[0]}}-{{resident_data_field_names[1]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[2]}}">{{resident_data_field_names[2]}}</label>
+        <input type="text" value={{resident_data[2]}} id="{{resident_data[0]}}-{{resident_data_field_names[2]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[3]}}">{{resident_data_field_names[3]}}</label>
+        <input type="text" value={{resident_data[3]}} id="{{resident_data[0]}}-{{resident_data_field_names[3]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[4]}}">{{resident_data_field_names[4]}}</label>
+        <select type="text" id="{{resident_data[0]}}-{{resident_data_field_names[4]}}">
+            <option selected disabled hidden>{{resident_data[4]}}</option>
+            {% for gender in gender_types: %}
+                <option value="{{gender}}">{{gender}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[5]}}">{{resident_data_field_names[5]}}</label>
+        <input type="text" value={{resident_data[5]}} id="{{resident_data[0]}}-{{resident_data_field_names[5]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[6]}}">{{resident_data_field_names[6]}}</label>
+        <select type="text" id="{{resident_data[0]}}-{{resident_data_field_names[6]}}" ">
+            <option selected disabled hidden>{{resident_data[6]}}</option>
+            {% for blood_type in blood_types: %}
+                <option value="{{blood_type}}">{{blood_type}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[7]}}">{{resident_data_field_names[7]}}</label>
+        <input type="email" value={{resident_data[7]}} id="{{resident_data[0]}}-{{resident_data_field_names[7]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[8]}}">{{resident_data_field_names[8]}}</label>
+        <input type="text" value={{resident_data[8]}} id="{{resident_data[0]}}-{{resident_data_field_names[8]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[9]}}">{{resident_data_field_names[9]}}</label>
+        <input type="number" value={{resident_data[9]}} id="{{resident_data[0]}}-{{resident_data_field_names[9]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[10]}}">{{resident_data_field_names[10]}}</label>
+        <input type="number" value={{resident_data[10]}} id="{{resident_data[0]}}-{{resident_data_field_names[10]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[11]}}">{{resident_data_field_names[11]}}</label>
+        <select type="text" id="{{resident_data[0]}}-{{resident_data_field_names[11]}}">
+            <option selected disabled hidden>{{resident_data[11]}}</option>
+            {% for resident_type in resident_types: %}
+                <option value="{{resident_type}}">{{resident_type}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[12]}}">{{resident_data_field_names[12]}}</label>
+        <select type="text" id="{{resident_data[0]}}-{{resident_data_field_names[12]}}">
+            <option selected disabled hidden>{{resident_data[12]}}</option>
+            {% for program_type in program_types: %}
+                <option value="{{program_type[0]}}">{{program_type[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[13]}}">{{resident_data_field_names[13]}}</label>
+        <select type="text" id="{{resident_data[0]}}-{{resident_data_field_names[13]}}">
+            <option selected disabled hidden>{{resident_data[13]}}</option>
+            {% for branch_type in branch_types: %}
+                <option value="{{branch_type[0]}}">{{branch_type[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[14]}}">{{resident_data_field_names[14]}}</label>
+        <select type="number" id="{{resident_data[0]}}-{{resident_data_field_names[14]}}">
+            <option selected disabled hidden>{{resident_data[14]}}</option>
+            {% for semester_type in semester_types: %}
+                <option value="{{semester_type[0]}}">{{semester_type[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[15]}}">{{resident_data_field_names[15]}}</label>
+        <select type="number" id="{{resident_data[0]}}-{{resident_data_field_names[15]}}">
+            <option selected disabled hidden>{{resident_data[15]}}</option>
+            {% for year in years: %}
+                <option value="{{year[0]}}">{{year[0]}}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="update">Update</button>
+    </form>
+
+</div>
+    <h1>Current Allocation</h1>
+    <form action="/admin/residents/{{resident_data[0]}}/update_current_allocation" method="post">
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[16]}}">{{resident_data_field_names[16]}}</label>
+        <select type="text" id="{{resident_data[0]}}-{{resident_data_field_names[16]}}">
+            <option selected disabled hidden>{{resident_data[16]}}</option>
+            {% for hostel_name in hostel_names: %}
+                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[17]}}">{{resident_data_field_names[17]}}</label>
+        <input type="text" value={{resident_data[17]}} id="{{resident_data[0]}}-{{resident_data_field_names[17]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[18]}}">{{resident_data_field_names[18]}}</label>
+        <input type="text" value={{resident_data[18]}} id="{{resident_data[0]}}-{{resident_data_field_names[18]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[19]}}">{{resident_data_field_names[19]}}</label>
+        <input type="number" value={{resident_data[19]}} id="{{resident_data[0]}}-{{resident_data_field_names[19]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[20]}}">{{resident_data_field_names[20]}}</label>
+        <input type="number" value={{resident_data[20]}} id="{{resident_data[0]}}-{{resident_data_field_names[20]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[21]}}">{{resident_data_field_names[21]}}</label>
+        <input type="number" value={{resident_data[21]}} id="{{resident_data[0]}}-{{resident_data_field_names[21]}}">
+
+        <label for="{{resident_data[0]}}-{{resident_data_field_names[22]}}">{{resident_data_field_names[22]}}</label>
+        <input type="number" value={{resident_data[22]}} id="{{resident_data[0]}}-{{resident_data_field_names[22]}}"> 
+        
+        <button type="submit" name="update">Update</button>
+    </form>
+</div>
+    
+<div>
+    <h1>Resident History</h1>
+    <table>
+        <tr>
+            {% for field_name in resident_history_field_names: %}
+            <th>{{field_name}}</th>
+            {% endfor %}
+        </tr>
+        {% for  history in history_data: %}
+        <tr>
+
+            {% for field_value in history: %}
+            <td>{{field_value}}</td>
+            {% endfor %}
+        </tr>
+        {%endfor%}
+    </table>
+</div>
+    
+
+
+
+
+
