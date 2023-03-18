@@ -1,6 +1,6 @@
 function loadResident(resident_id){
     selector = '#'+ resident_id + " div";
-    if($.trim($(selector).html())==''){
+    if($.trim($(selector).html())!=''){
         return;
     }
     $.ajax({

@@ -31,21 +31,21 @@ blood_types = [
     "O-",
 ]
 
-resident_data_field_names = {
+resident_details_field_names = {
     "ID": "resident_id",
     "First Name": "first_name", 
     "Middle Name": "middle_name", 
     "Last Name": "last_name", 
-    "Gender": "gender", 
-    "Phone Number": "phone_no", 
+    "Gender": "gender",
     "Blood Group": "blood_group", 
     "Email id": "email_id", 
     "City": "city", 
     "Postal Code": "postal_code", 
     "Home Contact": "home_contact", 
     "Resident Type": "resident_type", 
-    "Program": "program", 
-    "Branch": "branch", 
+}
+
+resident_current_allocation_field_names = {
     "Semester": "semester", 
     "Year": "year",
     "Hostel Name": "hostel_name", 
@@ -54,7 +54,12 @@ resident_data_field_names = {
     "Payment Status": "payment_status", 
     "Due Amount": "due_amount", 
     "Due Status": "due_status", 
-    "Payment Amount": "payment_amount"
+    "Payment Amount": "payment_amount",
+}
+
+resident_program_field_names = {
+    "Program": "program", 
+    "Branch": "branch", 
 }
 
 resident_history_field_names = {

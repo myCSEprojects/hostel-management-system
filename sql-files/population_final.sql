@@ -388,8 +388,6 @@ BEGIN
             set exit_date = DATE(concat(year, "-04-30"));
             INSERT INTO ALLOCATION (semester, year, resident_id, room_no, hostel_name, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount)
 			values (semester, year, resident_id, room_no, hostel_name, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount);
-            INSERT INTO ALLOCATION (semester, year, resident_id, room_no, hostel_name, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount)
-			values (semester, year, resident_id - 10000000, room_no, hostel_name, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount);
             set semester = semester + 1;
             set year = year + 1;
         end while;

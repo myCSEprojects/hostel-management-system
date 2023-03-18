@@ -115,7 +115,6 @@ def admin_page(page_name = None):
                     stats_dict[i] = [(j,k,l)]
                 else:
                     stats_dict[i].append((j,k,l))
-            app.logger.info(stats_dict)
             return render_template('admin_dashboard.html', pages = admin_pages, stats = stats_dict)
         else:
             return redirect('/admin/login')
@@ -136,7 +135,6 @@ def admin_page(page_name = None):
                 pending_dues = request.args.get('pending_dues')
 
                 a = [search_ID, is_allocated, resident_type, hostel, program, branch, gender, join_year, pending_fees, pending_dues]
-                app.logger.info(a)
 
                 # Generating the sql query string
                 query_string = ""
@@ -183,9 +181,8 @@ def admin_page(page_name = None):
                     query_string = "where" + query_string
                 
                 resident_query = f"""   SELECT RESIDENT.resident_id, CONCAT(first_name, " ", last_name) as full_name
-                                        FROM RESIDENT NATURAL JOIN ENROLLED_IN LEFT JOIN CURRENT_ALLOCATION on CURRENT_ALLOCATION.resident_id = RESIDENT.resident_id
+                                        FROM (RESIDENT LEFT JOIN ENROLLED_IN on RESIDENT.resident_id = ENROLLED_IN.resident_id) LEFT JOIN CURRENT_ALLOCATION on CURRENT_ALLOCATION.resident_id = RESIDENT.resident_id
                                         {query_string}  """
-                app.logger.info(resident_query)
                 # Getting all the data corresponding to the residents
                 cur.execute(resident_query)
                 residents = cur.fetchall()
@@ -233,24 +230,38 @@ def admin_page(page_name = None):
 @app.route('/admin/residents/<resident_id>', methods=['POST'])
 def admin_resident_data(resident_id):
     cur = mysql.connection.cursor()
-    app.logger.info(resident_id)
     if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
         
-        # Fetching the resident data along with the current allocation data
-        cur.execute(f"""select RESIDENT.resident_id, first_name, middle_name, last_name, gender, phone_no, blood_group, email_id, city, postal_code, home_contact, resident_type, program, branch, semester, year, hostel_name, room_no, entry_date, payment_status, due_amount, due_status, payment_amount
-                        from RESIDENT NATURAL JOIN RESIDENT_PHONE NATURAL JOIN ENROLLED_IN LEFT JOIN CURRENT_ALLOCATION on CURRENT_ALLOCATION.resident_id = RESIDENT.resident_id
+        # Fetching the resident details
+        cur.execute(f"""select RESIDENT.resident_id, first_name, middle_name, last_name, gender, blood_group, email_id, city, postal_code, home_contact, resident_type
+                        from (RESIDENT)
                         where RESIDENT.resident_id = {resident_id};""")
-        resident_data = cur.fetchall()[0]
-        app.logger.info(resident_data_field_names)
-        app.logger.info(resident_data)
-        
+        resident_details = cur.fetchall()[0]
+
+        # Fetching the current allocation details
+        cur.execute(f"""select semester, year, hostel_name, room_no, entry_date, payment_status, due_amount, due_status, payment_amount
+                        from CURRENT_ALLOCATION
+                        where CURRENT_ALLOCATION.resident_id = {resident_id};""")
+        resident_current_allocation_details = cur.fetchall()[0]
+
+        # Fetching the phone numbers
+        cur.execute(f"""select phone_no
+                        from RESIDENT_PHONE
+                        where RESIDENT_PHONE.resident_id = {resident_id};""")
+        resident_phone_details = cur.fetchall()
+
+        # Fetching the program details
+        cur.execute(f"""select program, branch
+                        from ENROLLED_IN
+                        where ENROLLED_IN.resident_id = {resident_id};""")
+        resident_program_details = cur.fetchall()
+
         # Fetching the history data
         cur.execute(f"""select semester, year, hostel_name, room_no, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount
                         from ALLOCATION
                         where resident_id = {resident_id};""")
         try:
             history_data = cur.fetchall()
-            app.logger.info(history_data)
         except:
             history_data = []
         
@@ -280,10 +291,15 @@ def admin_resident_data(resident_id):
         semester_types = cur.fetchall()
 
         return render_template('admin_resident_data.html', 
-                                resident_data = resident_data, 
+                                resident_details = resident_details, 
+                                resident_details_field_names = list(resident_details_field_names.keys()), 
+                                resident_current_allocation_details = resident_current_allocation_details,
+                                resident_current_allocation_field_names = list(resident_current_allocation_field_names.keys()),
+                                resident_program_details = resident_program_details,
+                                resident_program_field_names = list(resident_program_field_names.keys()),
                                 history_data = history_data, 
-                                resident_data_field_names = list(resident_data_field_names.keys()), 
                                 resident_history_field_names = list(resident_history_field_names.keys()),
+                                resident_phone_details = resident_phone_details,
                                 hostel_names = hostel_names, 
                                 resident_types= resident_types, 
                                 gender_types = gender_types, 
@@ -296,16 +312,38 @@ def admin_resident_data(resident_id):
         
 @app.route('/admin/residents/<resident_id>/<operation>', methods=['POST'])
 def resident_operations(resident_id, operation):
+    cur = mysql.connection.cursor()
     # Error handling
     if (operation not in ['update_details', 'update_current_allocation', 'deallocate_resident']):
         return redirect('/admin/residents')
     if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
         if (operation == 'update_details'):
-            return redirect(f'/admin/residents/{resident_id}/update_details')
+            # Generating the query string
+            query_string = ""
+            for field in request.form.keys():
+                if (field != "update"):
+                    if (query_string != ""):
+                        query_string += ", "
+                    query_string += f"{resident_details_field_names[field]} = '{request.form[field]}'"
+            # Adding the select and where clause
+            query_string = f"UPDATE RESIDENT SET {query_string} WHERE resident_id = {resident_id};"
+            
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/residents')
+        
         elif (operation == 'update_current_allocation'):
-            return redirect(f'/admin/residents/{resident_id}/update_current_allocation')
+            pass
+        
         elif (operation == 'deallocate_resident'):
-            return "deallocation recieved"
+            cur.execute(f"""
+                            CALL DEALLOCATE({resident_id}, STR_TO_DATE('{request.form['exit_date']}', '%Y-%m-%d'));
+                        """)
+            mysql.connection.commit()
+            return redirect('/admin/residents')
 
 # Running the app
 if __name__ == '__main__':
