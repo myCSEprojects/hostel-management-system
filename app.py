@@ -318,7 +318,7 @@ def admin_resident_data(resident_id):
 def resident_operations(resident_id, operation):
     
     # Error handling
-    if (operation not in ['update_details', 'update_current_allocation', 'deallocate_resident', 'delete_phone', "add_phone"]):
+    if (operation not in ['update_details', 'update_current_allocation', 'deallocate_resident', 'delete_phone', "add_phone", 'update_program']):
         return redirect('/admin/residents')
     
     # Connecting to the database
@@ -345,6 +345,16 @@ def resident_operations(resident_id, operation):
         
         elif (operation == 'delete_phone'):
             query_string = f"DELETE FROM RESIDENT_PHONE WHERE resident_id = {resident_id} AND phone_no = '{request.form['phone_no']}';"
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/residents')
+        
+        elif (operation == 'update_program'):
+            app.logger.info(request.form)
+            query_string = f"UPDATE ENROLLED_IN SET program='{request.form['program']}', branch = '{request.form['branch']}' where resident_id = {resident_id};"
             # Executing the query and commiting the changes
             cur.execute(query_string)
             mysql.connection.commit()
