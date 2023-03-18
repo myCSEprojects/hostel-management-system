@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Resident History</title>
+{% endblock %}
+{% block body %}
+    <!-- Code for the admin page goes here -->
+    <h3 align = "center">Your History</h3>
+    <table border="3" height="50%" width="50%" bordercolor="blue"
+align="center" style="border-spacing: 0 10px;">
+        <tr>
+            {%for col in cols:%}
+            <th>{{col}}</th>
+            {% endfor %}
+        </tr>
+        {%for row in history:%}
+        <tr>
+            {%for val in row:%}
+            {%if val == None:%}
+            <td>present</td>
+            {%else%}
+            <td>{{val}}</td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

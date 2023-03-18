@@ -3,6 +3,8 @@ from flask_mysqldb import MySQL
 from utils import check_password
 from metadata import *
 import datetime
+import numpy as np
+import operator
 
 app = Flask(__name__)
 
@@ -15,15 +17,18 @@ app.secret_key = 'DONT TELL ANYONE'
 
 # MySQL configurations
 app.config['MYSQL_HOST'] = 'localhost'
-app.config["MYSQL_USER"] = "root"
-app.config["MYSQL_PASSWORD"] = "M.V.Sriman.N@007"
+app.config["MYSQL_USER"] = "admin"
+app.config["MYSQL_PASSWORD"] = "Password@1234"
 app.config["MYSQL_DB"] = "hostelmng"
 
 mysql = MySQL(app)
 
 # Defining the pages to support
 pages = {
-    "home" : "/home"
+    "home" : "/home",
+    "hostel" : "/home/hostel_details" ,
+    "outlet"  : "/home/outlet_details",
+    "caretaker" : "/home/caretaker_details"
 }
 
 admin_pages = {
@@ -34,18 +39,112 @@ admin_pages = {
 
 resident_pages = {
     "logout": "/resident/logout",
+    "history": "/resident/history",
+    "profile": "/resident/profile",
+    'current allocation': "/resident/current_allocation",
 }
 
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home_page():
+    cur = mysql.connection.cursor()
     return render_template('home.html', pages=pages)
-        
+@app.route('/home/hostel_details')
+def hostel():
+
+    cur = mysql.connection.cursor()
+    cur.execute(""" (select bf3.*, ca.total_residents
+                    from
+                    (select hostel_name,sum(total_rooms) as total_rooms, sum(occupancy) as occupancy
+                    from
+                    (select bf.*,total_rooms*1 as occupancy
+                    from 
+                    (select hostel_name,room_type,count(*) as total_rooms
+                    from ROOM
+                    where (room_type = 'single')
+                    group by hostel_name, room_type) as bf
+                    union
+                    select bf.*,total_rooms*2 as occupancy
+                    from 
+                    (select hostel_name,room_type,count(*) as total_rooms
+                    from ROOM
+                    where (room_type = 'double')
+                    group by hostel_name, room_type) as bf
+                    union
+                    select bf.*,total_rooms*3 as occupancy
+                    from 
+                    (select hostel_name,room_type,count(*) as total_rooms
+                    from ROOM
+                    where (room_type = 'triple')
+                    group by hostel_name, room_type) as bf) as bf2
+                    group by hostel_name
+                    order by hostel_name ) as  bf3
+                    left join 
+                    (select hostel_name, count(resident_id) as total_residents
+                    from CURRENT_ALLOCATION
+                    group by hostel_name) as ca
+                    on ca.hostel_name = bf3.hostel_name);""")
+
+    table = list(cur.fetchall())
+    table.insert(0,['Hostel Name','Total Rooms','Occupancy','Total Residents'])
+    return render_template("hostel_details.html",pages=pages, table = table)
+    
+
+
+@app.route('/home/outlet_details')
+def outlet():
+    cur = mysql.connection.cursor()
+    cur.execute("""select outlet_name, open_time, close_time, hostel_name, concat(owner_first_name," ",owner_last_name) as owner_name 
+                   from OUTLET;""")
+    table5=list(cur.fetchall())
+    cur.execute("""select phone_no, OUTLET_PHONE.outlet_name 
+                   from OUTLET INNER JOIN OUTLET_PHONE on OUTLET_PHONE.outlet_name=OUTLET.outlet_name;""")
+    table6=cur.fetchall()
+    cur.execute("select outlet_name from OUTLET")
+    table7 = cur.fetchall()
+
+    dict2 = {}
+    for i in table7:
+        dict2[i[0]] = ""
+    table5 = [list(i) for i in table5]
+    for i in table6:
+        dict2[i[1]] += str(i[0]) +" "
+    for i in range(len(table5)):
+         table5[i].append(dict2[table5[i][0]])
+    table5.insert(0,['Name','Open time','Close time','Hostel Name','Owner Name','Outlet Phoneno']) 
+    return render_template("outlet_details.html",pages=pages, table5 = table5)
+    pass
+
+@app.route('/home/caretaker_details')
+def caretaker_details():
+
+    cur = mysql.connection.cursor()
+    cur.execute(""" select HOSTEL.caretaker_id, concat(first_name," ", last_name) as Name, office_no, email_id, hostel_name, contact
+                    from CARETAKER INNER JOIN HOSTEL on HOSTEL.caretaker_id=CARETAKER.caretaker_id
+                    order by HOSTEL.hostel_name;""")
+    table1=list(cur.fetchall())
+
+    cur.execute("select phone_no, CARETAKER.caretaker_id  from CARETAKER INNER JOIN CARETAKER_PHONE on CARETAKER_PHONE.caretaker_id=CARETAKER.caretaker_id order by caretaker_id;")
+    table2 = cur.fetchall()
+    cur.execute("select caretaker_id from CARETAKER")
+    table3 = cur.fetchall()
+    dict1 = {}
+    for i in table3:
+        dict1[i[0]] = ""
+    table1 = [list(i) for i in table1]
+    for i in table2:
+        dict1[i[1]] += str(i[0]) +" "
+    for i in range(len(table1)):
+         table1[i].append(dict1[table1[i][0]])
+    table1.insert(0,['ID','Name','Office Number','Email ID','Hostel Name','Hostel Contact','Caretaker Phoneno']) 
+    return render_template('caretaker_details.html', pages=pages, table1  = table1)
+    
+
 # Handlign the routes for the residents
 @app.route('/resident/<page_name>', methods=['GET', 'POST'])
 def resident_page(page_name = None):
     # error handling
-    if page_name not in ['login', 'dashboard', 'logout']:
+    if page_name not in ['login','logout','history','profile','current_allocation']:
         return redirect('/resident/login')
     
     cur = mysql.connection.cursor()
@@ -64,14 +163,111 @@ def resident_page(page_name = None):
                 session['logged_in'] = True
                 session['id'] = id
                 session['name'] = 'resident'
-                return redirect('/resident/dashboard')
+                return redirect('/resident/profile')
             else:
                 return render_template('resident_login.html', pages = pages, error="Invalid password")
-    elif page_name == 'dashboard':
+    elif page_name == 'profile':
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'resident'):
-            return render_template('resident_dashboard.html', pages = resident_pages)
+            cur.execute(""" SELECT * 
+                            from RESIDENT
+                            where resident_id = %s;""",(session['id'],))
+            stats = cur.fetchall()[0] # resident details
+
+            cur.execute(""" show columns 
+                            from RESIDENT;""" )
+            cols = cur.fetchall() # attribute names
+            cols = np.array(cols)
+            cols = cols[:,0]
+            cols = list(cols)
+            cols = list(map(operator.methodcaller("replace",'_'," "),cols))
+            cols = list(map(str.capitalize,cols))
+
+
+
+            cur.execute(""" select phone_no
+                            from RESIDENT_PHONE
+                            where resident_id = %s;""",(session['id'],))
+            contacts = cur.fetchall() # phone numbers
+
+            cur.execute("""select program, branch
+                            from ENROLLED_IN 
+                            where resident_id = %s; """,(session['id'],))
+            
+            p_and_b = cur.fetchall() # program and branch
+            
+            stats_dict = {}
+
+            for i,col in enumerate(cols):
+                stats_dict[col] = stats[i]
+
+            app.logger.info(stats_dict)
+            
+            return render_template('resident_profile.html', pages = resident_pages, stats = stats_dict, contacts = contacts, pb = p_and_b)
         else:
             return redirect('/resident/login')
+
+    elif (page_name == 'history'):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'resident'):
+            cur.execute(""" select year, semester, hostel_name, room_no,entry_date,exit_date
+                            from ALLOCATION
+                            where resident_id = %s
+                            union
+                            select year, semester, hostel_name, room_no,entry_date,null
+                            from CURRENT_ALLOCATION
+                            where resident_id = %s
+                            order by year desc,semester desc;""",(session['id'],session['id'],))
+
+            history = cur.fetchall()
+            cols = ['year','semester','hostel_name','room_no','entry_date','exit_date']
+            cols = list(map(str.capitalize,cols))
+            cols = list(map(operator.methodcaller('replace','_',' '),cols))
+            app.logger.info(history)
+            
+            return render_template('resident_history.html', pages = resident_pages, history = history,cols = cols)
+        else:
+            return redirect('/resident/login')
+
+    elif (page_name == 'current_allocation'):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'resident'):
+             # your code goes here
+            cur.execute(""" select rhc.*, ca.entry_date, payment_amount, payment_status, due_amount,due_status
+                            from CURRENT_ALLOCATION as ca
+                            INNER JOIN 
+                            (select  r.room_no, r.room_type ,hc.* from ROOM as r INNER JOIN 
+                            (select hostel_name,contact, h.caretaker_id, concat(first_name, " ",last_name) as caretaker_name, office_no, email_id
+                            from HOSTEL as h INNER JOIN CARETAKER as c on h.caretaker_id = c.caretaker_id) as hc
+                            on r.hostel_name = hc.hostel_name) as rhc
+                            on (ca.hostel_name = rhc.hostel_name AND ca.room_no = rhc.room_no)
+                            where resident_id=%s;""",(session['id'],))
+            current_allocation=cur.fetchall()[0]
+
+            # print(current_allocation)
+             
+            cols=['Room Number','Room Type', 'Hostel_name', 'Hostel Contact', 'Caretaker ID', 'Caretaker Name','Office Number','Email ID','Entry Date','Payment Amount','Payment status','Due Amount', 'Due Status']
+
+            cur.execute(""" select rhc.phone_no
+                            from CURRENT_ALLOCATION as ca
+                            INNER JOIN 
+                            (select  r.room_no, r.room_type ,hc.* from ROOM as r INNER JOIN 
+                            (select hostel_name,contact, h.caretaker_id, concat(first_name, " ",last_name) as caretaker_name, phone_no, office_no, email_id
+                            from HOSTEL as h 
+                            INNER JOIN 
+                            (select phone_no, CARETAKER.caretaker_id, first_name, middle_name, last_name, office_no, email_id from CARETAKER INNER JOIN CARETAKER_PHONE on CARETAKER.caretaker_id=CARETAKER_PHONE.caretaker_id) as c on h.caretaker_id = c.caretaker_id) as hc
+                            on r.hostel_name = hc.hostel_name) as rhc
+                            on (ca.hostel_name = rhc.hostel_name AND ca.room_no = rhc.room_no)
+                            where resident_id=%s;""",(session['id'],))
+            contacts=cur.fetchall()
+
+
+            stats_dict = {}
+
+            for i in range(len((cols))):
+                stats_dict[cols[i]] = current_allocation[i]
+            app.logger.info(stats_dict)
+            return render_template('resident_current_alloc.html',pages = resident_pages, contacts=contacts, stats=stats_dict)
+        else:
+            return redirect('/resident/login')
+
     elif (page_name == 'logout'):
         session.pop('logged_in', None)
         session.pop('id', None)

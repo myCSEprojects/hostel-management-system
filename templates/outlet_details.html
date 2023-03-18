@@ -1,0 +1,21 @@
+{%extends "base.html"%}
+
+{% block body %}
+<h3 align = "center">Outlet Details</h3>
+<table border="3" height="50%" width="50%" bordercolor="black"
+align="center" style="border-spacing: 0 10px;" cellpadding ="10" >
+    {%for row in (table5):%}
+    <tr>
+        {%if row[0] == 'Name'%}
+        {%for val in row:%}
+        <th>{{val}}</th>
+        {%endfor%}
+        {%else%}
+        {%for val in row:%}
+        <td>{{val}}</td>
+        {%endfor%}
+        {%endif%}
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

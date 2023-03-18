@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Resident Profile</title>
+{% endblock %}
+{% block body %}
+    <!-- Code for the admin page goes here -->
+    <h3 align = "center">Your Profile</h3>
+    <table border="3" height="50%" width="50%" bordercolor="blue"
+align="center" style="border-spacing: 0 10px;">
+        {%for attr,val in stats.items():%}
+        {%if attr == 'city':%}
+        <tr>
+            <th>program</th>
+            <td>
+                <table>
+                    {%for p,b in pb:%}
+                    <td>{{p}}</td>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <th>branch</th>
+            <td>
+                <table>
+                    {%for p,b in pb:%}
+                    <td>{{b}}</td>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th>{{attr}}</th>
+            <td>{{val}}</td>
+        </tr>
+        {% endfor %}
+
+        <tr>
+            <th>Phone numbers:</th>
+            <td>
+                <table>
+                    {%for contact in contacts:%}
+                    <td>{{contact[0]}}</td>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+
+    </table>
+
+{% endblock %}

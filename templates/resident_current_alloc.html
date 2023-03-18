@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Resident Current Allocation</title>
+{% endblock %}
+{% block body %}
+    <!-- Code for the admin page goes here -->
+    <h3 align = "center">Your Current Allocation</h3>
+    <table border="3" height="50%" width="50%" bordercolor="blue"
+align="center" style="border-spacing: 0 10px;">
+        {%for attr,val in stats.items():%}
+        <tr>
+            <th>{{attr}}</th>
+            <td>{{val}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th>Caretaker phoneNumbers:</th>
+            <td>
+                <table>
+                    {%for contact in contacts:%}
+                    <td>{{contact[0]}}</td>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+    </table>
+{% endblock %}
