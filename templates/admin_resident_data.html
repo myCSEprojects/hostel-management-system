@@ -1,6 +1,6 @@
 <div>
+    <h1>Resident Details</h1>
     <form action="/admin/residents/{{resident_details[0]}}/update_details" method="post">
-        <h1>Resident Details</h1>
         <label for="{{resident_details[0]}}-{{resident_details_field_names[0]}}">{{resident_details_field_names[0]}}</label>
         <input name="{{resident_details_field_names[0]}}" type="number" value={{resident_details[0]}} id="{{resident_details[0]}}-{{resident_details_field_names[0]}}" disabled>
 
@@ -52,6 +52,7 @@
     </form>
 </div>
 
+<!-- Resident Phone numbers -->
 <div>
     <h1>Phone Numbers</h1>
     {% for phone_number in resident_phone_details %}
@@ -108,6 +109,97 @@
     </form>
 </div>
 {% endif %}
+
+<!-- Current allocation details -->
+<div>
+    <h1>Current Allocation</h1>
+    <form action="/admin/residents/{{resident_details[0]}}/update_current_allocation" method="post">
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}">{{resident_current_allocation_field_names[0]}}</label>
+        <input name="{{resident_current_allocation_field_names[0]}}"type="number" value={{resident_current_allocation_details[0]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}">
+        
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[1]}}">{{resident_current_allocation_field_names[1]}}</label>
+        <input name="{{resident_current_allocation_field_names[1]}}"type="number" value={{resident_current_allocation_details[1]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[1]}}">
+
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[2]}}">{{resident_current_allocation_field_names[2]}}</label>
+        <select name="{{resident_current_allocation_field_names[2]}}"type="text" id="{{resident_details[0]}}-{{resident_current_allocation_field_names[2]}}">
+            <option selected hidden>{{resident_current_allocation_details[2]}}</option>
+            {% for hostel_name in hostel_names: %}
+                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+            {% endfor %}
+        </select>
+ 
+ 
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[3]}}">{{resident_current_allocation_field_names[3]}}</label>
+        <input name="{{resident_current_allocation_field_names[3]}}" type="number" value={{resident_current_allocation_details[3]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[3]}}">
+        
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[4]}}">{{resident_current_allocation_field_names[4]}}</label>
+        <input name="{{resident_current_allocation_field_names[4]}}" type="date" value={{resident_current_allocation_details[4]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[4]}}">
+
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[5]}}">{{resident_current_allocation_field_names[3]}}</label>
+        <input name="{{resident_current_allocation_field_names[5]}}" type="number" value={{resident_current_allocation_details[5]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[5]}}">
+        
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[6]}}">{{resident_current_allocation_field_names[6]}}</label>
+        <input name="{{resident_current_allocation_field_names[6]}}" type="number" value={{resident_current_allocation_details[6]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[6]}}">
+
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[7]}}">{{resident_current_allocation_field_names[7]}}</label>
+        <input name="{{resident_current_allocation_field_names[7]}}" type="number" value={{resident_current_allocation_details[7]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[7]}}">
+
+        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[8]}}">{{resident_current_allocation_field_names[8]}}</label>
+        <input name="{{resident_current_allocation_field_names[8]}}" type="number" value={{resident_current_allocation_details[8]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[8]}}">
+       
+        <button type="submit" name="update">Update</button>
+    </form>
+ 
+ 
+    <!-- Button trigger modal -->
+    <button type="button" data-bs-toggle="modal" data-bs-target="#{{resident_details[0]}}-deallocate">
+        Deallocate
+    </button>
+ 
+ 
+    <!-- Modal -->
+    <div class="modal fade" id="{{resident_details[0]}}-deallocate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Exit Date</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/residents/{{resident_details[0]}}/deallocate_resident" method="post">
+                        <label for="exit_date">Exit Date</label>
+                        <input type="date" name="exit_date" id="exit_date" value="{{today}}">
+                        <button type="submit" name="deallocate">Deallocate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+ 
+
+<!-- Resident History -->
+<div>
+    <h1>Resident History</h1>
+    <table>
+        <tr>
+            {% for field_name in resident_history_field_names: %}
+            <th>{{field_name}}</th>
+            {% endfor %}
+        </tr>
+        {% for  history in history_data: %}
+        <tr>
+ 
+ 
+            {% for field_value in history: %}
+            <td>{{field_value}}</td>
+            {% endfor %}
+        </tr>
+        {%endfor%}
+    </table>
+ </div>
 
     
 

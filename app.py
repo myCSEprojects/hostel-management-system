@@ -83,7 +83,7 @@ def admin_page(page_name = None):
     cur = mysql.connection.cursor()
 
     # error handling
-    if page_name not in ['login', 'dashboard', 'logout', 'residents']:
+    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student']:
         return redirect('/admin/login')    
 
     if (page_name == 'login'):
@@ -99,6 +99,38 @@ def admin_page(page_name = None):
                 return redirect('/admin/dashboard')
             else:
                 return render_template('admin_login.html', pages = pages, error="Invalid Username or Password")
+    
+    elif (page_name == 'add_student'):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            app.logger.info("Adding a student")
+            
+            # adding into resident
+            query_string = ""
+            table_order = ""
+            for field in request.form:
+                if field != "add" and field != "phone_no" and field != "program" and field != "branch":
+                    if query_string != "":
+                        query_string += ", "
+                    if table_order != "":
+                        table_order += ", "
+                    query_string += f'"{request.form[field]}"'
+                    table_order += resident_details_field_names[field]
+            app.logger.info("INSERT INTO RESIDENT (" + table_order + ") VALUES (" + query_string + ");")
+            # executing the query and commiting the changes
+            cur.execute("INSERT INTO RESIDENT (" + table_order + ") VALUES (" + query_string + ");")
+            
+            # adding into phone_number
+            cur.execute("INSERT INTO RESIDENT_PHONE (" + "resident_id, phone_no" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['phone_no']}'" + ");")
+            
+            # Adding branch details for student
+            if (request.form['Resident Type'] == 'student'):
+                cur.execute("INSERT INTO ENROLLED_IN (" + "resident_id, program, branch" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['program']}', '{request.form['branch']}'" + ");")
+
+            # Commiting changes
+            mysql.connection.commit()
+            # redirecting to the residents page
+            return redirect('/admin/residents')
+    
     elif (page_name == 'dashboard'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
             cur.execute(""" SELECT hostel_name, occupied, room_type, COUNT(hostel_name)
@@ -118,6 +150,7 @@ def admin_page(page_name = None):
             return render_template('admin_dashboard.html', pages = admin_pages, stats = stats_dict)
         else:
             return redirect('/admin/login')
+
     elif (page_name == "residents"):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
             if request.method == 'GET':
@@ -215,7 +248,9 @@ def admin_page(page_name = None):
                                     resident_types=resident_types, 
                                     gender_types = gender_types, 
                                     program_types = program_types,
-                                    branch_types = branch_types)
+                                    branch_types = branch_types,
+                                    blood_types = blood_types,
+                                    resident_details_field_names = list(resident_details_field_names.keys()))
             else:
                 return "got the request"
         else:
@@ -264,10 +299,7 @@ def admin_resident_data(resident_id):
         cur.execute(f"""select semester, year, hostel_name, room_no, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount
                         from ALLOCATION
                         where resident_id = {resident_id};""")
-        try:
-            history_data = cur.fetchall()
-        except:
-            history_data = []
+        history_data = cur.fetchall()
         
         # Fetching all the availble hostel names
         cur.execute(""" SELECT hostel_name from
@@ -372,7 +404,23 @@ def resident_operations(resident_id, operation):
             return redirect(f'/admin/residents')
 
         elif (operation == 'update_current_allocation'):
-            pass
+            # Generating the query string
+            query_string = ""
+            for field in request.form.keys():
+                if (field != "update"):
+                    if (query_string != ""):
+                        query_string += ", "
+                    query_string += f"{resident_current_allocation_field_names[field]} = '{request.form[field]}'"
+            
+            # Adding the update and where clause
+            query_string = f"UPDATE CURRENT_ALLOCATION SET {query_string} WHERE resident_id = {resident_id};"
+            
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/residents')
         
         elif (operation == 'deallocate_resident'):
             cur.execute(f"""

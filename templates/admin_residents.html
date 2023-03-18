@@ -98,7 +98,80 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">    
+                <div class="modal-body">
+                    <form action="/admin/add_student" method="post">
+                        <div>
+                            <label for="{{resident_details_field_names[0]}}">{{resident_details_field_names[0]}}</label>
+                            <input name="{{resident_details_field_names[0]}}" type="number"  id="{{resident_details_field_names[0]}}">
+
+                            <label for="{{resident_details_field_names[1]}}">{{resident_details_field_names[1]}}</label>
+                            <input name="{{resident_details_field_names[1]}}" type="text"  id="{{resident_details_field_names[1]}}">
+
+                            <label for="{{resident_details_field_names[2]}}">{{resident_details_field_names[2]}}</label>
+                            <input name="{{resident_details_field_names[2]}}" type="text"  id="{{resident_details_field_names[2]}}">
+
+                            <label for="{{resident_details_field_names[3]}}">{{resident_details_field_names[3]}}</label>
+                            <input name="{{resident_details_field_names[3]}}" type="text" id="{{resident_details_field_names[3]}}">
+
+                            <label for="{{resident_details_field_names[4]}}">{{resident_details_field_names[4]}}</label>
+                            <select name="{{resident_details_field_names[4]}}" type="text" id="{{resident_details_field_names[4]}}">
+                                {% for gender in gender_types: %}
+                                    <option value="{{gender}}">{{gender}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <label for="{{resident_details_field_names[5]}}">{{resident_details_field_names[5]}}</label>
+                            <select name="{{resident_details_field_names[5]}}" type="text" id="{{resident_details_field_names[5]}}" ">
+                                {% for blood_type in blood_types: %}
+                                    <option value="{{blood_type}}">{{blood_type}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <label for="{{resident_details_field_names[6]}}">{{resident_details_field_names[6]}}</label>
+                            <input name="{{resident_details_field_names[6]}}" type="email"  id="{{resident_details_field_names[6]}}">
+
+                            <label for="{{resident_details_field_names[7]}}">{{resident_details_field_names[7]}}</label>
+                            <input name="{{resident_details_field_names[7]}}" type="text"  id="{{resident_details_field_names[7]}}">
+
+                            <label for="{{resident_details_field_names[8]}}">{{resident_details_field_names[8]}}</label>
+                            <input name="{{resident_details_field_names[8]}}" type="text" id="{{resident_details_field_names[8]}}">
+
+                            <label for="{{resident_details_field_names[9]}}">{{resident_details_field_names[9]}}</label>
+                            <input name="{{resident_details_field_names[9]}}" type="number"  id="{{resident_details_field_names[9]}}">
+
+                            <label for="{{resident_details_field_names[10]}}">{{resident_details_field_names[10]}}</label>
+                            <select name="{{resident_details_field_names[10]}}" type="text" id="{{resident_details_field_names[10]}}" onchange="resident_type_event()">
+                                {% for resident_type in resident_types: %}
+                                    <option value="{{resident_type}}">{{resident_type}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Phone Number -->
+                        <div>
+                            <label for="phone_no">Phone Number</label>
+                            <input name="phone_no" type="number" id="phone_no">
+                        </div>
+
+                        <!-- Branch details -->
+                        <div id="branch_details">
+                            <label for="branch">Branch</label>
+                            <select name="branch" type="text" id="branch">
+                                {% for branch in branch_types: %}
+                                    <option value="{{branch[0]}}">{{branch[0]}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <label for="program">Program</label>
+                            <select name="program" type="text" id="program">
+                                {% for program_type in program_types: %}
+                                    <option value="{{program_type[0]}}">{{program_type[0]}}</option>
+                                {% endfor %}
+                            </select>     
+                        </div>
+                        <button type="submit" name="add">ADD</button>
+
+                    </form>
                 </div>
             </div>
         </div>
