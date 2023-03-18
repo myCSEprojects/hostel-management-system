@@ -242,7 +242,11 @@ def admin_resident_data(resident_id):
         cur.execute(f"""select semester, year, hostel_name, room_no, entry_date, payment_status, due_amount, due_status, payment_amount
                         from CURRENT_ALLOCATION
                         where CURRENT_ALLOCATION.resident_id = {resident_id};""")
-        resident_current_allocation_details = cur.fetchall()[0]
+        resident_current_allocation_details = cur.fetchall()
+        try:
+            resident_current_allocation_details = resident_current_allocation_details[0]
+        except:
+            resident_current_allocation_details = []
 
         # Fetching the phone numbers
         cur.execute(f"""select phone_no
@@ -312,10 +316,14 @@ def admin_resident_data(resident_id):
         
 @app.route('/admin/residents/<resident_id>/<operation>', methods=['POST'])
 def resident_operations(resident_id, operation):
-    cur = mysql.connection.cursor()
+    
     # Error handling
-    if (operation not in ['update_details', 'update_current_allocation', 'deallocate_resident']):
+    if (operation not in ['update_details', 'update_current_allocation', 'deallocate_resident', 'delete_phone', "add_phone"]):
         return redirect('/admin/residents')
+    
+    # Connecting to the database
+    cur = mysql.connection.cursor()
+
     if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
         if (operation == 'update_details'):
             # Generating the query string
@@ -335,6 +343,24 @@ def resident_operations(resident_id, operation):
             # Redirecting to the resident page
             return redirect(f'/admin/residents')
         
+        elif (operation == 'delete_phone'):
+            query_string = f"DELETE FROM RESIDENT_PHONE WHERE resident_id = {resident_id} AND phone_no = '{request.form['phone_no']}';"
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/residents')
+        
+        elif operation == 'add_phone':
+            query_string = f"INSERT INTO RESIDENT_PHONE(resident_id, phone_no) VALUES ({resident_id}, '{request.form['phone_no']}');"
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/residents')
+
         elif (operation == 'update_current_allocation'):
             pass
         

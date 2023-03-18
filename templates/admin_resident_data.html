@@ -56,13 +56,33 @@
     <h1>Phone Numbers</h1>
     {% for phone_number in resident_phone_details %}
     <form action="/admin/residents/{{resident_details[0]}}/delete_phone" method="post">
-        <input type="number" value="{{phone_number[0]}}" readonly>
+        <input type="number" name="phone_no" value="{{phone_number[0]}}" readonly>
         <button type="submit" name="delete">delete</button>
     </form>
     {% endfor %}
-    <form action="/admin/residents/{{resident_details[0]}}/add_phone">
-        <button type="submit" name="add">ADD Phone Number</button>
-    </form>
+    <!-- Button for adding phone number -->
+    <button type="button" data-bs-toggle="modal" data-bs-target="#add_phone">
+        Add Phone
+    </button>
+    
+    <div class="modal fade" id="add_phone" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Enter phone no:</h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form action="/admin/residents/{{resident_details[0]}}/add_phone" method="post">
+                    <input type="number" name="phone_no" placeholder="phone number">
+                    <button type="submit" name="add">Add Phone </button>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>
 
     
