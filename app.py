@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_mysqldb import MySQL
 from utils import check_password
 from metadata import *
+import datetime
 
 app = Flask(__name__)
 
@@ -181,9 +182,9 @@ def admin_page(page_name = None):
                 if (query_string != ""):
                     query_string = "where" + query_string
                 
-                resident_query = f"""SELECT RESIDENT.resident_id, CONCAT(first_name, " ", last_name) as full_name
-                                FROM RESIDENT NATURAL JOIN ENROLLED_IN LEFT JOIN CURRENT_ALLOCATION on CURRENT_ALLOCATION.resident_id = RESIDENT.resident_id
-                                {query_string}"""
+                resident_query = f"""   SELECT RESIDENT.resident_id, CONCAT(first_name, " ", last_name) as full_name
+                                        FROM RESIDENT NATURAL JOIN ENROLLED_IN LEFT JOIN CURRENT_ALLOCATION on CURRENT_ALLOCATION.resident_id = RESIDENT.resident_id
+                                        {query_string}  """
                 app.logger.info(resident_query)
                 # Getting all the data corresponding to the residents
                 cur.execute(resident_query)
@@ -197,10 +198,6 @@ def admin_page(page_name = None):
                                 HOSTEL;""")
                 hostel_names = cur.fetchall()
                 
-                # Getting the years from the acdemic period
-                cur.execute(""" SELECT distinct year from
-                                ACADEMIC_PERIOD;""")
-                years = cur.fetchall()
 
                 # Getting all the Program types
                 cur.execute(""" SELECT distinct program from
@@ -212,10 +209,6 @@ def admin_page(page_name = None):
                                 DEGREE;""")
                 branch_types = cur.fetchall()
 
-                # Fetching all the available semester types
-                cur.execute(""" SELECT distinct semester from
-                                ACADEMIC_PERIOD;""")
-                semester_types = cur.fetchall()
                 # Rendering the template
                 return render_template('admin_residents.html', 
                                     pages = admin_pages, 
@@ -224,9 +217,6 @@ def admin_page(page_name = None):
                                     hostel_names = hostel_names, 
                                     resident_types=resident_types, 
                                     gender_types = gender_types, 
-                                    semester_types = semester_types, 
-                                    blood_types = blood_types, 
-                                    years = years,
                                     program_types = program_types,
                                     branch_types = branch_types)
             else:
@@ -247,7 +237,6 @@ def admin_resident_data(resident_id):
     if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
         
         # Fetching the resident data along with the current allocation data
-        resident_data_field_names = ["ID", "First Name", "Middle Name", "Last Name", "Gender", "Phone Number", "Blood Group", "Email id", "City", "Postal Code", "Home Contact", "Resident Type", "Program", "Branch", "Semester", "Year", "Hostel Name", "Room Number", "Entry Date", "Payment Status", "Due Amount", "Due Status", "Payment Amount"]
         cur.execute(f"""select RESIDENT.resident_id, first_name, middle_name, last_name, gender, phone_no, blood_group, email_id, city, postal_code, home_contact, resident_type, program, branch, semester, year, hostel_name, room_no, entry_date, payment_status, due_amount, due_status, payment_amount
                         from RESIDENT NATURAL JOIN RESIDENT_PHONE NATURAL JOIN ENROLLED_IN LEFT JOIN CURRENT_ALLOCATION on CURRENT_ALLOCATION.resident_id = RESIDENT.resident_id
                         where RESIDENT.resident_id = {resident_id};""")
@@ -256,7 +245,6 @@ def admin_resident_data(resident_id):
         app.logger.info(resident_data)
         
         # Fetching the history data
-        resident_history_field_names = ["Semester", "Year", "Hostel Name", "Room Number", "Entry Date", "Exit Date", "Payment Status", "Due Amount", "Due Status", "Payment Amount"]
         cur.execute(f"""select semester, year, hostel_name, room_no, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount
                         from ALLOCATION
                         where resident_id = {resident_id};""")
@@ -294,8 +282,8 @@ def admin_resident_data(resident_id):
         return render_template('admin_resident_data.html', 
                                 resident_data = resident_data, 
                                 history_data = history_data, 
-                                resident_data_field_names = resident_data_field_names, 
-                                resident_history_field_names = resident_history_field_names,
+                                resident_data_field_names = list(resident_data_field_names.keys()), 
+                                resident_history_field_names = list(resident_history_field_names.keys()),
                                 hostel_names = hostel_names, 
                                 resident_types= resident_types, 
                                 gender_types = gender_types, 
@@ -303,9 +291,22 @@ def admin_resident_data(resident_id):
                                 blood_types = blood_types, 
                                 years = years,
                                 program_types = program_types,
-                                branch_types = branch_types)
+                                branch_types = branch_types,
+                                today = datetime.date.today())
         
-        
+@app.route('/admin/residents/<resident_id>/<operation>', methods=['POST'])
+def resident_operations(resident_id, operation):
+    # Error handling
+    if (operation not in ['update_details', 'update_current_allocation', 'deallocate_resident']):
+        return redirect('/admin/residents')
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        if (operation == 'update_details'):
+            return redirect(f'/admin/residents/{resident_id}/update_details')
+        elif (operation == 'update_current_allocation'):
+            return redirect(f'/admin/residents/{resident_id}/update_current_allocation')
+        elif (operation == 'deallocate_resident'):
+            return "deallocation recieved"
+
 # Running the app
 if __name__ == '__main__':
     app.run(debug=True)
