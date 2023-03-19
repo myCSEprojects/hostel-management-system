@@ -35,6 +35,7 @@ admin_pages = {
     "logout": "/admin/logout",
     "dashboard": "/admin/dashboard",
     "residents": "/admin/residents",
+    "rooms": "/admin/rooms",
 }
 
 resident_pages = {
@@ -49,6 +50,7 @@ resident_pages = {
 def home_page():
     cur = mysql.connection.cursor()
     return render_template('home.html', pages=pages)
+
 @app.route('/home/hostel_details')
 def hostel():
 
@@ -138,7 +140,6 @@ def caretaker_details():
          table1[i].append(dict1[table1[i][0]])
     table1.insert(0,['ID','Name','Office Number','Email ID','Hostel Name','Hostel Contact','Caretaker Phoneno']) 
     return render_template('caretaker_details.html', pages=pages, table1  = table1)
-    
 
 # Handlign the routes for the residents
 @app.route('/resident/<page_name>', methods=['GET', 'POST'])
@@ -200,7 +201,6 @@ def resident_page(page_name = None):
             for i,col in enumerate(cols):
                 stats_dict[col] = stats[i]
 
-            app.logger.info(stats_dict)
             
             return render_template('resident_profile.html', pages = resident_pages, stats = stats_dict, contacts = contacts, pb = p_and_b)
         else:
@@ -221,7 +221,6 @@ def resident_page(page_name = None):
             cols = ['year','semester','hostel_name','room_no','entry_date','exit_date']
             cols = list(map(str.capitalize,cols))
             cols = list(map(operator.methodcaller('replace','_',' '),cols))
-            app.logger.info(history)
             
             return render_template('resident_history.html', pages = resident_pages, history = history,cols = cols)
         else:
@@ -263,7 +262,6 @@ def resident_page(page_name = None):
 
             for i in range(len((cols))):
                 stats_dict[cols[i]] = current_allocation[i]
-            app.logger.info(stats_dict)
             return render_template('resident_current_alloc.html',pages = resident_pages, contacts=contacts, stats=stats_dict)
         else:
             return redirect('/resident/login')
@@ -273,13 +271,13 @@ def resident_page(page_name = None):
         session.pop('id', None)
         session.pop('name', None)
         return redirect('/')
-# Handling the routes for the admin
+# Handling the routes for the admin pages
 @app.route('/admin/<page_name>', methods=['GET', 'POST'])
 def admin_page(page_name = None):
     cur = mysql.connection.cursor()
 
     # error handling
-    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student']:
+    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'rooms', 'add_room']:
         return redirect('/admin/login')    
 
     if (page_name == 'login'):
@@ -295,10 +293,75 @@ def admin_page(page_name = None):
                 return redirect('/admin/dashboard')
             else:
                 return render_template('admin_login.html', pages = pages, error="Invalid Username or Password")
+    # Handling the rooms route
+    elif page_name == 'rooms':
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            if (request.method == 'GET'):
+                # Fethcing all the hostel names
+                query_string = "select distinct hostel_name from HOSTEL;"
+                cur.execute(query_string)
+                hostel_names = cur.fetchall()
+                
+                # Fetching all the room types
+                query_string = "select distinct room_type from ROOM;"
+                cur.execute(query_string)
+                hostel_room_types = cur.fetchall()
+                
+                # receiving the route parameters
+                hostel_name = request.args.get('hostel_name')
+                room_type = request.args.get('room_type')
+                room_no = request.args.get('room_no')
+                occupant_count = request.args.get('occupant_count')
+
+                # Creating the query string
+                query_string = ""
+                # Processing the search query
+                if hostel_name != None and hostel_name != "all":
+                    query_string += f" hostel_name = '{hostel_name}' "
+                if room_type != None and room_type != "all":
+                    if query_string != "":
+                        query_string += "and"
+                    query_string += f" room_type = '{room_type}' "
+                if room_no != None and room_no != "":
+                    if query_string != "":
+                        query_string += "and"
+                    query_string += f" room_no = '{room_no}' "
+                if occupant_count != None and occupant_count != "":
+                    if query_string != "":
+                        query_string += "and"
+                    query_string += f" occupied = '{occupant_count}' "
+                if query_string != "":
+                    query_string = "where" + query_string
+                
+                # Fetching the rooms info
+                query_string = f"select * from ROOM {query_string};"
+                cur.execute(query_string)
+                rooms_details = cur.fetchall()
+
+                # sending the html page
+                return render_template('admin_rooms.html', 
+                                    pages = admin_pages, 
+                                    hostel_names = hostel_names, 
+                                    room_types = hostel_room_types,
+                                    rooms_details = rooms_details,
+                                    room_details_field_names = list(room_details_field_names.keys()),
+                                    )
+
+    elif (page_name == 'add_room'):
+        if not ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            return "Invalid authentication"
+        hostel_name = request.form['Hostel Name']
+        room_type = request.form['Room Type']
+        room_no = request.form['Room Number']
+
+        query_string = "INSERT INTO ROOM (" + "hostel_name, room_type, room_no, occupied" + ") VALUES (" + f"'{hostel_name}', '{room_type}', '{room_no}', 0" + ");"
+        app.logger.info(query_string)
+        cur.execute(query_string)
+        mysql.connection.commit()
+        return redirect(request.referrer)
     
     elif (page_name == 'add_student'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
-            app.logger.info("Adding a student")
             
             # adding into resident
             query_string = ""
@@ -311,7 +374,6 @@ def admin_page(page_name = None):
                         table_order += ", "
                     query_string += f'"{request.form[field]}"'
                     table_order += resident_details_field_names[field]
-            app.logger.info("INSERT INTO RESIDENT (" + table_order + ") VALUES (" + query_string + ");")
             # executing the query and commiting the changes
             cur.execute("INSERT INTO RESIDENT (" + table_order + ") VALUES (" + query_string + ");")
             
@@ -457,6 +519,143 @@ def admin_page(page_name = None):
         session.pop('name', None)
         return redirect('/')
 
+# Handling the routes for the admin/rooms pages
+@app.route('/admin/rooms/<hostel_name>/<room_no>', methods=['POST'])
+def admin_rooms(hostel_name=None, room_no=None):
+    # connecting to the database
+    cur = mysql.connection.cursor()
+    
+    # Checking if the user is logged in
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        # Getting the hostel_details
+        query_string = f"SELECT * FROM ROOM WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"
+        cur.execute(query_string)
+        room_details = cur.fetchall()[0]
+
+        # Fetching all the room types
+        query_string = "select distinct room_type from ROOM;"
+        cur.execute(query_string)
+        hostel_room_types = cur.fetchall()
+        
+        # Fethcing all the hostel names
+        query_string = "select distinct hostel_name from HOSTEL;"
+        cur.execute(query_string)
+        hostel_names = cur.fetchall()
+
+        # Fetching all the available semester types
+        cur.execute(""" SELECT distinct semester from
+                        ACADEMIC_PERIOD;""")
+        semester_types = cur.fetchall()
+
+        # Fetching all the available years 
+        cur.execute(""" SELECT distinct year from
+                        ACADEMIC_PERIOD;""")
+        years = cur.fetchall()
+
+        # Fetching the previous allocation details
+        query_string = f""" SELECT semester, year, resident_id, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount FROM ALLOCATION WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"""
+        app.logger.info(query_string)
+        cur.execute(query_string)
+        room_allocation_history_details = cur.fetchall()
+        
+        # Fetching the current allocation details
+        query_string = f""" SELECT semester, year, resident_id, entry_date, payment_status, due_amount, due_status, payment_amount
+                            FROM CURRENT_ALLOCATION 
+                            WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"""
+        cur.execute(query_string)
+        room_current_allocation_details = cur.fetchall()
+
+        # Fetching the furniture details
+        query_string = f""" SELECT furniture_id, status from FURNITURE WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"""
+        cur.execute(query_string)
+        room_furniture_details = cur.fetchall()
+
+        app.logger.info(room_furniture_details)
+
+        return render_template( "admin_room_data.html",
+                                room_types = hostel_room_types,
+                                hostel_names = hostel_names,
+                                room_details = room_details,
+                                hostel_name = hostel_name,
+                                room_no = room_no,
+                                semester_types = semester_types,
+                                years = years,
+                                room_details_field_names = list(room_details_field_names.keys()),
+                                room_current_allocation_details = room_current_allocation_details,
+                                room_current_allocation_field_names = list(room_current_allocation_field_names.keys()),
+                                room_allocation_history_details = room_allocation_history_details,
+                                room_allocation_history_field_names = list(room_allocation_history_field_names.keys()),
+                                room_furniture_details = room_furniture_details,
+                               )
+
+@app.route('/admin/furniture/<furniture_id>/<operation>', methods=['POST'])
+def admin_furniture_operations(furniture_id=None, operation=None):
+    cur = mysql.connection.cursor()
+    # Handling the authentication
+    if not ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        return "Invalid Authentication"
+    # Handling invalid operations
+    if operation not in ['remove_furniture_from_room']:
+        return "Invalid Operation"
+    if operation == 'remove_furniture_from_room':
+        query_string = f"UPDATE FURNITURE SET room_no=NULL, hostel_name=NULL WHERE furniture_id='{furniture_id}';"
+        cur.execute(query_string)
+        cur.connection.commit()
+
+        return redirect(request.referrer)
+# Handling operations for the room data
+@app.route('/admin/rooms/<hostel_name>/<room_no>/<operation>', methods=['POST'])
+def admin_rooms_operations(hostel_name=None, room_no=None, operation=None):
+    cur = mysql.connection.cursor()
+    # Handling the authentication
+    if not ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        return "Invalid Authentication"
+    # Handling invalid operations
+    if operation not in ['update_room_data', 'update_current_room_allocation', 'update_furniture_details', "add_furniture_to_room", "delete_room"]:
+        return "Invalid Operation"
+    if operation == 'update_room_data':
+        # Getting the form data
+        room_type = request.form['room_type']
+        
+        # Updating the room data
+        query_string = f"UPDATE ROOM SET room_type='{room_type}' WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"
+        cur.execute(query_string)
+        mysql.connection.commit()
+        return redirect('/admin/rooms')
+    
+    if operation == 'update_current_room_allocation':
+        query_string = ""
+        for field in request.form:
+            if field != 'update':
+                if query_string != "":
+                    query_string += ", "
+                query_string += f"{room_current_allocation_field_names[field]}='{request.form[field]}'"
+        query_string = "UPDATE CURRENT_ALLOCATION SET " + query_string + f" WHERE hostel_name='{hostel_name}' AND room_no='{room_no}' AND resident_id='{request.form['ID']}';"
+        app.logger.info(query_string)
+        cur.execute(query_string)
+        mysql.connection.commit()
+    if operation == 'update_furniture_details':
+        status_value = (1 if (request.form.get("status")!="on") else 0)
+        furniture_id = request.form["furniture_id"]
+        query_string = f"UPDATE FURNITURE SET status='{status_value}' WHERE furniture_id='{furniture_id}';"
+        cur.execute(query_string)
+        mysql.connection.commit()
+
+        return redirect('/admin/rooms')
+    if operation == 'add_furniture_to_room':
+        furniture_id = request.form["furniture_id"]
+        query_string = f"UPDATE FURNITURE SET hostel_name='{hostel_name}', room_no='{room_no}' WHERE furniture_id='{furniture_id}';"
+        cur.execute(query_string)
+        mysql.connection.commit()   
+        return redirect(request.referrer)
+    
+    if operation == 'delete_room':
+        query_string = f"DELETE FROM ROOM WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"
+        cur.execute(query_string)
+        mysql.connection.commit()
+        return redirect(request.referrer)
+
+
 # Handling the post request for the admin/residents/<resident_id> page
 @app.route('/admin/residents/<resident_id>', methods=['POST'])
 def admin_resident_data(resident_id):
@@ -581,7 +780,6 @@ def resident_operations(resident_id, operation):
             return redirect(f'/admin/residents')
         
         elif (operation == 'update_program'):
-            app.logger.info(request.form)
             query_string = f"UPDATE ENROLLED_IN SET program='{request.form['program']}', branch = '{request.form['branch']}' where resident_id = {resident_id};"
             # Executing the query and commiting the changes
             cur.execute(query_string)
