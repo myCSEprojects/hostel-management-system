@@ -373,7 +373,6 @@ def admin_page(page_name = None):
         room_no = request.form['Room Number']
 
         query_string = "INSERT INTO ROOM (" + "hostel_name, room_type, room_no, occupied" + ") VALUES (" + f"'{hostel_name}', '{room_type}', '{room_no}', 0" + ");"
-        app.logger.info(query_string)
         cur.execute(query_string)
         mysql.connection.commit()
         return redirect(request.referrer)
@@ -420,7 +419,6 @@ def admin_page(page_name = None):
                         table_order += ", "
                     query_string += f'"{request.form[field]}"'
                     table_order += security_details_field_names[field]
-            app.logger.info("INSERT INTO RESIDENT (" + table_order + ") VALUES (" + query_string + ");")
             # executing the query and commiting the changes
             cur.execute("INSERT INTO GUARD (" + table_order + ") VALUES (" + query_string + ");")
             
@@ -657,7 +655,6 @@ def admin_rooms(hostel_name=None, room_no=None):
 
         # Fetching the previous allocation details
         query_string = f""" SELECT semester, year, resident_id, entry_date, exit_date, payment_status, due_amount, due_status, payment_amount FROM ALLOCATION WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"""
-        app.logger.info(query_string)
         cur.execute(query_string)
         room_allocation_history_details = cur.fetchall()
         
@@ -673,7 +670,6 @@ def admin_rooms(hostel_name=None, room_no=None):
         cur.execute(query_string)
         room_furniture_details = cur.fetchall()
 
-        app.logger.info(room_furniture_details)
 
         return render_template( "admin_room_data.html",
                                 room_types = hostel_room_types,
@@ -734,7 +730,6 @@ def admin_rooms_operations(hostel_name=None, room_no=None, operation=None):
                     query_string += ", "
                 query_string += f"{room_current_allocation_field_names[field]}='{request.form[field]}'"
         query_string = "UPDATE CURRENT_ALLOCATION SET " + query_string + f" WHERE hostel_name='{hostel_name}' AND room_no='{room_no}' AND resident_id='{request.form['ID']}';"
-        app.logger.info(query_string)
         cur.execute(query_string)
         mysql.connection.commit()
     if operation == 'update_furniture_details':
@@ -860,7 +855,6 @@ def admin_security_data(security_id):
                         from SECURITY
                         where SECURITY.security_id = {security_id};""")
         security_current_allocation_details = cur.fetchall()
-        app.logger.info(str(security_current_allocation_details[6][1]))
         # try:
         #     resident_current_allocation_details = resident_current_allocation_details[0]
         # except:
@@ -989,7 +983,6 @@ def security_operations(security_id, operation):
                         query_string += ", "
                     query_string += f"{security_details_field_names[field]} = '{request.form[field]}'"
             # Adding the select and where clause
-            # app.logger.info(f"UPDATE SECURITY SET {query_string} WHERE security_id = {security_id};")
             query_string = f"UPDATE GUARD SET {query_string} WHERE security_id = {security_id};"
             
             # Executing the query and commiting the changes
