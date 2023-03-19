@@ -13,6 +13,21 @@ function loadResident(resident_id){
     });
 }
 
+function loadRoom(room_no, hostel_name){
+    selector = '#'+ hostel_name + '_' + room_no + " div";
+    if($.trim($(selector).html())!=''){
+        return;
+    }
+    $.ajax({
+        dataType: "html",
+        url: '/admin/rooms/' + hostel_name + '/' + room_no,
+        type: 'POST',
+        success: function(result){
+            $(selector).html(result);
+        }
+    });
+}
+
 function resident_type_event() {
     var value = $('#Resident\\ Type').val();
     if (value != "student") {
