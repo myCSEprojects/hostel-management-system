@@ -75,4 +75,32 @@ resident_history_field_names = {
     "Payment Amount" : "payment_amount"
 }
 
+room_details_field_names = {
+    "Room Number": "room_no",
+    "Hostel Name": "hostel_name",
+    "Room Type": "room_type",
+    "Current occupancy": "occupied",
+}
+room_current_allocation_field_names = {
+    "Semester": "semester",
+    "Year": "year",
+    "ID": "resident_id",
+    "Entry Date": "entry_date",
+    "Payment Status": "payment_status",
+    "Due Amount": "due_amount",
+    "Due Status": "due_status",
+    "Payment Amount": "payment_amount",
+}
+
+room_allocation_history_field_names = {
+    "Semester": "semester",
+    "Year": "year",
+    "ID": "resident_id",
+    "Entry Date": "entry_date",
+    "Exit Date": "exit_date",
+    "Payment Status": "payment_status",
+    "Due Amount": "due_amount",
+    "Due Status": "due_status",
+    "Payment Amount": "payment_amount",
+}
 
