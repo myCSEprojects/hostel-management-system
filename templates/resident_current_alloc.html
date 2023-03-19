@@ -4,9 +4,15 @@
 {% endblock %}
 {% block body %}
     <!-- Code for the admin page goes here -->
-    <h3 align = "center">Your Current Allocation</h3>
-    <table border="3" height="50%" width="50%" bordercolor="blue"
-align="center" style="border-spacing: 0 10px;">
+    <style>
+        body{
+            /* background-color: #2D2D2D; */
+            background-image: url("/static/images/Screenshot\ from\ 2023-03-20\ 04-52-27.png");
+        }
+    </style>
+    <h3 align = "center" style="margin-top:20px; color:white;" >Hostel Details</h3>
+    <table border="3" height="50%" width="50%" bordercolor="black"
+    align="center" style="border-spacing: 0 10px; border-radius: 20px; overflow: hidden; max-width: 55%; margin-top: 25px;" class="table table-striped table-light table-hover" cellpadding ="10" >
         {%for attr,val in stats.items():%}
         <tr>
             <th>{{attr}}</th>

@@ -2,29 +2,82 @@
 {% block head %}
     <title>Admin</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/admin_dashboard.css')}}">
+    <style>
+        .value {
+            float: right;   
+        }
+
+        .card {
+            border-radius: 20px;
+            max-width: 500px;
+            margin: 10px;
+            display: inline-block;
+            vertical-align: top;
+            flex-basis: calc(33.33% - 20px); /* Set flex-basis to 33.33% minus 20px for margin */
+            margin-bottom: 20px; /* Add margin to the bottom */
+            max-height: 300px;
+        }
+
+        .card-header h2 {
+            font-size: 28px;
+            font-weight: 500; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0;
+            font-family: 'Roboto Slab',serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px;
+        }
+
+        .card-header-top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #3E3F3F;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+        }
+
+        .card-header-top h2 {
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            color: #fff;
+        }
+
+        .card-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: start; 
+        }
+    </style>
 {% endblock %}
+
 {% block body %}
     <div class="card-header-top">
         <h2>Hostel Dashboard</h2>
     </div>
-    <!-- Code for the admin page goes here -->
-    <!-- vacancies + 0 in 1 + 1 in 2 + 0 in 2 + 1 in 3 + 0 in 3 + 2 in 3 -->
+
     <div class="container">
         <div class="card-row">
             {% for hostel in stats %}
-                
-                <div class="card mb-3 border-dark" style="max-width: 18rem;"> 
+                <div class="card mb-3 border-dark"> 
                     <div class="card-header text-white" style="background-color: #3E3F3F"><h2>{{hostel}}</h2></div>
                     <div class="card-body text-black">
                         {% for stat in stats[hostel] %}
-                        <p class="card-text">
-                            <span>{{stat[0]}} students in {{stat[1]}} room:</span>
-                            <span class="value"><b>{{stat[2]}}</b></span>
-                        </p> 
+                            <p class="card-text">
+                                <span>{{stat[0]}} students in {{stat[1]}} room:</span>
+                                <span class="value"><b>{{stat[2]}}</b></span>
+                            </p> 
                         {% endfor %}
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
-{%endblock%}
+{% endblock %}
