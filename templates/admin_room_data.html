@@ -1,0 +1,166 @@
+<!-- Delete Room Button -->
+<form action="/admin/rooms/{{hostel_name}}/{{room_no}}/delete_room" method="post">
+    <button type="submit" name="delete">Delete</button>
+</form>
+
+<form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_room_details" method="post">
+    <h1>Room Details</h1>
+    <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[0]}}">{{room_details_field_names[0]}}</label>
+    <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[0]}}" type="text" name="{{room_details_field_names[0]}}" value="{{room_details[0]}}" disabled>
+
+    <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[1]}}">{{room_details_field_names[1]}}</label>
+    <select id="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[1]}}" disabled>
+        <option value="{{room_details[1]}}" hidden>{{room_details[1]}}</option>
+        {% for hostel_name in hostel_names %}
+            <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[2]}}">{{room_details_field_names[2]}}</label>
+    <select id="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[2]}}">
+        <option value="{{room_details[2]}}" hidden>{{room_details[2]}}</option>
+        {% for room_type in room_types %}
+            <option value="{{room_type[0]}}">{{room_type[0]}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[3]}}">{{room_details_field_names[3]}}</label>
+    <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[3]}}" type="number" name="{{room_details_field_names[3]}}" value="{{room_details[3]}}" disabled>
+
+    <button type="submit" name="update">Update</button>
+</form>
+
+<!-- Current allocation -->
+<h1>Current Allocation details</h1>
+{% for current_allocation in room_current_allocation_details%}
+    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_current_room_allocation" method="post">
+        <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[0]}}">{{room_current_allocation_field_names[0]}}</label>
+        <select id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[0]}}" name="{{room_current_allocation_field_names[0]}}">
+            <option value="{{current_allocation[0]}}" hidden>{{current_allocation[0]}}</option>
+            {% for semester_type in semester_types %}
+                <option value="{{semester_type[0]}}">{{semester_type[0]}}</option>
+            {% endfor %}
+        </select>
+        <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[1]}}">{{room_current_allocation_field_names[1]}}</label>
+        <select id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[1]}}" name="{{room_current_allocation_field_names[1]}}">
+            <option value="{{current_allocation[1]}}" hidden>{{current_allocation[1]}}</option>
+            {% for year in years %}
+                <option value="{{year[0]}}">{{year[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[2]}}">{{room_current_allocation_field_names[2]}}</label>
+        <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[2]}}" type="number" name="{{room_current_allocation_field_names[2]}}" value="{{current_allocation[2]}}" readonly>
+
+        <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[3]}}">{{room_current_allocation_field_names[3]}}</label>
+        <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[3]}}" type="date" name="{{room_current_allocation_field_names[3]}}" value="{{current_allocation[3]}}">
+
+        <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[4]}}">{{room_current_allocation_field_names[4]}}</label>
+        <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[4]}}" type="number" name="{{room_current_allocation_field_names[4]}}" value="{{current_allocation[4]}}">
+
+        <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[5]}}">{{room_current_allocation_field_names[5]}}</label>
+        <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[5]}}" type="number" name="{{room_current_allocation_field_names[5]}}" value="{{current_allocation[5]}}">
+
+        <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[6]}}">{{room_current_allocation_field_names[6]}}</label>
+        <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[6]}}" type="number" name="{{room_current_allocation_field_names[6]}}" value="{{current_allocation[6]}}">
+
+        <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[7]}}">{{room_current_allocation_field_names[7]}}</label>
+        <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[7]}}" type="number" name="{{room_current_allocation_field_names[7]}}" value="{{current_allocation[7]}}">
+        
+        <button type="submit" name="update">Update</button>
+    </form>
+
+    <!-- Deallocate button -->
+    <!-- Button trigger modal -->
+    <button type="button" data-bs-toggle="modal" data-bs-target="#{{room_details[0]}}-{{room_details[1]}}-deallocate">
+        Deallocate
+    </button>
+ 
+ 
+    <!-- Modal -->
+    <div class="modal fade" id="{{room_details[0]}}-{{room_details[1]}}-deallocate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Exit Date</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/residents/{{current_allocation[2]}}/deallocate_resident" method="post">
+                        <label for="exit_date">Exit Date</label>
+                        <input type="date" name="exit_date" id="exit_date" value="{{today}}">
+                        <button type="submit" name="deallocate">Deallocate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<!-- Previous allocations -->
+<div>
+    <h1>Room Allocation History</h1>
+    <table>
+        <tr>
+            {% for field_name in room_allocation_history_field_names: %}
+            <th>{{field_name}}</th>
+            {% endfor %}
+        </tr>
+        {% for  history in room_allocation_history_details: %}
+        <tr>
+            {% for field_value in history: %}
+            <td>{{field_value}}</td>
+            {% endfor %}
+        </tr>
+        {%endfor%}
+    </table>
+ </div>
+
+ <!-- Furniture details -->
+ <div>
+    <h1>Furniture Details</h1>
+    {% for furniture in room_furniture_details %}
+    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_furniture_details" method="post">
+        <label for="furniture_id">Furniture ID</label>
+        <input type="text" name="furniture_id" id="furniture_id" value="{{furniture[0]}}" readonly>
+        <label for="status">Damaged</label>
+        {% if furniture[1] == 1 %}
+        <input type="checkbox" name="status" id="status">
+        {% else %}
+        <input type="checkbox" name="status" id="status" checked>
+        {% endif %}
+        <button type="submit" name="update">Update</button>
+    </form>
+    <form action="/admin/furniture/{{furniture[0]}}/remove_furniture_from_room" method="post">
+        <button type="submit" name="delete">Remove from room</button>
+    </form>
+    {% endfor %}
+    <!-- Button trigger modal -->
+    <button type="button" data-bs-toggle="modal" data-bs-target="#{{room_details[0]}}-{{room_details[1]}}-add-furniture">
+        Add Furniture
+    </button>
+ 
+    <!-- Modal -->
+    <div class="modal fade" id="{{room_details[0]}}-{{room_details[1]}}-add-furniture" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Enter furniture ID</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/add_furniture_to_room" method="post">
+                        <label for="furniture_id">Furniture ID</label>
+                        <input type="text" name="furniture_id" id="furniture_id">
+                        <button type="submit" name="add">Add furniture</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+
