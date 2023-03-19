@@ -12,7 +12,20 @@ function loadResident(resident_id){
         }
     });
 }
-
+function loadSecurity(security_id){
+    selector = '#'+ security_id + " div";
+    if($.trim($(selector).html())!=''){
+        return;
+    }
+    $.ajax({
+        dataType: "html",
+        url: '/admin/security/' + security_id,
+        type: 'POST',
+        success: function(result){
+            $(selector).html(result);
+        }
+    });
+}
 function loadRoom(room_no, hostel_name){
     selector = '#'+ hostel_name + '_' + room_no + " div";
     if($.trim($(selector).html())!=''){
