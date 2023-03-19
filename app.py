@@ -526,7 +526,7 @@ def admin_page(page_name = None):
                 if (query_string != ""):
                     query_string = "where" + query_string
                 
-                resident_query = f"""   SELECT RESIDENT.resident_id, CONCAT(first_name, " ", last_name) as full_name
+                resident_query = f"""   SELECT RESIDENT.resident_id, CONCAT(first_name, " ", last_name), RESIDENT.gender, room_no, hostel_name, RESIDENT.email_id as full_name
                                         FROM (RESIDENT LEFT JOIN ENROLLED_IN on RESIDENT.resident_id = ENROLLED_IN.resident_id) LEFT JOIN CURRENT_ALLOCATION on CURRENT_ALLOCATION.resident_id = RESIDENT.resident_id
                                         {query_string}  """
                 # Getting all the data corresponding to the residents
@@ -885,7 +885,7 @@ def admin_security_data(security_id):
 def resident_operations(resident_id, operation):
     
     # Error handling
-    if (operation not in ['update_details', 'update_current_allocation', 'deallocate_resident', 'delete_phone', "add_phone", 'update_program']):
+    if (operation not in ['update_details', 'update_current_allocation', 'deallocate_resident', 'delete_phone', "add_phone", 'update_program', "add_allocation"]):
         return redirect('/admin/residents')
     
     # Connecting to the database
@@ -918,6 +918,24 @@ def resident_operations(resident_id, operation):
 
             # Redirecting to the resident page
             return redirect(f'/admin/residents')
+        
+        elif (operation == 'add_allocation'):
+            query_string = ""
+            text_string = ""
+            for field in request.form.keys():
+                if (field != "add"):
+                    if (query_string != ""):
+                        query_string += ", "
+                    if (text_string != ""):
+                        text_string += ", "
+                    text_string += f"{resident_current_allocation_field_names[field]}"
+                    query_string += f"'{request.form[field]}'"
+            query_string = f"INSERT INTO CURRENT_ALLOCATION(resident_id, {text_string}) VALUES ({resident_id}, {query_string});"
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            return redirect(request.referrer)
         
         elif (operation == 'update_program'):
             query_string = f"UPDATE ENROLLED_IN SET program='{request.form['program']}', branch = '{request.form['branch']}' where resident_id = {resident_id};"

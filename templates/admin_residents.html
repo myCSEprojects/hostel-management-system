@@ -264,10 +264,10 @@
               <tr>
                   <td>{{resident[0]}}</td>
                   <td style="width: 300px;">{{resident[1]}}</td>
-                  <td>{{resident[14]}}</td>
-                  <td style="width: 150px;">{{resident[4]}}</td>
-                  <td>{{resident[5]}}</td>
-                  <td style="width: 350px;">{{resident[11]}}</td>
+                  <td>{{resident[2]}}</td>
+                  <td style="width: 150px;">{{resident[3] if (resident[3] is not none)}}</td>
+                  <td>{{resident[4] if (resident[3] is not none)}}</td>
+                  <td style="width: 350px;">{{resident[5]}}</td>
                   
                   <td>
                       <button class="btn btn-primary edit-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{resident[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadResident('{{resident[0]}}')" style="background-color: black; border: lightgrey;">

@@ -110,9 +110,6 @@
 </div>
 
 <!-- Resident Phone numbers -->
-
-
-
 <div>
     <hr>
     <h3 style="text-align: center; margin-top: 20px;">Phone Numbers</h3>
@@ -188,6 +185,7 @@
 <div>
     <hr>
     <h3 style="text-align: center; margin-top: 20px;">Current Allocation</h3>
+    {%if resident_current_allocation_details | length != 0%}
     <form action="/admin/residents/{{resident_details[0]}}/update_current_allocation" class="row g-3"  method="post">
         <div class="col-md-6">
             <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}" class="form-label">{{resident_current_allocation_field_names[0]}}</label>
@@ -250,9 +248,78 @@
             </button>
         </div>
     </form>
- 
- 
+    {% else %}
+    <div class="col-12">
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#add_allocation">Allocate</button>
+    </div>
     
+    <div class="modal fade" id="add_allocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Enter Details:</h5>
+                <button class="btn btn-dark close" type="button" data-bs-dismiss="modal" aria-label="Close" >
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/admin/residents/{{resident_details[0]}}/add_allocation" method="post">
+                    <div class="col-md-6">
+                        <label for="{{resident_current_allocation_field_names[0]}}" class="form-label">{{resident_current_allocation_field_names[0]}}</label>
+                        <input name="{{resident_current_allocation_field_names[0]}}" class="form-control" type="number" value={{resident_current_allocation_details[0]}} id="{{resident_current_allocation_field_names[0]}}">
+                    </div>    
+                    
+                    <div class="col-md-6">
+                        <label for="{{resident_current_allocation_field_names[1]}}" class="form-label">{{resident_current_allocation_field_names[1]}}</label>
+                        <input name="{{resident_current_allocation_field_names[1]}}" class="form-control" type="number" value={{resident_current_allocation_details[1]}} id="{{resident_current_allocation_field_names[1]}}">
+                    </div> 
+            
+                    <div class="col-md-4">
+                        <label for="{{resident_current_allocation_field_names[2]}}" class="form-label">{{resident_current_allocation_field_names[2]}}</label>
+                        <select name="{{resident_current_allocation_field_names[2]}}" class="form-select" type="text" id="{{resident_current_allocation_field_names[2]}}">
+                        <option selected hidden>{{resident_current_allocation_details[2]}}</option>
+                        {% for hostel_name in hostel_names: %}
+                            <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                        {% endfor %}
+                        </select>
+                    </div> 
+            
+                    <div class="col-md-4">
+                        <label for="{{resident_current_allocation_field_names[3]}}" class="form-label">{{resident_current_allocation_field_names[3]}}</label>
+                        <input name="{{resident_current_allocation_field_names[3]}}" class="form-control" type="number" value={{resident_current_allocation_details[3]}} id="{{resident_current_allocation_field_names[3]}}">
+                    </div> 
+            
+                    <div class="col-md-4">
+                        <label for="{{resident_current_allocation_field_names[4]}}" class="form-label">{{resident_current_allocation_field_names[4]}}</label>
+                        <input name="{{resident_current_allocation_field_names[4]}}" class="form-control" type="date" value={{resident_current_allocation_details[4]}} id="{{resident_current_allocation_field_names[4]}}">
+                    </div> 
+            
+                    <div class="col-md-12">
+                        <label for="{{resident_current_allocation_field_names[5]}}" class="form-label">{{resident_current_allocation_field_names[5]}}</label>
+                        <input name="{{resident_current_allocation_field_names[5]}}" class="form-control" type="number" value={{resident_current_allocation_details[5]}} id="{{resident_current_allocation_field_names[5]}}">
+                    </div> 
+            
+                    <div class="col-md-4">
+                        <label for="{{resident_current_allocation_field_names[6]}}">{{resident_current_allocation_field_names[6]}}</label>
+                        <input name="{{resident_current_allocation_field_names[6]}}" class="form-control" type="number" value={{resident_current_allocation_details[6]}} id="{{resident_current_allocation_field_names[6]}}">
+                    </div> 
+            
+                    <div class="col-md-4">
+                        <label for="{{resident_current_allocation_field_names[7]}}" class="form-label">{{resident_current_allocation_field_names[7]}}</label>
+                        <input name="{{resident_current_allocation_field_names[7]}}" class="form-control" type="number" value={{resident_current_allocation_details[7]}} id="{{resident_current_allocation_field_names[7]}}">
+                    </div> 
+            
+                    <div class="col-md-4">
+                        <label for="{{resident_current_allocation_field_names[8]}}" class="form-label">{{resident_current_allocation_field_names[8]}}</label>
+                        <input name="{{resident_current_allocation_field_names[8]}}" class="form-control" type="number" value={{resident_current_allocation_details[8]}} id="{{resident_current_allocation_field_names[8]}}">
+                    </div>
+                    <button class="btn btn-dark btn-sm"  type="submit" name="add">Allocate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>    
  
  
     <!-- Modal -->
