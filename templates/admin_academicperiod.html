@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>admin academic period</title>
+{% endblock %}
+
+{% block body %}
+<p>{{error}}</p>
+<form action="/admin/academic_period/add_academic_period" method="post">
+    <input type="number" name="semester" placeholder="Semester">
+    <input type="number" name="year" placeholder="Year">
+    <input type="submit" value="add">
+</form>
+
+
+
+<h3 align = "center">Academic Period Details</h3>
+
+<table border="3" height="50%" width="50%" bordercolor="black"
+align="center" style="border-spacing: 0 10px;" cellpadding ="10" >
+    {%for row in (table10):%}
+    <tr>
+        {%if row[0] == 'Semester'%}
+        {%for val in row:%}
+        <th>{{val}}</th>
+        {%endfor%}
+        {%else%}
+        {%for val in row:%}
+        <td>{{val}}</td>
+        {%endfor%}
+        {%endif%}
+
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
