@@ -5,7 +5,7 @@ from metadata import *
 import datetime
 import numpy as np
 import operator
-
+from dateutil.parser import parse
 app = Flask(__name__)
 
 # setting the admin id and password
@@ -36,6 +36,8 @@ admin_pages = {
     "dashboard": "/admin/dashboard",
     "residents": "/admin/residents",
     "rooms": "/admin/rooms",
+    "academic period":"/admin/academic_period",
+    "security": "/admin/security"
 }
 
 resident_pages = {
@@ -44,6 +46,13 @@ resident_pages = {
     "profile": "/resident/profile",
     'current allocation': "/resident/current_allocation",
 }
+
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(time_, fmt):
+    time_ = parse(str(time_))
+    native = time_.replace(tzinfo=None)
+    format='%H:%M:%S'
+    return native.strftime(fmt)
 
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
@@ -140,7 +149,16 @@ def caretaker_details():
          table1[i].append(dict1[table1[i][0]])
     table1.insert(0,['ID','Name','Office Number','Email ID','Hostel Name','Hostel Contact','Caretaker Phoneno']) 
     return render_template('caretaker_details.html', pages=pages, table1  = table1)
-
+@app.route('/admin/academic_period')
+def academic_period_details():
+    cur = mysql.connection.cursor()
+    cur.execute(""" select semester, year
+                    from ACADEMIC_PERIOD
+                    order by year, semester;""")
+    
+    table10 = list(cur.fetchall())
+    table10.insert(0,['Semester','Year'])
+    return render_template("admin_academicperiod.html",pages=admin_pages, table10 = table10)
 # Handlign the routes for the residents
 @app.route('/resident/<page_name>', methods=['GET', 'POST'])
 def resident_page(page_name = None):
@@ -277,7 +295,7 @@ def admin_page(page_name = None):
     cur = mysql.connection.cursor()
 
     # error handling
-    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'rooms', 'add_room']:
+    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'add_security','academic_period', 'security']:
         return redirect('/admin/login')    
 
     if (page_name == 'login'):
@@ -388,6 +406,31 @@ def admin_page(page_name = None):
             mysql.connection.commit()
             # redirecting to the residents page
             return redirect('/admin/residents')
+    elif (page_name == 'add_security'):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            
+            # adding into resident
+            query_string = ""
+            table_order = ""
+            for field in request.form:
+                if field != "add" and field != "phone_no":
+                    if query_string != "":
+                        query_string += ", "
+                    if table_order != "":
+                        table_order += ", "
+                    query_string += f'"{request.form[field]}"'
+                    table_order += security_details_field_names[field]
+            app.logger.info("INSERT INTO RESIDENT (" + table_order + ") VALUES (" + query_string + ");")
+            # executing the query and commiting the changes
+            cur.execute("INSERT INTO GUARD (" + table_order + ") VALUES (" + query_string + ");")
+            
+            # adding into phone_number
+            cur.execute("INSERT INTO GUARD_PHONE (" + "security_id, phone_no" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['phone_no']}'" + ");")
+            
+            # Commiting changes
+            mysql.connection.commit()
+            # redirecting to the residents page
+            return redirect('/admin/security')
     
     elif (page_name == 'dashboard'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
@@ -408,7 +451,21 @@ def admin_page(page_name = None):
             return render_template('admin_dashboard.html', pages = admin_pages, stats = stats_dict)
         else:
             return redirect('/admin/login')
-
+    elif (page_name=='academic_period'):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            if (request.method == 'GET'):
+                return render_template('admin_academicperiod.html', pages = admin_pages, error='')
+            else:
+                semester = request.form['semester'] 
+                year = request.form['year']
+                cur.execute("select count(*) from ACADEMIC_PERIOD where semester={} and year={};".format(semester, year))
+                count=cur.fetchall()[0]
+                if count[0]==0:
+                    return render_template('admin_academicperiod.html', pages = admin_pages, error="")
+                else:
+                    return render_template('admin_academicperiod.html', pages = admin_pages, error="Academic period already exists")
+        else:
+            return redirect('/admin/login')
     elif (page_name == "residents"):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
             if request.method == 'GET':
@@ -479,7 +536,7 @@ def admin_page(page_name = None):
                 residents = cur.fetchall()
                 
                 # Defining the field names for the fields of the form
-                field_names = ["ID", "Full Name", "Semester", "Year", "Room No", "Hostel Name", "Entry Date", "Payment Status", "Due Amount", "Due Status", "Payment Amount", "First Name", "Middle Name", "Last Name", "Gender", "Blood Group", "Email ID", "City", "Postal Code", "Home Contact", "Resident Type"]
+                # field_names = ["ID", "Full Name", "Semester", "Year", "Room No", "Hostel Name", "Entry Date", "Payment Status", "Due Amount", "Due Status", "Payment Amount", "First Name", "Middle Name", "Last Name", "Gender", "Blood Group", "Email ID", "City", "Postal Code", "Home Contact", "Resident Type"]
                 
                 # Fetching all the availble hostel names
                 cur.execute(""" SELECT hostel_name from
@@ -501,7 +558,6 @@ def admin_page(page_name = None):
                 return render_template('admin_residents.html', 
                                     pages = admin_pages, 
                                     residents = residents, 
-                                    field_names = field_names, 
                                     hostel_names = hostel_names, 
                                     resident_types=resident_types, 
                                     gender_types = gender_types, 
@@ -513,6 +569,53 @@ def admin_page(page_name = None):
                 return "got the request"
         else:
             return redirect('/admin/login')
+    elif (page_name == "security"):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            if request.method == 'GET':
+                
+                # Getting the query parameters
+                search_ID = request.args.get('search_ID')
+                hostel = request.args.get('hostel')
+
+                a = [search_ID, hostel]
+
+                # Generating the sql query string
+                query_string = ""
+                if (search_ID != None and search_ID != ""):
+                    query_string += f" SECURITY.security_id = {search_ID} "
+                if (hostel != None and hostel != "all"):
+                    if (query_string != ""):
+                        query_string += "and"
+                    query_string += f" hostel_name = '{hostel}' "
+                
+                if (query_string != ""):
+                    query_string = "where" + query_string
+                
+                security_query = f"""   select distinct GUARD.security_id, concat(first_name," ",last_name) as full_name
+                                        from GUARD LEFT JOIN SECURITY ON SECURITY.security_id = GUARD.security_id
+                                        {query_string}  """
+                # Getting all the data corresponding to the residents
+                cur.execute(security_query)
+                securities = cur.fetchall()
+
+                # Fetching all the availble hostel names
+                cur.execute(""" SELECT hostel_name from
+                                HOSTEL;""")
+                hostel_names = cur.fetchall()
+
+                # Rendering the template
+                return render_template('admin_securities.html', 
+                                        pages = admin_pages, 
+                                        securities = securities,
+                                        security_details_field_names = list(security_details_field_names.keys()),
+                                        hostel_names=hostel_names
+                                        )
+            else:
+                return "got the request"
+        else:
+            return redirect('/admin/login')
+        
+
     elif (page_name == 'logout'):
         session.pop('logged_in', None)
         session.pop('id', None)
@@ -740,7 +843,50 @@ def admin_resident_data(resident_id):
                                 program_types = program_types,
                                 branch_types = branch_types,
                                 today = datetime.date.today())
+# Handling the post request for the admin/security/<security_id> page
+@app.route('/admin/security/<security_id>', methods=['POST'])
+def admin_security_data(security_id):
+    cur = mysql.connection.cursor()
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
         
+        # Fetching the resident details
+        cur.execute(f"""select GUARD.security_id, first_name, middle_name, last_name
+                        from (GUARD)
+                        where GUARD.security_id = {security_id};""")
+        security_details = cur.fetchall()[0]
+
+        # Fetching the current allocation details
+        cur.execute(f"""select hostel_name, start_time, end_time
+                        from SECURITY
+                        where SECURITY.security_id = {security_id};""")
+        security_current_allocation_details = cur.fetchall()
+        app.logger.info(str(security_current_allocation_details[6][1]))
+        # try:
+        #     resident_current_allocation_details = resident_current_allocation_details[0]
+        # except:
+        #     resident_current_allocation_details = []
+
+        # Fetching the phone numbers
+        cur.execute(f"""select phone_no
+                        from GUARD_PHONE
+                        where GUARD_PHONE.security_id = {security_id};""")
+        security_phone_details = cur.fetchall()
+        
+        # Fetching all the availble hostel names
+        cur.execute(""" SELECT hostel_name from
+                        HOSTEL;""")
+        hostel_names = cur.fetchall()
+
+        return render_template('admin_security_data.html', 
+                                security_details = security_details, 
+                                security_details_field_names = list(security_details_field_names.keys()), 
+                                security_current_allocation_details = security_current_allocation_details,
+                                security_current_allocation_field_names = list(security_current_allocation_field_names.keys()),
+                                security_phone_details = security_phone_details,
+                                hostel_names = hostel_names, 
+                                today = datetime.date.today())  
+
+
 @app.route('/admin/residents/<resident_id>/<operation>', methods=['POST'])
 def resident_operations(resident_id, operation):
     
@@ -822,7 +968,107 @@ def resident_operations(resident_id, operation):
                         """)
             mysql.connection.commit()
             return redirect('/admin/residents')
+ 
+@app.route('/admin/security/<security_id>/<operation>', methods=['POST'])
+def security_operations(security_id, operation):
+    
+    # Error handling
+    if (operation not in ['update_details', 'add_allocation', 'delete_phone', "add_phone","delete_current_allocation"]):
+        return redirect('/admin/security')
+    
+    # Connecting to the database
+    cur = mysql.connection.cursor()
 
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        if (operation == 'update_details'):
+            # Generating the query string
+            query_string = ""
+            for field in request.form.keys():
+                if (field != "update"):
+                    if (query_string != ""):
+                        query_string += ", "
+                    query_string += f"{security_details_field_names[field]} = '{request.form[field]}'"
+            # Adding the select and where clause
+            # app.logger.info(f"UPDATE SECURITY SET {query_string} WHERE security_id = {security_id};")
+            query_string = f"UPDATE GUARD SET {query_string} WHERE security_id = {security_id};"
+            
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/security')
+        
+        elif (operation == 'delete_phone'):
+            query_string = f"DELETE FROM GUARD_PHONE WHERE security_id = {security_id} AND phone_no = '{request.form['phone_no']}';"
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/security')
+        
+        elif operation=='delete_current_allocation':
+            query_string = f"DELETE FROM SECURITY WHERE security_id = {security_id} AND hostel_name = '{request.form['hostel_name']}';"
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/security')
+        
+        elif operation == 'add_phone':
+            query_string = f"INSERT INTO GUARD_PHONE(security_id, phone_no) VALUES ({security_id}, '{request.form['phone_no']}');"
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/security')
+
+        elif (operation == 'add_allocation'):
+            # # Generating the query string
+            # query_string = ""
+            # for field in request.form.keys():
+            #     if (field != "update"):
+            #         if (query_string != ""):
+            #             query_string += ", "
+            #         query_string += f"{security_current_allocation_field_names[field]} = '{request.form[field]}'"
+            
+            # Adding the update and where clause
+            query_string= f"INSERT INTO SECURITY(security_id, hostel_name, start_time, end_time) VALUES({security_id},'{request.form['hostel_name']}','{request.form['start_time']}','{request.form['end_time']}');"
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+
+            # Redirecting to the resident page
+            return redirect(f'/admin/security')
+        
+
+
+@app.route('/admin/academic_period/<operation>', methods=['POST'])
+def academic_period_operations(operation):
+    # Error handling
+    if (operation not in ['add_academic_period']):
+        return redirect('/admin/academic_period')
+    # Connecting to the database
+    cur = mysql.connection.cursor()
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        if operation == 'add_academic_period':
+            semester = request.form['semester'] 
+            year = request.form['year']
+            cur.execute("select count(*) from ACADEMIC_PERIOD where semester={} and year={};".format(semester, year))
+            count=cur.fetchall()[0]
+            if count[0]==0:
+                query_string = f"INSERT INTO ACADEMIC_PERIOD(semester, year) VALUES ('{request.form['semester']}', '{request.form['year']}');"
+                # Executing the query and commiting the changes
+                cur.execute(query_string)
+                mysql.connection.commit()
+
+                # Redirecting to the resident page
+                return redirect(f'/admin/academic_period')
+            else:
+                return redirect(f'/admin/dashboard')
 # Running the app
 if __name__ == '__main__':
     app.run(debug=True)
