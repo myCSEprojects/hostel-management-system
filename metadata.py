@@ -56,7 +56,18 @@ resident_current_allocation_field_names = {
     "Due Status": "due_status", 
     "Payment Amount": "payment_amount",
 }
+security_details_field_names = {
+    "ID": "security_id",
+    "First Name": "first_name", 
+    "Middle Name": "middle_name", 
+    "Last Name": "last_name",
+}
 
+security_current_allocation_field_names = {
+    "Hostel Name": "hostel_name", 
+    "Start Time": "start_time", 
+    "End Time": "end_time",
+}
 resident_program_field_names = {
     "Program": "program", 
     "Branch": "branch", 
