@@ -163,7 +163,7 @@ def academic_period_details():
 @app.route('/resident/<page_name>', methods=['GET', 'POST'])
 def resident_page(page_name = None):
     # error handling
-    if page_name not in ['login','logout','history','profile','current_allocation', "rooms"]:
+    if page_name not in ['login','logout','history','profile','current_allocation']:
         return redirect('/resident/login')
     
     cur = mysql.connection.cursor()
@@ -295,7 +295,7 @@ def admin_page(page_name = None):
     cur = mysql.connection.cursor()
 
     # error handling
-    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'add_security','academic_period', 'security']:
+    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'add_security','academic_period', 'security', "rooms"]:
         return redirect('/admin/login')    
 
     if (page_name == 'login'):
