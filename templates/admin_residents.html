@@ -2,190 +2,292 @@
 
 {% block head %}
     <title>Admin</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/admin_residents.css')}}">
 {% endblock %}
 
 {% block body %}
-    <!-- Resident type, hostel, program, branch, gender, joining year, pending dues, pending payment -->
-    <!-- The form for the search query -->
-    <form action="/admin/residents" method = "get">
-        <!-- Search for the ID -->
-        <label for="search_ID">ID: </label>
-        <input type="number" name="search_ID" id = "search_ID" placeholder="ID">
-        
-        <!-- Currently allocated filter -->
-        <input type="checkbox" name="is_allocated" for="is_allocated">
-        <label for="is_allocated">currently allocated</label>
-
-        <!-- Resident type -->
-        <label for="resident_type">Resident Type</label>
-        <select name="resident_type" id="resident_type">
-            <option value="all">All</option>
-            <option value="student">Student</option>
-            <option value="faculty">Faculty</option>
-            <option value="visitor">Visitor</option>
-        </select>
-
-        <!-- Hostel -->
-        <label for="hostel">Hostel</label>
-        <select name="hostel" id="hostel">
-            <option value="all">All</option>
-            {% for hostel_name in hostel_names: %}
-                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
-            {% endfor %}
-        </select>  
-
-        <!-- Program -->
-        <label for="program">Program</label>
-        <select name="program" id="program">
-            <option value="all">All</option>
-            {% for program_type in program_types: %}
-                <option value="{{program_type[0]}}">{{program_type[0]}}</option>
-            {% endfor %}
-        </select>
-
-        <!-- Branch -->
-        <label for="branch">Branch</label>
-        <select name="branch" id="branch">
-            <option value="all">All</option>
-            {% for branch_type in branch_types: %}
-                <option value="{{branch_type[0]}}">{{branch_type[0]}}</option>
-            {% endfor %}
-        </select>
-
-        <!-- gender -->
-        <label for="gender">Gender</label>
-        <select name="gender" id="gender">
-            <option value="all">All</option>
-            {% for gender in gender_types: %}
-                <option value="{{gender}}">{{gender}}</option>
-            {% endfor %}
-        </select>
-
-        <!-- joining year -->
-        <label for="join_year">Joining Year</label>
-        <select name="join_year" id="join_year">
-            <option value="all">All</option>
-            {% for year in years: %}
-                <option value="{{year[0]}}">{{year[0]}}</option>
-            {% endfor %}
-        </select>
-
-        <!-- Pending dues filter -->
-        <input type="checkbox" name="pending_fees" for="pending_fees">
-        <label for="pending_fees">Fee pending</label>
-
-        <!-- Pending dues filter -->
-        <input type="checkbox" name="pending_dues" for="pending_dues">
-        <label for="pending_dues">Due pending</label>
-
-        <!-- Submit button -->
-        <input type="submit" value="Filter">
-    </form>
-
     <!-- Add resident button -->
-    <!-- Button trigger modal -->
-    <button type="button" data-bs-toggle="modal" data-bs-target="#add_student">
-        Add Student
-    </button>
+    <div style="text-align: center; margin-top: 2rem; margin-left: 1rem;">
+      <button class="resident-button" data-bs-toggle="modal" data-bs-target="#add_student">
+        <span>Add a New Resident</span>
+      </button>
+    </div>
+    
+
+
 
     <!-- Modal -->
     <div class="modal fade" id="add_student" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Student</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <h5 class="modal-title">Add a New Resident</h5>
+                    <button class="btn btn-dark close" type="button" data-bs-dismiss="modal" aria-label="Close" >
+                      <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/add_student" method="post">
-                        <div>
-                            <label for="{{resident_details_field_names[0]}}">{{resident_details_field_names[0]}}</label>
-                            <input name="{{resident_details_field_names[0]}}" type="number"  id="{{resident_details_field_names[0]}}">
+                    <form action="/admin/add_student" class="row g-3" method="post">
+                      <div class="col-sm-12">
+                        <label for="{{resident_details_field_names[0]}}" class="form-label">{{resident_details_field_names[0]}}</label>
+                        <input name="{{resident_details_field_names[0]}}" type="number" class="form-control" id="{{resident_details_field_names[0]}}">
+                      </div>
 
-                            <label for="{{resident_details_field_names[1]}}">{{resident_details_field_names[1]}}</label>
-                            <input name="{{resident_details_field_names[1]}}" type="text"  id="{{resident_details_field_names[1]}}">
+                      <div class="col-md-4">
+                        <label for="{{resident_details_field_names[1]}}" class="form-label">{{resident_details_field_names[1]}}</label>
+                        <input name="{{resident_details_field_names[1]}}" type="text" class="form-control"  id="{{resident_details_field_names[1]}}">
+                      </div>
 
-                            <label for="{{resident_details_field_names[2]}}">{{resident_details_field_names[2]}}</label>
-                            <input name="{{resident_details_field_names[2]}}" type="text"  id="{{resident_details_field_names[2]}}">
+                      <div class="col-md-4">
+                        <label for="{{resident_details_field_names[2]}}" class="form-label">{{resident_details_field_names[2]}}</label>
+                        <input name="{{resident_details_field_names[2]}}" type="text" class="form-control"    id="{{resident_details_field_names[2]}}">
+                      </div>
 
-                            <label for="{{resident_details_field_names[3]}}">{{resident_details_field_names[3]}}</label>
-                            <input name="{{resident_details_field_names[3]}}" type="text" id="{{resident_details_field_names[3]}}">
+                      <div class="col-md-4">
+                        <label for="{{resident_details_field_names[3]}}" class="form-label">{{resident_details_field_names[3]}}</label>
+                        <input name="{{resident_details_field_names[3]}}" type="text" class="form-control"  id="{{resident_details_field_names[3]}}">
+                      </div>
 
-                            <label for="{{resident_details_field_names[4]}}">{{resident_details_field_names[4]}}</label>
-                            <select name="{{resident_details_field_names[4]}}" type="text" id="{{resident_details_field_names[4]}}">
+                      <div class="col-md-6">
+                        <label for="{{resident_details_field_names[4]}}" class="form-label">{{resident_details_field_names[4]}}</label>
+                        <select name="{{resident_details_field_names[4]}}" class="form-select" type="text" id="{{resident_details_field_names[4]}}">
                                 {% for gender in gender_types: %}
                                     <option value="{{gender}}">{{gender}}</option>
                                 {% endfor %}
-                            </select>
+                        </select>
+                      </div>
 
-                            <label for="{{resident_details_field_names[5]}}">{{resident_details_field_names[5]}}</label>
-                            <select name="{{resident_details_field_names[5]}}" type="text" id="{{resident_details_field_names[5]}}" ">
-                                {% for blood_type in blood_types: %}
-                                    <option value="{{blood_type}}">{{blood_type}}</option>
-                                {% endfor %}
-                            </select>
+                      <div class="col-md-6">
+                        <label for="{{resident_details_field_names[5]}}" class="form-label">{{resident_details_field_names[5]}}</label>
+                        <select name="{{resident_details_field_names[5]}}" class="form-select" type="text" id="{{resident_details_field_names[5]}}" ">
+                            {% for blood_type in blood_types: %}
+                                <option value="{{blood_type}}">{{blood_type}}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
 
-                            <label for="{{resident_details_field_names[6]}}">{{resident_details_field_names[6]}}</label>
-                            <input name="{{resident_details_field_names[6]}}" type="email"  id="{{resident_details_field_names[6]}}">
-
-                            <label for="{{resident_details_field_names[7]}}">{{resident_details_field_names[7]}}</label>
-                            <input name="{{resident_details_field_names[7]}}" type="text"  id="{{resident_details_field_names[7]}}">
-
-                            <label for="{{resident_details_field_names[8]}}">{{resident_details_field_names[8]}}</label>
-                            <input name="{{resident_details_field_names[8]}}" type="text" id="{{resident_details_field_names[8]}}">
-
-                            <label for="{{resident_details_field_names[9]}}">{{resident_details_field_names[9]}}</label>
-                            <input name="{{resident_details_field_names[9]}}" type="number"  id="{{resident_details_field_names[9]}}">
-
-                            <label for="{{resident_details_field_names[10]}}">{{resident_details_field_names[10]}}</label>
-                            <select name="{{resident_details_field_names[10]}}" type="text" id="{{resident_details_field_names[10]}}" onchange="resident_type_event()">
-                                {% for resident_type in resident_types: %}
-                                    <option value="{{resident_type}}">{{resident_type}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        
+                      <div class="col-md-6">
                         <!-- Phone Number -->
-                        <div>
-                            <label for="phone_no">Phone Number</label>
-                            <input name="phone_no" type="number" id="phone_no">
-                        </div>
+                        <label for="phone_no" class="form-label">Phone Number</label>
+                        <input name="phone_no" type="number" id="phone_no" class="form-control" >
+                      </div>
+                      <div class="col-md-6">
+                        <label for="{{resident_details_field_names[6]}}" class="form-label">{{resident_details_field_names[6]}}</label>
+                        <input name="{{resident_details_field_names[6]}}"  type="email" class="form-control"  id="{{resident_details_field_names[6]}}">
+                      </div>
+                      <div class="col-md-4">
+                          <label for="{{resident_details_field_names[7]}}" class="form-label">{{resident_details_field_names[7]}}</label>
+                          <input name="{{resident_details_field_names[7]}}" type="text" class="form-control"  id="{{resident_details_field_names[7]}}">
+                      </div>
+                      <div class="col-md-4">
+                        <label for="{{resident_details_field_names[8]}}" class="form-label">{{resident_details_field_names[8]}}</label>
+                        <input name="{{resident_details_field_names[8]}}" type="text" class="form-control"  id="{{resident_details_field_names[8]}}">
+                      </div>
 
-                        <!-- Branch details -->
-                        <div id="branch_details">
-                            <label for="branch">Branch</label>
-                            <select name="branch" type="text" id="branch">
-                                {% for branch in branch_types: %}
-                                    <option value="{{branch[0]}}">{{branch[0]}}</option>
-                                {% endfor %}
-                            </select>
+                      <div class="col-md-4">
+                        <label for="{{resident_details_field_names[9]}}" class="form-label">{{resident_details_field_names[9]}}</label>
+                        <input name="{{resident_details_field_names[9]}}" type="number" class="form-control"  id="{{resident_details_field_names[9]}}">
+                      </div>
 
-                            <label for="program">Program</label>
-                            <select name="program" type="text" id="program">
-                                {% for program_type in program_types: %}
-                                    <option value="{{program_type[0]}}">{{program_type[0]}}</option>
-                                {% endfor %}
-                            </select>     
-                        </div>
-                        <button type="submit" name="add">ADD</button>
+                      <div class="col-md-4">
+                        <label for="{{resident_details_field_names[10]}}" class="form-label">{{resident_details_field_names[10]}}</label>
+                        <select name="{{resident_details_field_names[10]}}" class="form-select" type="text" id="{{resident_details_field_names[10]}}" onchange="resident_type_event()">
+                            {% for resident_type in resident_types: %}
+                                <option value="{{resident_type}}">{{resident_type}}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
 
+                      
+
+                      <div id="branch_details" class="col-md-6">
+                        <label for="branch" class="form-label">Branch</label>
+                        <select name="branch" type="text" id="branch" class="form-select">
+                            {% for branch in branch_types: %}
+                                <option value="{{branch[0]}}">{{branch[0]}}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+
+                      <!-- Branch details -->
+
+                      <div class="col-md-6" id="branch_details">
+                        <label for="program" class="form-label">Program</label>
+                        <select name="program" type="text" id="program" class="form-select">
+                            {% for program_type in program_types: %}
+                                <option value="{{program_type[0]}}">{{program_type[0]}}</option>
+                            {% endfor %}
+                        </select> 
+                      </div>
+
+                      <div class="col-md-12" style="text-align: center;">
+                        <button class="btn btn-dark" type="submit" name="add">ADD</button>
+                      </div>
                     </form>
                 </div>
             </div>
         </div>
     </div> 
 
-    {% for resident in residents: %}
-        <p>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#{{resident[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadResident('{{resident[0]}}')">
-                {{resident[0]}} {{resident[1]}}
-            </button>
-        </p>
-        <div class="collapse" id="{{resident[0]}}">
-            <div class="card card-body">
-            </div>
+
+
+
+
+
+    <!-- Resident type, hostel, program, branch, gender, joining year, pending dues, pending payment -->
+    <!-- The form for the search query --> 
+    <p style="margin-left: 1.5rem;" class="search">Resident Details (All Residents)</p>
+    <form class="filterform" action="/admin/residents" method = "get">
+        <div class="row">
+           <!-- Search for the ID -->
+          <div class="filter col-sm-2">
+            <label for="search_ID">ID: </label>
+            <input type="number" name="search_ID" id = "search_ID" placeholder="ID">
+          </div>
+
+          <div class="filter col-sm-2" >
+            <!-- Resident type -->
+            <label for="resident_type">Resident Type</label>
+            <select name="resident_type" id="resident_type">
+            <option value="all">All</option>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
+            <option value="visitor">Visitor</option>
+            </select>
+          </div>
+
+        <!-- Hostel -->
+          <div class="filter col-sm-2">
+            <label for="hostel">Hostel</label>
+            <select name="hostel" id="hostel">
+              <option value="all">All</option>
+              {% for hostel_name in hostel_names: %}
+              <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+        <!-- Program -->
+          <div class="filter col-sm-2">
+            <label for="program">Program</label>
+            <select name="program" id="program">
+                <option value="all">All</option>
+                {% for program_type in program_types: %}
+                    <option value="{{program_type[0]}}">{{program_type[0]}}</option>
+                {% endfor %}
+            </select>
+          </div>
+
+
+        <!-- Branch -->
+          <div class="filter col-sm-2">
+            <label for="branch">Branch</label>
+            <select name="branch" id="branch">
+            <option value="all">All</option>
+            {% for branch_type in branch_types: %}
+                <option value="{{branch_type[0]}}">{{branch_type[0]}}</option>
+            {% endfor %}
+            </select>
+          </div>
+        
+
+        <!-- gender -->
+          <div class="filter col-sm-2">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender">
+            <option value="all">All</option>
+            {% for gender in gender_types: %}
+                <option value="{{gender}}">{{gender}}</option>
+            {% endfor %}
+            </select>
+          </div>
+        
+
+        <!-- joining year -->
+          <div class="filter col-sm-2">
+            <label for="join_year">Joining Year</label>
+            <select name="join_year" id="join_year">
+            <option value="all">All</option>
+            {% for year in years: %}
+                <option value="{{year[0]}}">{{year[0]}}</option>
+            {% endfor %}
+            </select>
+          </div>
+        
+          <div class="filter col-sm-2" style="margin-top: 2rem;">
+            <!-- Currently allocated filter -->
+            <input type="checkbox" name="is_allocated" for="is_allocated">
+            <label for="is_allocated">Currently allocated</label>
+          </div>
+
+        <!-- Pending dues filter -->
+          <div class="filter col-sm-2" style="margin-top: 2rem;">
+            <input type="checkbox" name="pending_fees" for="pending_fees">
+            <label for="pending_fees">Fee pending</label>
+          </div>
+        
+
+        <!-- Pending dues filter -->
+          <div class="filter col-sm-2" style="margin-top: 2rem;">
+            <input type="checkbox" name="pending_dues" for="pending_dues">
+            <label for="pending_dues">Due pending</label>
+          </div>
+
+
+        <!-- Submit button -->
+          <div class="filter col-sm-2 ">
+            <input type="submit" value="Apply Filters" style="color: white;">
+          </div>
+
         </div>
-    {% endfor %}
-{% endblock %}
+        
+    </form>
+
+    
+
+
+
+    <table class="table table-striped" style="max-width: 95%; margin: 50px auto 0;"  vertical-align: 60%;>
+      <thead>
+          <tr>
+              <th>ID</th>
+              <th style="width: 300px;">Name</th>
+              <th>Gender</th>
+              <th style="width: 150px;">Room Number</th>
+              <th>Hostel</th>
+              <th style="width: 350px;">Email</th>
+              
+          </tr>
+      </thead>
+      <tbody>
+          {% for resident in residents %}
+              <tr>
+                  <td>{{resident[0]}}</td>
+                  <td style="width: 300px;">{{resident[1]}}</td>
+                  <td>{{resident[14]}}</td>
+                  <td style="width: 150px;">{{resident[4]}}</td>
+                  <td>{{resident[5]}}</td>
+                  <td style="width: 350px;">{{resident[11]}}</td>
+                  
+                  <td>
+                      <button class="btn btn-primary edit-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{resident[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadResident('{{resident[0]}}')" style="background-color: black; border: lightgrey;">
+                          Edit
+                      </button>
+                  </td>
+              </tr>
+              <tr>
+                  <td colspan="17">
+                      <div class="collapse" id="{{resident[0]}}">
+                          <div class="card card-body">
+                          </div>
+                      </div>
+                  </td>
+              </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+
+{%endblock%}
+
+
+

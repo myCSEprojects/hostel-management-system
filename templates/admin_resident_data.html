@@ -1,84 +1,150 @@
 <div>
-    <h1>Resident Details</h1>
-    <form action="/admin/residents/{{resident_details[0]}}/update_details" method="post">
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[0]}}">{{resident_details_field_names[0]}}</label>
-        <input name="{{resident_details_field_names[0]}}" type="number" value={{resident_details[0]}} id="{{resident_details[0]}}-{{resident_details_field_names[0]}}" disabled>
+    <h3 style="text-align: center; ">Resident Details</h3>
+    <form class="row g-3 needs-validation" novalidate action="/admin/residents/{{resident_details[0]}}/update_details" method="post">
+        <div class="col-md-3">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[0]}}" class="form-label">{{resident_details_field_names[0]}}</label>
+            <input name="{{resident_details_field_names[0]}}" type="number" class="form-control" value={{resident_details[0]}} id="{{resident_details[0]}}-{{resident_details_field_names[0]}}" disabled>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[1]}}">{{resident_details_field_names[1]}}</label>
-        <input name="{{resident_details_field_names[1]}}" type="text" value={{resident_details[1]}} id="{{resident_details[0]}}-{{resident_details_field_names[1]}}">
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[2]}}">{{resident_details_field_names[2]}}</label>
-        <input name="{{resident_details_field_names[2]}}" type="text" value={{resident_details[2]}} id="{{resident_details[0]}}-{{resident_details_field_names[2]}}">
+        <div class="col-md-3">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[1]}}" class="form-label">{{resident_details_field_names[1]}}</label>
+            <input name="{{resident_details_field_names[1]}}" type="text" class="form-control" value={{resident_details[1]}} id="{{resident_details[0]}}-{{resident_details_field_names[1]}}" >
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[3]}}">{{resident_details_field_names[3]}}</label>
-        <input name="{{resident_details_field_names[3]}}" type="text" value={{resident_details[3]}} id="{{resident_details[0]}}-{{resident_details_field_names[3]}}">
+        <div class="col-md-3">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[2]}}" class="form-label">{{resident_details_field_names[2]}}</label>
+            <input name="{{resident_details_field_names[2]}}" class="form-control" type="text" value={{resident_details[2]}} id="{{resident_details[0]}}-{{resident_details_field_names[2]}}">
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
+        
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[4]}}">{{resident_details_field_names[4]}}</label>
-        <select name="{{resident_details_field_names[4]}}" type="text" id="{{resident_details[0]}}-{{resident_details_field_names[4]}}">
-            <option selected hidden>{{resident_details[4]}}</option>
-            {% for gender in gender_types: %}
-                <option value="{{gender}}">{{gender}}</option>
-            {% endfor %}
-        </select>
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[5]}}">{{resident_details_field_names[5]}}</label>
-        <select name="{{resident_details_field_names[5]}}" type="text" id="{{resident_details[0]}}-{{resident_details_field_names[5]}}" ">
-            <option selected hidden>{{resident_details[5]}}</option>
-            {% for blood_type in blood_types: %}
-                <option value="{{blood_type}}">{{blood_type}}</option>
-            {% endfor %}
-        </select>
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[6]}}">{{resident_details_field_names[6]}}</label>
-        <input name="{{resident_details_field_names[6]}}" type="email" value={{resident_details[6]}} id="{{resident_details[0]}}-{{resident_details_field_names[6]}}">
+        <div class="col-md-3">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[3]}}" class="form-label">{{resident_details_field_names[3]}}</label>
+            <input name="{{resident_details_field_names[3]}}" class="form-control" type="text" value={{resident_details[3]}} id="{{resident_details[0]}}-{{resident_details_field_names[3]}}">
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+        </div>
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[7]}}">{{resident_details_field_names[7]}}</label>
-        <input name="{{resident_details_field_names[7]}}" type="text" value={{resident_details[7]}} id="{{resident_details[0]}}-{{resident_details_field_names[7]}}">
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[8]}}">{{resident_details_field_names[8]}}</label>
-        <input name="{{resident_details_field_names[8]}}" type="text" value={{resident_details[8]}} id="{{resident_details[0]}}-{{resident_details_field_names[8]}}">
+        <div class="col-md-3">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[4]}}" class="form-label">{{resident_details_field_names[4]}}</label>
+            <select name="{{resident_details_field_names[4]}}" class="form-select" type="text" id="{{resident_details[0]}}-{{resident_details_field_names[4]}}">
+                <option selected hidden>{{resident_details[4]}}</option>
+                {% for gender in gender_types: %}
+                    <option value="{{gender}}">{{gender}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[9]}}">{{resident_details_field_names[9]}}</label>
-        <input name="{{resident_details_field_names[9]}}" type="number" value={{resident_details[9]}} id="{{resident_details[0]}}-{{resident_details_field_names[9]}}">
+        <div class="col-md-3">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[5]}}" class="form-label">{{resident_details_field_names[5]}}</label>
+            <select name="{{resident_details_field_names[5]}}" class="form-select" type="text" id="{{resident_details[0]}}-{{resident_details_field_names[5]}}" ">
+                <option selected hidden>{{resident_details[5]}}</option>
+                {% for blood_type in blood_types: %}
+                    <option value="{{blood_type}}">{{blood_type}}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <label for="{{resident_details[0]}}-{{resident_details_field_names[10]}}">{{resident_details_field_names[10]}}</label>
-        <select name="{{resident_details_field_names[10]}}" type="text" id="{{resident_details[0]}}-{{resident_details_field_names[10]}}">
-            <option selected hidden>{{resident_details[10]}}</option>
-            {% for resident_type in resident_types: %}
-                <option value="{{resident_type}}">{{resident_type}}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" name="update">Update</button>
+        <div class="col-md-6">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[6]}}" class="form-label">{{resident_details_field_names[6]}}</label>
+            <input name="{{resident_details_field_names[6]}}" class="form-control" type="email" value={{resident_details[6]}} id="{{resident_details[0]}}-{{resident_details_field_names[6]}}">
+        </div>
+        
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[7]}}" class="form-label">{{resident_details_field_names[7]}}</label>
+            <input name="{{resident_details_field_names[7]}}" class="form-control" type="text" value={{resident_details[7]}} id="{{resident_details[0]}}-{{resident_details_field_names[7]}}">
+        </div>
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[8]}}" class="form-label">{{resident_details_field_names[8]}}</label>
+            <input name="{{resident_details_field_names[8]}}" class="form-control" type="text" value={{resident_details[8]}} id="{{resident_details[0]}}-{{resident_details_field_names[8]}}">
+        </div>
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[9]}}" class="form-label">{{resident_details_field_names[9]}}</label>
+            <input name="{{resident_details_field_names[9]}}" class="form-control" type="number" value={{resident_details[9]}} id="{{resident_details[0]}}-{{resident_details_field_names[9]}}">
+        </div>        
+
+        <div class="col-md-6">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[10]}}" class="form-label">{{resident_details_field_names[10]}}</label>
+            <select name="{{resident_details_field_names[10]}}" class="form-select" type="text" id="{{resident_details[0]}}-{{resident_details_field_names[10]}}">
+                <option selected hidden>{{resident_details[10]}}</option>
+                {% for resident_type in resident_types: %}
+                    <option value="{{resident_type}}">{{resident_type}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+
+        <div class="col-md-12">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+              <label class="form-check-label" for="invalidCheck">
+                Confirm before update
+              </label>
+              <div class="invalid-feedback">
+                You must agree before submitting.
+              </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" >
+            <button class="btn btn-dark" style="margin-left: 47%; " type="submit" name="update">Update</button>
+        </div>
+        
     </form>
 </div>
 
 <!-- Resident Phone numbers -->
+
+
+
 <div>
-    <h1>Phone Numbers</h1>
+    <hr>
+    <h3 style="text-align: center; margin-top: 20px;">Phone Numbers</h3>
     {% for phone_number in resident_phone_details %}
-    <form action="/admin/residents/{{resident_details[0]}}/delete_phone" method="post">
-        <input type="number" name="phone_no" value="{{phone_number[0]}}" readonly>
-        <button type="submit" name="delete">delete</button>
+    <form action="/admin/residents/{{resident_details[0]}}/delete_phone" class="row row-cols-lg-auto g-3 align-items-center" method="post">
+        <div class="box col-md-6" style="margin-bottom: 10px;">
+            <input type="number" name="phone_no" class="form-control" value="{{phone_number[0]}}" readonly>
+        </div>  
+        <div class="box col-md-4" style="margin-bottom: 10px;">
+            <button class="btn btn-dark" type="submit" name="delete">Delete</button>
+        </div>    
     </form>
     {% endfor %}
     <!-- Button for adding phone number -->
-    <button type="button" data-bs-toggle="modal" data-bs-target="#add_phone">
-        Add Phone
-    </button>
+    <div class="col-12">
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#add_phone">Add Phone</button>
+    </div>
+    
     
     <div class="modal fade" id="add_phone" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Enter phone no:</h5>
-              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+                <h5 class="modal-title" id="exampleModalLongTitle">Enter Phone Number:</h5>
+                <button class="btn btn-dark close" type="button" data-bs-dismiss="modal" aria-label="Close" >
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form action="/admin/residents/{{resident_details[0]}}/add_phone" method="post">
-                    <input type="number" name="phone_no" placeholder="phone number">
-                    <button type="submit" name="add">Add Phone </button>
+                    <input type="number" style="margin-bottom: 10px;" class="form-control" name="phone_no" placeholder="Phone Number">
+                    <button class="btn btn-dark btn-sm"  type="submit" name="add">Add Phone</button>
                 </form>
             </div>
         </div>
@@ -87,74 +153,106 @@
 
 {% if resident_details[10] == "student" %}
 <div>
-    <h1>Program Details</h1>
-    <form action="/admin/residents/{{resident_details[0]}}/update_program" method="post">
-        <label for="program">Program</label>
-        <select name="program" type="text", id="program">
-            <option selected  hidden>{{resident_program_details[0][0]}}</option>
-            {% for program in program_types: %}
+    <hr>
+    <h3 style="text-align: center; margin-top: 20px;">Program Details</h3>
+    <form action="/admin/residents/{{resident_details[0]}}/update_program" class="row g-3" method="post">
+
+        <div class="col-md-4">
+            <label for="program" class="form-label">Program</label>
+            <select name="program" class="form-select" type="text" id="program">
+                <option selected  hidden>{{resident_program_details[0][0]}}</option>
+                {% for program in program_types: %}
                 <option value="{{program[0]}}">{{program[0]}}</option>
-            {% endfor %}
-        </select>
-        <label for="branch">Branch</label>
-        <select name="branch" type="text" id="branch">
-            <option selected  hidden>{{resident_program_details[0][1]}}</option>
-            {% for branch in branch_types: %}
+                {% endfor %}
+            </select>
+        </div>
+ 
+        <div class="col-md-4">
+            <label for="branch" class="form-label">Branch</label>
+            <select name="branch" class="form-select"  type="text" id="branch">
+                <option selected  hidden>{{resident_program_details[0][1]}}</option>
+                {% for branch in branch_types: %}
                 <option value="{{branch[0]}}">{{branch[0]}}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" name="update_program">
-            Update Program
-        </button>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4" style="margin-top: 3rem;" >
+            <button class="btn btn-dark" type="submit" name="update_program">Update Program</button>
+        </div>
     </form>
 </div>
 {% endif %}
 
 <!-- Current allocation details -->
 <div>
-    <h1>Current Allocation</h1>
-    <form action="/admin/residents/{{resident_details[0]}}/update_current_allocation" method="post">
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}">{{resident_current_allocation_field_names[0]}}</label>
-        <input name="{{resident_current_allocation_field_names[0]}}"type="number" value={{resident_current_allocation_details[0]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}">
+    <hr>
+    <h3 style="text-align: center; margin-top: 20px;">Current Allocation</h3>
+    <form action="/admin/residents/{{resident_details[0]}}/update_current_allocation" class="row g-3"  method="post">
+        <div class="col-md-6">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}" class="form-label">{{resident_current_allocation_field_names[0]}}</label>
+            <input name="{{resident_current_allocation_field_names[0]}}" class="form-control" type="number" value={{resident_current_allocation_details[0]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}">
+        </div>    
         
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[1]}}">{{resident_current_allocation_field_names[1]}}</label>
-        <input name="{{resident_current_allocation_field_names[1]}}"type="number" value={{resident_current_allocation_details[1]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[1]}}">
+        <div class="col-md-6">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[1]}}" class="form-label">{{resident_current_allocation_field_names[1]}}</label>
+            <input name="{{resident_current_allocation_field_names[1]}}" class="form-control" type="number" value={{resident_current_allocation_details[1]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[1]}}">
+        </div> 
 
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[2]}}">{{resident_current_allocation_field_names[2]}}</label>
-        <select name="{{resident_current_allocation_field_names[2]}}"type="text" id="{{resident_details[0]}}-{{resident_current_allocation_field_names[2]}}">
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[2]}}" class="form-label">{{resident_current_allocation_field_names[2]}}</label>
+            <select name="{{resident_current_allocation_field_names[2]}}" class="form-select" type="text" id="{{resident_details[0]}}-{{resident_current_allocation_field_names[2]}}">
             <option selected hidden>{{resident_current_allocation_details[2]}}</option>
             {% for hostel_name in hostel_names: %}
                 <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
             {% endfor %}
-        </select>
- 
- 
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[3]}}">{{resident_current_allocation_field_names[3]}}</label>
-        <input name="{{resident_current_allocation_field_names[3]}}" type="number" value={{resident_current_allocation_details[3]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[3]}}">
+            </select>
+        </div> 
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[3]}}" class="form-label">{{resident_current_allocation_field_names[3]}}</label>
+            <input name="{{resident_current_allocation_field_names[3]}}" class="form-control" type="number" value={{resident_current_allocation_details[3]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[3]}}">
+        </div> 
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[4]}}" class="form-label">{{resident_current_allocation_field_names[4]}}</label>
+            <input name="{{resident_current_allocation_field_names[4]}}" class="form-control" type="date" value={{resident_current_allocation_details[4]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[4]}}">
+        </div> 
+
+        <div class="col-md-12">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[5]}}" class="form-label">{{resident_current_allocation_field_names[5]}}</label>
+            <input name="{{resident_current_allocation_field_names[5]}}" class="form-control" type="number" value={{resident_current_allocation_details[5]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[5]}}">
+        </div> 
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[6]}}">{{resident_current_allocation_field_names[6]}}</label>
+            <input name="{{resident_current_allocation_field_names[6]}}" class="form-control" type="number" value={{resident_current_allocation_details[6]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[6]}}">
+        </div> 
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[7]}}" class="form-label">{{resident_current_allocation_field_names[7]}}</label>
+            <input name="{{resident_current_allocation_field_names[7]}}" class="form-control" type="number" value={{resident_current_allocation_details[7]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[7]}}">
+        </div> 
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[8]}}" class="form-label">{{resident_current_allocation_field_names[8]}}</label>
+            <input name="{{resident_current_allocation_field_names[8]}}" class="form-control" type="number" value={{resident_current_allocation_details[8]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[8]}}">
+        </div> 
         
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[4]}}">{{resident_current_allocation_field_names[4]}}</label>
-        <input name="{{resident_current_allocation_field_names[4]}}" type="date" value={{resident_current_allocation_details[4]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[4]}}">
+        <div class="col-md-6" >
+            <button class="btn btn-dark" type="submit" name="update">Update</button>
+        </div>
 
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[5]}}">{{resident_current_allocation_field_names[3]}}</label>
-        <input name="{{resident_current_allocation_field_names[5]}}" type="number" value={{resident_current_allocation_details[5]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[5]}}">
-        
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[6]}}">{{resident_current_allocation_field_names[6]}}</label>
-        <input name="{{resident_current_allocation_field_names[6]}}" type="number" value={{resident_current_allocation_details[6]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[6]}}">
-
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[7]}}">{{resident_current_allocation_field_names[7]}}</label>
-        <input name="{{resident_current_allocation_field_names[7]}}" type="number" value={{resident_current_allocation_details[7]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[7]}}">
-
-        <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[8]}}">{{resident_current_allocation_field_names[8]}}</label>
-        <input name="{{resident_current_allocation_field_names[8]}}" type="number" value={{resident_current_allocation_details[8]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[8]}}">
-       
-        <button type="submit" name="update">Update</button>
+        <div class="col-md-6" >
+            <!-- Button trigger modal -->
+            <button class="btn btn-dark"  type="button" data-bs-toggle="modal" data-bs-target="#{{resident_details[0]}}-deallocate">
+                Deallocate
+            </button>
+        </div>
     </form>
  
  
-    <!-- Button trigger modal -->
-    <button type="button" data-bs-toggle="modal" data-bs-target="#{{resident_details[0]}}-deallocate">
-        Deallocate
-    </button>
+    
  
  
     <!-- Modal -->
@@ -163,15 +261,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Exit Date</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <button class="btn btn-dark close btn-sm" type="button" data-bs-dismiss="modal" aria-label="Close" >
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form action="/admin/residents/{{resident_details[0]}}/deallocate_resident" method="post">
-                        <label for="exit_date">Exit Date</label>
-                        <input type="date" name="exit_date" id="exit_date" value="{{today}}">
-                        <button type="submit" name="deallocate">Deallocate</button>
+                        <label for="exit_date" class="form-label">Exit Date</label>
+                        <input type="date" style="margin-bottom: 10px;"  name="exit_date" class="form-control" id="exit_date" value="{{today}}">
+                        <button type="submit" class="btn btn-dark" name="deallocate">Deallocate</button>
                     </form>
                 </div>
             </div>
@@ -182,22 +280,26 @@
 
 <!-- Resident History -->
 <div>
-    <h1>Resident History</h1>
-    <table>
-        <tr>
-            {% for field_name in resident_history_field_names: %}
-            <th>{{field_name}}</th>
-            {% endfor %}
-        </tr>
-        {% for  history in history_data: %}
-        <tr>
- 
- 
-            {% for field_value in history: %}
-            <td>{{field_value}}</td>
-            {% endfor %}
-        </tr>
-        {%endfor%}
+    <hr>
+    <h3 style="text-align: center; margin-top: 20px;">Resident History</h3>
+    <table class="table" style="margin: auto;">
+        <thead class="thead-primary">
+            <tr>
+                {% for field_name in resident_history_field_names: %}
+                <th scope="col">{{field_name}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for  history in history_data: %}
+            <tr>
+                {% for field_value in history: %}
+                <td style="text-align: center;  ">{{field_value}}</td>
+                {% endfor %}
+            </tr>
+            {%endfor%}
+        </tbody>
+        
     </table>
  </div>
 

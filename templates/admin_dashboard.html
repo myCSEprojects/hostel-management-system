@@ -1,16 +1,30 @@
 {% extends "base.html" %}
 {% block head %}
     <title>Admin</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/admin_dashboard.css')}}">
 {% endblock %}
 {% block body %}
+    <div class="card-header-top">
+        <h2>Hostel Dashboard</h2>
+    </div>
     <!-- Code for the admin page goes here -->
     <!-- vacancies + 0 in 1 + 1 in 2 + 0 in 2 + 1 in 3 + 0 in 3 + 2 in 3 -->
-    {% for hostel in stats: %}
-    <div>
-        <p>{{hostel}}</p>
-        {% for stat in stats[hostel]: %}
-            <p>{{stat[0]}} students in {{stat[1]}} room: {{stat[2]}}</p>
-        {% endfor %}
+    <div class="container">
+        <div class="card-row">
+            {% for hostel in stats %}
+                
+                <div class="card mb-3 border-dark" style="max-width: 18rem;"> 
+                    <div class="card-header text-white" style="background-color: #3E3F3F"><h2>{{hostel}}</h2></div>
+                    <div class="card-body text-black">
+                        {% for stat in stats[hostel] %}
+                        <p class="card-text">
+                            <span>{{stat[0]}} students in {{stat[1]}} room:</span>
+                            <span class="value"><b>{{stat[2]}}</b></span>
+                        </p> 
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
-    {% endfor %}
-{% endblock %}
+{%endblock%}

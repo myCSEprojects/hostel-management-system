@@ -1,0 +1,52 @@
+.value{
+    float: right;   
+}
+
+.card {
+    border-radius: 20px;
+    max-width: 500px;
+    margin: 10px;
+    display: inline-block;
+    vertical-align: top;
+    flex-basis: 500px; 
+    margin-bottom: 20px;
+    max-height: 300px;
+}
+
+.card-header h2 {
+    font-size: 28px;
+    font-weight: 500; 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom:   0;
+ 
+    font-family: 'Roboto Slab',serif;
+}
+
+
+.container {
+    max-width: 800px;
+    margin: 20px;
+}
+.card-header-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3E3F3F;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+}
+.card-header-top h2 {
+    font-size: 28px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+    color: #fff;
+}
+.card-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+}
+
