@@ -1,13 +1,36 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title> resident login page</title>
+<title>Resident Login</title>
+<link rel="stylesheet" href="{{url_for('static', filename='css/resident_login.css')}}">
 {% endblock %}
 
 {% block body %}
-<form action="/resident/login" method="post">
-    <input type="text" name="ID" placeholder="ID">
-    <input type="password" name="password" placeholder="password">
-    <input type="submit" value="login">
-</form>
+
+<style>
+    body{
+        /* background-color: #2D2D2D; */
+        background-image: url("/static/images/login_background.jpg");
+        background-size: 100%;
+    }
+</style>
+
+<div class="container-fluid h-100">
+    <div class="row justify-content-center align-items-center h-100">
+        <div class="col-md-4 login-container">
+            <h2 style="text-align: center;">Resident Login</h2>
+            <form action="/resident/login" method="post">
+                <input type="text" name="ID" placeholder="ID">
+                <input type="password" name="password" placeholder="password">
+                <input type="submit" value="Login" style="background-color: black;">
+            </form>
+            {% if error %}
+                <div class="alert alert-danger mt-3" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
 {% endblock %}

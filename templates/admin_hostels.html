@@ -2,45 +2,55 @@
 
 {% block head %}
     <title>Admin</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/admin_hostels.css')}}">
 {% endblock %}
 
 {% block body %}
-
-    <button type="button" data-bs-toggle="modal" data-bs-target="#add_hostel">
-        Add Hostel
-    </button>
-
+    <div style="text-align: center; margin-top: 2rem; margin-left: 1rem;">
+        <button class="resident-button" data-bs-toggle="modal" data-bs-target="#add_hostel">
+            <span>Add Hostel<Hostel></Hostel></span>
+        </button>
+    </div>
 
     <div class="modal fade" id="add_hostel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add Hostel</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn btn-dark btn-sm close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/add_hostel" method="POST">
-                        <div>
-                            <label for="{{hostel_details_field_names[0]}}">{{hostel_details_field_names[0]}}</label>
-                            <input name="{{hostel_details_field_names[0]}}" type="text"  id="{{hostel_details_field_names[0]}}">
-
-                            <label for="{{hostel_details_field_names[1]}}">{{hostel_details_field_names[1]}}</label>
-                            <input name="{{hostel_details_field_names[1]}}" type="text"  id="{{hostel_details_field_names[1]}}">
-
-                            <label for="{{hostel_details_field_names[2]}}">{{hostel_details_field_names[2]}}</label>
-                            <input name="{{hostel_details_field_names[2]}}" type="number"  id="{{hostel_details_field_names[2]}}">
-
-                            <label for="{{hostel_details_field_names[3]}}">{{hostel_details_field_names[3]}}</label>
-                            <input name="{{hostel_details_field_names[3]}}" type="number" id="{{hostel_details_field_names[3]}}">
-                            
-                            <label for="{{hostel_details_field_names[4]}}">{{hostel_details_field_names[4]}}</label>
-                            <input name="{{hostel_details_field_names[4]}}" type="number" id="{{hostel_details_field_names[4]}}">
+                    <form action="/admin/add_hostel" class="row g-3" method="POST">
+                        <div class="col-sm-6">
+                            <label for="{{hostel_details_field_names[0]}}" class="form-label" >{{hostel_details_field_names[0]}}</label>
+                            <input name="{{hostel_details_field_names[0]}}" class="form-control" type="text"  id="{{hostel_details_field_names[0]}}">     
                         </div>
 
-                        <button type="submit" name="add">ADD</button>
+                        <div class="col-sm-6">
+                            <label for="{{hostel_details_field_names[1]}}" class="form-label">{{hostel_details_field_names[1]}}</label>
+                            <input name="{{hostel_details_field_names[1]}}" class="form-control" type="text"  id="{{hostel_details_field_names[1]}}">   
+                        </div>
 
+                        <div class="col-sm-6">
+                            <label for="{{hostel_details_field_names[2]}}" class="form-label">{{hostel_details_field_names[2]}}</label>
+                            <input name="{{hostel_details_field_names[2]}}" class="form-control" type="number"  id="{{hostel_details_field_names[2]}}">   
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="{{hostel_details_field_names[3]}}" class="form-label">{{hostel_details_field_names[3]}}</label>
+                            <input name="{{hostel_details_field_names[3]}}" class="form-control" type="number" id="{{hostel_details_field_names[3]}}">    
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="{{hostel_details_field_names[4]}}" class="form-label">{{hostel_details_field_names[4]}}</label>
+                            <input name="{{hostel_details_field_names[4]}}" class="form-control" type="number" id="{{hostel_details_field_names[4]}}">   
+                        </div>
+
+                        <div class="col-sm-12" style="text-align: center;">
+                            <button type="submit" class="btn btn-dark" name="add">Add</button>   
+                        </div>
                     </form>
                 </div>
             </div>
@@ -48,15 +58,33 @@
     </div>
 
     
-    {% for hostel in hostels: %}
-        <p>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#{{hostel[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadHostel('{{hostel[0]}}')">
-                {{hostel[0]}} {{hostel[1]}}
-            </button>
-        </p>
-        <div class="collapse" id="{{hostel[0]}}">
-            <div class="card card-body">
-            </div>
-        </div>
-    {% endfor %}
+    <table class="table table-striped" style="max-width: 40%; margin: 50px auto 0;"  vertical-align: 60%;>
+        <thead>
+            <tr>
+                <th>Hostel Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hostel in hostels: %}
+                <tr>
+                    <td >{{hostel[0]}}</td>
+                    <td style="text-align: end;">
+                        <button class="edit-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{hostel[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadHostel('{{hostel[0]}}')">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="17">
+                        <div class="collapse" id="{{hostel[0]}}">
+                            <div class="card card-body">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+
+    
 {% endblock %}

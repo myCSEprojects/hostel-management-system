@@ -1,0 +1,59 @@
+
+
+form {
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    background-color: #BAC6FF;
+}
+
+/* Style the input fields and button */
+input[type="text"],
+input[type="password"],
+input[type="submit"] {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    color: #000;
+}
+
+input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Style the page heading */
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    color: #6B4EA2;
+}
+
+/* Style the login container */
+
+
+
+/*for front one*/
+
+.login-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

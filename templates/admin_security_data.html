@@ -1,51 +1,68 @@
 <div>
-    <h1>Security Details</h1>
+    <h3 style="text-align: center; ">Security Details</h3>
     <form action="/admin/security/{{security_details[0]}}/delete_security" method="post">
-        <button type="submit" name="delete">Delete</button>
+        <button type="submit" class="btn btn-dark" style="margin-bottom: 2rem;" name="delete">Delete</button>
     </form>
-    <form action="/admin/security/{{security_details[0]}}/update_details" method="post">
-        <label for="{{security_details[0]}}-{{security_details_field_names[0]}}">{{security_details_field_names[0]}}</label>
-        <input name="{{security_details_field_names[0]}}" type="number" value={{security_details[0]}} id="{{security_details[0]}}-{{security_details_field_names[0]}}" disabled>
+    
+    <form action="/admin/security/{{security_details[0]}}/update_details" class="row g-3" method="post">
+        
+        <div class="col-md-3">
+            <label class="form-label" for="{{security_details[0]}}-{{security_details_field_names[0]}}">{{security_details_field_names[0]}}</label>
+            <input class="form-control" name="{{security_details_field_names[0]}}" type="number" value={{security_details[0]}} id="{{security_details[0]}}-{{security_details_field_names[0]}}" disabled>  
+        </div>
 
-        <label for="{{security_details[0]}}-{{security_details_field_names[1]}}">{{security_details_field_names[1]}}</label>
-        <input name="{{security_details_field_names[1]}}" type="text" value={{security_details[1]}} id="{{security_details[0]}}-{{security_details_field_names[1]}}">
+        <div class="col-md-3">
+            <label class="form-label" for="{{security_details[0]}}-{{security_details_field_names[1]}}">{{security_details_field_names[1]}}</label>
+            <input class="form-control" name="{{security_details_field_names[1]}}" type="text" value={{security_details[1]}} id="{{security_details[0]}}-{{security_details_field_names[1]}}">  
+        </div>
 
-        <label for="{{security_details[0]}}-{{security_details_field_names[2]}}">{{security_details_field_names[2]}}</label>
-        <input name="{{security_details_field_names[2]}}" type="text" value={{security_details[2]}} id="{{security_details[0]}}-{{security_details_field_names[2]}}">
+        <div class="col-md-3">
+            <label class="form-label" for="{{security_details[0]}}-{{security_details_field_names[2]}}">{{security_details_field_names[2]}}</label>
+            <input class="form-control" name="{{security_details_field_names[2]}}" type="text" value={{security_details[2]}} id="{{security_details[0]}}-{{security_details_field_names[2]}}">  
+        </div>
 
-        <label for="{{security_details[0]}}-{{security_details_field_names[3]}}">{{security_details_field_names[3]}}</label>
-        <input name="{{security_details_field_names[3]}}" type="text" value={{security_details[3]}} id="{{security_details[0]}}-{{security_details_field_names[3]}}">
+        <div class="col-md-3">
+            <label class="form-label" for="{{security_details[0]}}-{{security_details_field_names[3]}}">{{security_details_field_names[3]}}</label>
+            <input class="form-control" name="{{security_details_field_names[3]}}" type="text" value={{security_details[3]}} id="{{security_details[0]}}-{{security_details_field_names[3]}}">  
+        </div>
 
-        <button type="submit" name="update">Update</button>
+        <div class="col-md-12">
+            <button class="btn btn-dark" style="margin-left: 47%; " type="submit" name="update">Update</button>
+        </div>
     </form>
 </div>
 
 <div>
-    <h1>Phone Numbers</h1>
+    <hr>
+    <h3 style="text-align: center; margin-top: 20px;">Phone Numbers</h3>
     {% for phone_number in security_phone_details %}
-    <form action="/admin/security/{{security_details[0]}}/delete_phone" method="post">
-        <input type="number" name="phone_no" value="{{phone_number[0]}}" readonly>
-        <button type="submit" name="delete">delete</button>
+    <form action="/admin/security/{{security_details[0]}}/delete_phone" class="row row-cols-lg-auto g-3 align-items-center" method="post">
+        <div class="box col-md-6" style="margin-bottom: 10px;">
+            <input type="number" name="phone_no" class="form-control" value="{{phone_number[0]}}" readonly>
+        </div>  
+        <div class="box col-md-4" style="margin-bottom: 10px;">
+            <button class="btn btn-dark" type="submit" name="delete">Delete</button>
+        </div>  
     </form>
     {% endfor %}
     <!-- Button for adding phone number -->
-    <button type="button" data-bs-toggle="modal" data-bs-target="#add_phone">
-        Add Phone
-    </button>
+    <div class="col-12">
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#add_phone">Add Phone</button>
+    </div>
     
     <div class="modal fade" id="add_phone" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">Enter phone no:</h5>
-              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <button type="button" class="close btn btn-dark btn-sm" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
                 <form action="/admin/security/{{security_details[0]}}/add_phone" method="post">
-                    <input type="number" name="phone_no" placeholder="phone number">
-                    <button type="submit" name="add">Add Phone </button>
+                    <input type="number" name="phone_no"  style="margin-bottom: 10px;" class="form-control" placeholder="phone number">
+                    <button type="submit" class="btn btn-dark" name="add">Add Phone </button>
                 </form>
             </div>
         </div>
@@ -55,39 +72,62 @@
 
 <!-- Current allocation details -->
 <div>
-    <h1>Current Allocation</h1>
+    <hr>
+    <h3 style="text-align: center; margin-top: 20px;">Current Allocation</h3>
     {% for security_allocation in security_current_allocation_details %}
-    <form action="/admin/security/{{security_details[0]}}/delete_current_allocation" method="post">
+    <form action="/admin/security/{{security_details[0]}}/delete_current_allocation" class="row g-3" method="post">
+        <div class="col-md-3">
+            <input name="hostel_name" class="form-control" type="text" value="{{security_allocation[0]}}" readonly>
+        </div> 
 
-        <input name="hostel_name" type="text" value="{{security_allocation[0]}}" readonly>
-        <input name="start_time" type="time" value="{{security_allocation[1]|strftime('%H:%M:%S')}}" readonly>
-        <input name="end_time" type="time" value="{{security_allocation[2]|strftime('%H:%M:%S')}}" readonly>
+        <div class="col-md-3">
+            <input name="start_time" class="form-control" type="time" value="{{security_allocation[1]|strftime('%H:%M:%S')}}" readonly>
+        </div> 
 
-        <button type="submit" name="delete">delete</button>
+        <div class="col-md-3">
+            <input name="end_time" class="form-control" type="time" value="{{security_allocation[2]|strftime('%H:%M:%S')}}" readonly>
+        </div> 
+
+        <div class="col-md-3">
+            <button class="btn btn-dark" style="margin-bottom: 1rem;" type="submit" name="delete">Delete</button>
+        </div>  
+
+        
     </form>
     {% endfor %}
+
+    <div class="col-md-12">
+        <button type="button" class="btn btn-dark" style="margin-bottom: 1rem; margin-left: 47%;" data-bs-toggle="modal" data-bs-target="#add_allocation">Allocate</button>
+    </div>
  
- 
-    <button type="button" data-bs-toggle="modal" data-bs-target="#add_allocation">
-        Add Allocation
-    </button>
+    
     
     <div class="modal fade" id="add_allocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">Enter New Allocation:</h5>
-              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <button type="button" class="close btn btn-dark btn-sm" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-                <form action="/admin/security/{{security_details[0]}}/add_allocation" method="post">
+                <form action="/admin/security/{{security_details[0]}}/add_allocation" method="post" class="row g-3">
+                    <div class="col-md-4">
+                        <input name="hostel_name" type="text" class="form-control" placeholder="Hostel Name">    
+                    </div> 
 
-                    <input name="hostel_name" type="text" placeholder="Hostel Name">
-                    <input name="start_time" type="time" placeholder="Shift Start Time">
-                    <input name="end_time" type="time" placeholder="Shift End Time">
-                    <button type="submit" name="add">Add Allocation </button>
+                    <div class="col-md-4">
+                        <input name="start_time" type="time" class="form-control" placeholder="Shift Start Time">   
+                    </div> 
+
+                    <div class="col-md-4    ">
+                        <input name="end_time" type="time" class="form-control" placeholder="Shift End Time"> 
+                    </div> 
+
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-dark" name="add">Add Allocation </button>   
+                    </div> 
                 </form>
             </div>
         </div>

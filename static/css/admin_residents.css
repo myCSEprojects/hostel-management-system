@@ -76,13 +76,13 @@ table{
 
 .resident-button {
   font-family: 'Google Sans', sans-serif;
-  border-radius: 50px;
+  border-radius: 20px;
+  font-size: 20px;
   border-width:thin;
   color:  black;
   text-align: center;
-  font-size: 30px;
   padding: 0px;
-  width:400px;
+  width:240px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;

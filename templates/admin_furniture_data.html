@@ -1,21 +1,32 @@
 <div>
-    <h1>Furniture Details</h1>
+    <h3 style="text-align: center; ">Furniture Details</h3>
     <form action="/admin/furniture/{{furniture_details[0]}}/delete_furniture" method="post">
-        <button type="submit" name="delete">Delete</button>
+        <button type="submit" class="btn btn-dark" style="margin-bottom: 2rem;"  name="delete">Delete</button>
     </form>
-    <form action="/admin/furniture/{{furniture_details[0]}}/update_furniture_details" method="post">
-        <label for="{{furniture_details[0]}}-{{furniture_details_field_names[0]}}">{{furniture_details_field_names[0]}}</label>
-        <input name="{{furniture_details_field_names[0]}}" type="text" value={{furniture_details[0]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[0]}}" disabled>
 
-        <label for="{{furniture_details[0]}}-{{furniture_details_field_names[1]}}">{{furniture_details_field_names[1]}}</label>
-        <input name="{{furniture_details_field_names[1]}}" type="text" value={{furniture_details[1]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[1]}}">
+    <form action="/admin/furniture/{{furniture_details[0]}}/update_furniture_details" class="row g-3" method="post">
+        <div class="col-md-3">
+            <label class="form-label" for="{{furniture_details[0]}}-{{furniture_details_field_names[0]}}">{{furniture_details_field_names[0]}}</label>
+            <input class="form-control" name="{{furniture_details_field_names[0]}}" type="text" value={{furniture_details[0]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[0]}}" disabled>
+        </div>
 
-        <label for="{{furniture_details[0]}}-{{furniture_details_field_names[2]}}">{{furniture_details_field_names[2]}}</label>
-        <input name="{{furniture_details_field_names[2]}}" type="number" value={{furniture_details[2]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[2]}}">
+        <div class="col-md-3">
+            <label class="form-label" for="{{furniture_details[0]}}-{{furniture_details_field_names[1]}}">{{furniture_details_field_names[1]}}</label>
+            <input class="form-control" name="{{furniture_details_field_names[1]}}" type="text" value={{furniture_details[1]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[1]}}">
+        </div>
 
-        <label for="{{furniture_details[0]}}-{{furniture_details_field_names[3]}}">{{furniture_details_field_names[3]}}</label>
-        <input name="{{furniture_details_field_names[3]}}" type="number" value={{furniture_details[3]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[3]}}">
+        <div class="col-md-3">
+            <label class="form-label" for="{{furniture_details[0]}}-{{furniture_details_field_names[2]}}">{{furniture_details_field_names[2]}}</label>
+            <input class="form-control" name="{{furniture_details_field_names[2]}}" type="number" value={{furniture_details[2]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[2]}}">
+        </div>
 
-        <button type="submit" name="update">Update</button>
+        <div class="col-md-3">
+            <label class="form-label" for="{{furniture_details[0]}}-{{furniture_details_field_names[3]}}">{{furniture_details_field_names[3]}}</label>
+            <input class="form-control" name="{{furniture_details_field_names[3]}}" type="number" value={{furniture_details[3]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[3]}}">
+        </div>
+
+        <div class="col-md-12">
+            <button class="btn btn-dark" style="margin-left: 47%; " type="submit" name="update">Update</button>
+        </div> 
     </form>
 </div>

@@ -2,96 +2,138 @@
 
 {% block head %}
     <title>Admin</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/admin_rooms.css')}}">
 {% endblock %}
 
 {% block body %}
-    <!-- Filter block -->
-    <form action="/admin/rooms" method = "get">
-        <!-- Search for the hostel name -->
-        <label for="hostel_name">Hostel Name</label>
-        <select name="hostel_name" id="hostel_name">
-            <option value="all">All</option>
-            {% for hostel_name in hostel_names: %}
-                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
-            {% endfor %}
-        </select>
-        
-        <!-- Room number filter -->
-        <label for="room_no">Room Number</label>
-        <input type="text" name="room_no" id="room_no">
-
-        <!-- Room type -->
-        <label for="room_type">Room Type</label>
-        <select name="room_type" id="room_type">
-            <option value="all">All</option>
-            {% for room_type in room_types %}
-                <option value="{{room_type[0]}}">{{room_type[0]}}</option>
-            {% endfor %}
-        </select>
-
-        <!-- Number of occupants -->
-        <label for="occupant_count">Number of occupants</label>
-        <input type="number" name="occupant_count" id="occupant_count">
-        
-        <!-- Submit button -->
-        <input type="submit" value="Filter">
-    </form>
-
     <!-- Add Room button -->
     <!-- Button trigger modal -->
-    <button type="button" data-bs-toggle="modal" data-bs-target="#add_room">
-        Add room
-    </button>
-
-
+    <div style="text-align: center; margin-top: 2rem; margin-left: 1rem;">
+        <button class="resident-button" data-bs-toggle="modal" data-bs-target="#add_room">
+            <span>Add a Room</span>
+        </button>
+    </div>
+    
     <!-- Modal -->
     <div class="modal fade" id="add_room" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Enter Info</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title">Enter Information</h5>
+                    <button class="btn btn-dark btn-sm close" type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/add_room" method="post">
-                        <label for="{{room_details_field_names[0]}}">{{room_details_field_names[0]}}</label>
-                        <input id="{{room_details_field_names[0]}}" type="text" name="{{room_details_field_names[0]}}">
-                    
-                        <label for="{{room_details_field_names[1]}}">{{room_details_field_names[1]}}</label>
-                        <select id="{{room_details_field_names[1]}}" name="{{room_details_field_names[1]}}">
+                    <form action="/admin/add_room" class="row g-3" method="post">
+                        <div class="col-sm-4">
+                            <label for="{{room_details_field_names[0]}}" class="form-label">{{room_details_field_names[0]}}</label>
+                            <input id="{{room_details_field_names[0]}}" type="text" name="{{room_details_field_names[0]}}" class="form-control">
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label for="{{room_details_field_names[1]}}" class="form-label">{{room_details_field_names[1]}}</label>
+                            <select id="{{room_details_field_names[1]}}" name="{{room_details_field_names[1]}}" class="form-select">
                             {% for hostel_name in hostel_names %}
                                 <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
                             {% endfor %}
-                        </select>
-                    
-                        <label for="{{room_details_field_names[2]}}" >{{room_details_field_names[2]}}</label>
-                        <select id="{{room_details_field_names[2]}}" name="{{room_details_field_names[2]}}">
+                            </select>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label for="{{room_details_field_names[2]}}" class="form-label">{{room_details_field_names[2]}}</label>
+                            <select id="{{room_details_field_names[2]}}" name="{{room_details_field_names[2]}}" class="form-select">
                             {% for room_type in room_types %}
                                 <option value="{{room_type[0]}}">{{room_type[0]}}</option>
                             {% endfor %}
-                        </select>
-                    
-                        <button type="submit" name="add">add</button>
+                            </select>    
+                        </div>
+
+                        <div class="col-md-12" style="text-align: center;">
+                            <button type="submit" class="btn btn-dark" name="add">Add</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Display the entries -->
-    {% for room_details in rooms_details %}
-        <p>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#{{room_details[1]}}_{{room_details[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadRoom('{{room_details[0]}}', '{{room_details[1]}}')">
-                {% for room_detail in room_details %}
-                    {{room_detail}}
-                {% endfor %}
-            </button>
-        </p>
-        <div class="collapse" id="{{room_details[1]}}_{{room_details[0]}}">
-            <div class="card card-body">
+    <!-- Filter block -->
+    <p style="margin-left: 1.5rem;" class="search">Room Details</p>
+    <form class="filterform" action="/admin/rooms" method = "get">
+
+        <div class="row">
+            <div class="filter col-sm-3">
+                <!-- Search for the hostel name -->
+                <label for="hostel_name">Hostel Name</label>
+                <select name="hostel_name" id="hostel_name">
+                    <option value="all">All</option>
+                    {% for hostel_name in hostel_names: %}
+                    <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                    {% endfor %}
+                </select>    
+            </div>
+
+            <div class="filter col-sm-2">
+                <!-- Room number filter -->
+                <label for="room_no">Room Number</label>
+                <input type="text" name="room_no" id="room_no">     
+            </div>
+
+            <div class="filter col-sm-2">
+                <!-- Room type -->
+                <label for="room_type">Room Type</label>
+                <select name="room_type" id="room_type">
+                    <option value="all">All</option>
+                    {% for room_type in room_types %}
+                    <option value="{{room_type[0]}}">{{room_type[0]}}</option>
+                    {% endfor %}
+                </select>      
+            </div>
+
+            <div class="filter col-sm-2">
+                <!-- Number of occupants -->
+                <label for="occupant_count">Number of occupants</label>
+                <input type="number" name="occupant_count" id="occupant_count">          
+            </div>
+
+            <div class="filter col-sm-3" style="text-align: center;">
+                <!-- Submit button -->
+                <input type="submit" value="Apply Filters" style="color:white;">
             </div>
         </div>
-    {% endfor %}
+    </form>   
+    <!-- Display the entries -->
+    <table class="table table-striped" style="max-width: 95%; margin: 50px auto 0;"  vertical-align: 60%;>
+        <thead>
+            <tr>
+                <th>Hostel Name</th>
+                <th>Room Number</th>
+                <th>Room Type</th>
+                <th>Occupants</th>  
+            </tr>
+        </thead>
+        <tbody>
+            {% for room_details in rooms_details %}
+                <tr>
+                    {% for room_detail in room_details %}
+                    <td>{{room_detail}}</td>
+                    {% endfor %}
+                    <td>
+                        <button class="edit-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{room_details[1]}}_{{room_details[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadRoom('{{room_details[0]}}', '{{room_details[1]}}')">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="17">
+                        <div class="collapse" id="{{room_details[1]}}_{{room_details[0]}}">
+                            <div class="card card-body">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
 {% endblock %}
