@@ -26,6 +26,20 @@ function loadSecurity(security_id){
         }
     });
 }
+function loadFurniture(furniture_id){
+    selector = '#'+ furniture_id + " div";
+    if($.trim($(selector).html())!=''){
+        return;
+    }
+    $.ajax({
+        dataType: "html",
+        url: '/admin/furniture/' + furniture_id,
+        type: 'POST',
+        success: function(result){
+            $(selector).html(result);
+        }
+    });
+}
 function loadRoom(room_no, hostel_name){
     selector = '#'+ hostel_name + '_' + room_no + " div";
     if($.trim($(selector).html())!=''){

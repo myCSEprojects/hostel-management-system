@@ -63,6 +63,13 @@ security_details_field_names = {
     "Last Name": "last_name",
 }
 
+furniture_details_field_names = {
+    "ID": "furniture_id",
+    "Hostel Name": "hostel_name", 
+    "Room Number": "room_no", 
+    "Status": "status",
+}
+
 security_current_allocation_field_names = {
     "Hostel Name": "hostel_name", 
     "Start Time": "start_time", 

@@ -1,0 +1,21 @@
+<div>
+    <h1>Furniture Details</h1>
+    <form action="/admin/furniture/{{furniture_details[0]}}/delete_furniture" method="post">
+        <button type="submit" name="delete">Delete</button>
+    </form>
+    <form action="/admin/furniture/{{furniture_details[0]}}/update_furniture_details" method="post">
+        <label for="{{furniture_details[0]}}-{{furniture_details_field_names[0]}}">{{furniture_details_field_names[0]}}</label>
+        <input name="{{furniture_details_field_names[0]}}" type="text" value={{furniture_details[0]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[0]}}" disabled>
+
+        <label for="{{furniture_details[0]}}-{{furniture_details_field_names[1]}}">{{furniture_details_field_names[1]}}</label>
+        <input name="{{furniture_details_field_names[1]}}" type="text" value={{furniture_details[1]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[1]}}">
+
+        <label for="{{furniture_details[0]}}-{{furniture_details_field_names[2]}}">{{furniture_details_field_names[2]}}</label>
+        <input name="{{furniture_details_field_names[2]}}" type="number" value={{furniture_details[2]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[2]}}">
+
+        <label for="{{furniture_details[0]}}-{{furniture_details_field_names[3]}}">{{furniture_details_field_names[3]}}</label>
+        <input name="{{furniture_details_field_names[3]}}" type="number" value={{furniture_details[3]}} id="{{furniture_details[0]}}-{{furniture_details_field_names[3]}}">
+
+        <button type="submit" name="update">Update</button>
+    </form>
+</div>
