@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mysqldb import MySQL
-from utils import check_password
+from utils import check_password, generate_key
 from metadata import *
 import datetime
 import numpy as np
@@ -145,7 +145,7 @@ def caretaker_details():
 
     cur.execute("select phone_no, CARETAKER.caretaker_id  from CARETAKER INNER JOIN CARETAKER_PHONE on CARETAKER_PHONE.caretaker_id=CARETAKER.caretaker_id order by caretaker_id;")
     table2 = cur.fetchall()
-    cur.execute("select caretaker_id from CARETAKER")
+    cur.execute("select caretaker_id from CARETAKER;")
     table3 = cur.fetchall()
     dict1 = {}
     for i in table3:
@@ -198,40 +198,59 @@ def resident_page(page_name = None):
                 return render_template('resident_login.html', pages = pages, error="Invalid password")
     elif page_name == 'profile':
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'resident'):
-            cur.execute(""" SELECT * 
-                            from RESIDENT
-                            where resident_id = %s;""",(session['id'],))
-            stats = cur.fetchall()[0] # resident details
-
-            cur.execute(""" show columns 
-                            from RESIDENT;""" )
-            cols = cur.fetchall() # attribute names
-            cols = np.array(cols)
-            cols = cols[:,0]
-            cols = list(cols)
-            cols = list(map(operator.methodcaller("replace",'_'," "),cols))
-            cols = list(map(str.capitalize,cols))
-
-
-
-            cur.execute(""" select phone_no
-                            from RESIDENT_PHONE
-                            where resident_id = %s;""",(session['id'],))
-            contacts = cur.fetchall() # phone numbers
-
-            cur.execute("""select program, branch
-                            from ENROLLED_IN 
-                            where resident_id = %s; """,(session['id'],))
             
-            p_and_b = cur.fetchall() # program and branch
-            
-            stats_dict = {}
+            if (request.method == 'GET'):
+                cur.execute(""" SELECT * 
+                                from RESIDENT
+                                where resident_id = %s;""",(session['id'],))
+                stats = cur.fetchall()[0] # resident details
 
-            for i,col in enumerate(cols):
-                stats_dict[col] = stats[i]
+                cur.execute(""" show columns 
+                                from RESIDENT;""" )
+                cols = cur.fetchall() # attribute names
+                cols = np.array(cols)
+                cols = cols[:,0]
+                cols = list(cols)
+                cols = list(map(operator.methodcaller("replace",'_'," "),cols))
+                cols = list(map(str.capitalize,cols))
 
-            
-            return render_template('resident_profile.html', pages = resident_pages, stats = stats_dict, contacts = contacts, pb = p_and_b)
+
+
+                cur.execute(""" select phone_no
+                                from RESIDENT_PHONE
+                                where resident_id = %s;""",(session['id'],))
+                contacts = cur.fetchall() # phone numbers
+
+                cur.execute("""select program, branch
+                                from ENROLLED_IN 
+                                where resident_id = %s; """,(session['id'],))
+                
+                p_and_b = cur.fetchall() # program and branch
+                
+                stats_dict = {}
+
+                for i,col in enumerate(cols):
+                    stats_dict[col] = stats[i]
+
+                
+                return render_template('resident_profile.html', pages = resident_pages, stats = stats_dict, contacts = contacts, pb = p_and_b)
+            else :
+                current_password = request.form['current_password']
+                new_password = request.form['new_password']
+                confirm_password = request.form['confirm_password']
+                cur.execute(f"SELECT key_ FROM users WHERE id = {session['id']};")
+
+                actual_key = cur.fetchone()
+                if (check_password(current_password, actual_key[0]) == False):
+                    return {"success": False, "reload": True, "message": "Incorrect password"}
+                if (new_password != confirm_password):
+                    return {"success": False, "reload": True, "message": "Passwords do not match"}
+
+                new_key = generate_key(new_password)
+                cur.execute(f"UPDATE users SET key_ = '{new_key}' WHERE id = {session['id']};")
+                mysql.connection.commit()
+                return {"success": True, "reload": True, "message": "Password Changed Successfully"}
+                
         else:
             return redirect('/resident/login')
 
