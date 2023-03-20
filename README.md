@@ -59,6 +59,13 @@ clicking on delete button
 ### Pop up
 
 ## RENAME
+### Before
+![image](https://user-images.githubusercontent.com/80308830/226437381-08913a54-37fe-4276-8c67-72d3dd4897c0.png)
+### Renaming
+![image](https://user-images.githubusercontent.com/80308830/226437882-cc66a732-c6f3-437a-b371-1ecd866acd61.png)
+### After
+![image](https://user-images.githubusercontent.com/80308830/226437962-ea2eb640-6ea6-4fac-99bc-6cef206bd8c4.png)
+
 
 ## WHERE clause
 Residents filter 
