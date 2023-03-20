@@ -38,6 +38,8 @@ admin_pages = {
     "rooms": "/admin/rooms",
     "academic period":"/admin/academic_period",
     "security": "/admin/security"
+    "outlets": "/admin/outlets",
+    'caretakers': "/admin/caretakers",
 }
 
 resident_pages = {
@@ -293,9 +295,9 @@ def resident_page(page_name = None):
 @app.route('/admin/<page_name>', methods=['GET', 'POST'])
 def admin_page(page_name = None):
     cur = mysql.connection.cursor()
-
+    print(page_name)
     # error handling
-    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'add_security','academic_period', 'security', "rooms", "add_room"]:
+    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'add_security','academic_period', 'security', "rooms", "add_room", "outlets", "caretakers"]:
         return redirect('/admin/login')    
 
     if (page_name == 'login'):
@@ -376,6 +378,7 @@ def admin_page(page_name = None):
         cur.execute(query_string)
         mysql.connection.commit()
         return redirect(request.referrer)
+    
     
     elif (page_name == 'add_student'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
@@ -464,6 +467,250 @@ def admin_page(page_name = None):
                     return render_template('admin_academicperiod.html', pages = admin_pages, error="Academic period already exists")
         else:
             return redirect('/admin/login')
+
+    elif (page_name == 'caretakers'):
+        print(page_name)
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            
+            if request.method == 'GET': 
+                # getting the query parameters
+
+                caretaker_query = f"""  select caretaker_id,concat(first_name,' ',last_name) as name, gender, 
+                                        office_no, email_id
+                                        from CARETAKER
+                                        ;"""
+                cur.execute(caretaker_query)
+                caretaker_details = cur.fetchall()
+
+                caretaker_dict = {}
+                for row in caretaker_details:
+                    caretaker_dict[row[0]] = list(row)
+                    caretaker_dict[row[0]].append([])
+                    caretaker_dict[row[0]].append([])
+
+                
+                cur.execute(f"""select hostel_name, caretaker_id
+                                from HOSTEL;
+                                """)
+
+                hostel_details = list(cur.fetchall())
+
+                print(hostel_details)
+
+                for row in hostel_details:
+                    if (row[1] != None):
+                        caretaker_dict[row[1]][-1].append(row[0])
+                
+
+                cur.execute(f""" select *
+                                from CARETAKER_PHONE    
+                                 """)
+
+                phone_details = list(cur.fetchall())
+
+                for row in phone_details:
+                    if (len(caretaker_dict[row[1]][-2]) <2):
+                        caretaker_dict[row[1]][-2].append(str(row[0]))
+
+                for k,v in caretaker_dict.items():
+                    v[-1]= ','.join(v[-1])
+                    v[-2] = ','.join(v[-2])
+
+                # Fetching all the availble hostel names
+                cur.execute(""" SELECT hostel_name from
+                                HOSTEL;""")
+                hostel_names = cur.fetchall()
+
+                field_names = ["Caretaker ID",'Name',"Gender","Office Number","Email ID","Contact", "Hostel"]
+                
+                return render_template('admin_caretaker.html',
+                                        pages=admin_pages,
+                                        field_names = field_names,
+                                        c_dict = caretaker_dict,
+                                        hostel_names = hostel_names)
+            else:
+                
+                if (request.form.get('button') == 'add'):
+
+                    caretaker_id = request.form.get('caretaker_id')
+                    first_name = request.form.get('first_name')
+                    middle_name = request.form.get('middle_name')
+                    last_name = request.form.get('last_name')
+                    gender = request.form.get('gender')
+                    office_no = request.form.get('office_no')
+                    email_id = request.form.get('email_id')
+                    phone_no = request.form.get('phone_no_1')
+                    phone_no_ = request.form.get('phone_no_2')
+                    hostel = request.form.get('hostel')
+
+                    cur  = mysql.connection.cursor();
+                    cur.execute(f"select count(*) from CARETAKER where caretaker_id = {caretaker_id}")
+                    no = cur.fetchall()
+
+
+
+                    if no[0][0] == 0 :
+                            cur.execute(f"INSERT INTO CARETAKER (caretaker_id, first_name, middle_name, last_name, gender, office_no, email_id) VALUES ( '{caretaker_id}','{first_name}','{middle_name}', '{last_name}', '{gender}', '{office_no}', '{email_id}');")
+                            
+                            cur.execute(f""" INSERT into CARETAKER_PHONE 
+                                        VALUES ('{phone_no}','{caretaker_id}')
+                                    """)
+                            if (phone_no_ is not None and len(phone_no_) == 10):
+                                cur.execute(f""" INSERT into CARETAKER_PHONE 
+                                            VALUES ('{phone_no_}','{caretaker_id}')
+                                        """)
+                            
+                            cur.execute(f''' UPDATE HOSTEL SET caretaker_id = '{caretaker_id}' where hostel_name = '{hostel}' ''') 
+                            mysql.connection.commit()
+                            
+
+                    else:
+                        cur.execute(f'''UPDATE CARETAKER SET caretaker_id = '{caretaker_id}', first_name ='{first_name}' ,
+                                        middle_name = '{middle_name}', last_name ='{last_name}' , gender = '{gender}', office_no = '{office_no}' ,
+                                        email_id ='{email_id}' where caretaker_id = '{caretaker_id}' ''')
+                        cur.execute(f""" delete from CARETAKER_PHONE
+                                            where caretaker_id = '{caretaker_id}';
+                                    """)
+                        cur.execute(f""" INSERT into CARETAKER_PHONE 
+                                        VALUES ('{phone_no}','{caretaker_id}')
+                                    """)
+                        if (phone_no_ is not None and len(phone_no_) == 10):
+                            cur.execute(f""" INSERT into CARETAKER_PHONE 
+                                        VALUES ('{phone_no_}','{caretaker_id}')
+                                    """)
+
+                        cur.execute(f''' UPDATE HOSTEL SET caretaker_id = '{caretaker_id}' where hostel_name = '{hostel}' ''') 
+                        mysql.connection.commit()
+                    
+                    return redirect("/admin/caretakers")
+
+                elif (request.form.get('button') == 'delete'):
+                    
+                    cur.execute(f""" DELETE FROM  CARETAKER 
+                                    where caretaker_id = '{request.form.get('caretaker_id')}'
+                                    """)
+                    mysql.connection.commit()
+                    return redirect('/admin/caretakers')
+                
+                else:
+                    return redirect('/admin/caretakers')
+            
+        else:
+            return redirect('/admin/login')
+
+    elif (page_name == 'outlets'):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            
+            if request.method == 'GET': 
+                # getting the query parameters
+                outlet_name = request.args.get('outlet_name')
+                hostel_name = request.args.get('hostel_name')
+                time = request.args.get('time')
+
+                a = [outlet_name,hostel_name,time]
+                
+                outlet_query = ''
+
+                if (outlet_name != '' and outlet_name != None):
+                    outlet_query = f' outlet_name like "%{outlet_name}%" '
+                if (hostel_name != None and hostel_name != 'all'):
+                    if (outlet_query != ''):
+                        outlet_query += 'and'
+                    outlet_query += f' hostel_name = "{hostel_name}" '
+                if (time != '' and time != None):
+                    if (outlet_query != ''):
+                        outlet_query += 'and'
+                    outlet_query += f""" if (open_time < close_time, 
+                                        time('{time}') between open_time and close_time, 
+                                        time('{time}') = close_time or time('{time}') = open_time or time('{time}') not between close_time and open_time ) """
+                if (outlet_query != '') :
+                    outlet_query = ' where ' + outlet_query
+
+
+
+
+                outlet_query = f""" select outlet_name,
+                                    hostel_name, open_time, close_time, 
+                                    contact, concat(owner_first_name,' ',owner_last_name) 
+                                    as owner_name
+                                    from OUTLET{outlet_query};"""
+                cur.execute(outlet_query)
+
+                outlets = cur.fetchall()
+
+
+                # Fetching all the availble hostel names
+                cur.execute(""" SELECT hostel_name from
+                                HOSTEL;""")
+                hostel_names = cur.fetchall()
+
+                field_names = ['Outlet',"Hostel Name","Open Time","Close Time","Contact","Owner Name"]
+                
+                return render_template('admin_outlet.html',
+                                        pages=admin_pages,
+                                        outlets = outlets,
+                                        field_names = field_names,
+                                        hostel_names = hostel_names)
+            else:
+                
+                print(request.form)
+                if (request.form.get('button') == 'add'):
+                    print("innermost")
+                    app.logger.info("added")
+                    outlet_name = request.form['outlet_name']
+                    open_time = request.form['open_time']
+                    close_time = request.form['close_time']
+                    contact = request.form['contact']
+                    owner_first_name = request.form['owner_first_name']
+                    owner_middle_name = request.form['owner_middle_name']
+                    owner_last_name = request.form['owner_last_name']
+                    hostel_name = request.form['hostel_name']
+                    phone_no = request.form['phone_no']
+                    print(f"select count(*) from OUTLET where outlet_name = '{outlet_name}';")
+                    cur.execute(f"select count(*) from OUTLET where outlet_name = '{outlet_name}';")
+                    no  = cur.fetchall()
+                    if no[0][0] == 0 : 
+                        cur.execute(f'''INSERT INTO  OUTLET (outlet_name,open_time, close_time, contact, owner_first_name, owner_middle_name, owner_last_name,hostel_name)
+                                        VALUES ('{outlet_name}','{open_time}', '{close_time}', '{contact}', '{owner_first_name}', '{owner_middle_name}', '{owner_last_name}','{hostel_name}');
+                                    ''')
+                        cur.execute(f""" INSERT into OUTLET_PHONE 
+                                        VALUES ('{contact}','{outlet_name}')
+                                    """)
+                        cur.execute(f""" INSERT into OUTLET_OWNER_PHONE 
+                                        VALUES ('{phone_no}','{outlet_name}')
+                                    """)
+                        mysql.connection.commit()
+                    else:
+                        cur.execute(f'''UPDATE  OUTLET  SET outlet_name  = '{outlet_name}' ,open_time = '{open_time}', close_time = '{close_time}',
+                                        contact = {contact}, owner_first_name = '{owner_first_name}', owner_middle_name = '{owner_middle_name}',
+                                        owner_last_name = '{owner_last_name}',hostel_name = '{hostel_name}' where outlet_name ='{outlet_name}';''')
+                        cur.execute(f""" UPDATE OUTLET_PHONE SET   
+                                            phone_no = '{contact}', outlet_name = '{outlet_name}'
+                                            where outlet_name = '{outlet_name}';
+                                    """)
+                        cur.execute(f""" UPDATE OUTLET_OWNER_PHONE SET   
+                                            phone_no = '{phone_no}', outlet_name = '{outlet_name}'
+                                            where outlet_name = '{outlet_name}';
+                                    """)
+                        mysql.connection.commit()
+                    
+                    return redirect('/admin/outlets')
+                elif (request.form.get('button') == 'delete'):
+                    
+                    cur.execute(f""" DELETE FROM  OUTLET 
+                                    where outlet_name = '{request.form.get('outlet_name')}'
+                                    """)
+                    mysql.connection.commit()
+                    return redirect('/admin/outlets')
+                else:
+                    return redirect('/admin/outlets')
+
+
+
+            
+        else:
+            return redirect('/admin/login')
+
     elif (page_name == "residents"):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
             if request.method == 'GET':
