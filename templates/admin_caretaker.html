@@ -4,6 +4,7 @@
     <title>Caretaker</title>
 {% endblock %}
 
+
 {% block body %}
 
     <h3>Caretaker Details</h3>
@@ -97,7 +98,7 @@
             <form method = 'POST' action = '/admin/caretakers'>
                 <input type = 'hidden' name="caretaker_id" value = {{row[0]}}>
                 <input type = 'hidden' name="button" value = "delete">
-                <input type="submit" class = 'btn btn-danger'value="Delete">
+                <input type="submit" class = 'btn btn-dark'value="Delete">
             </form>
             
         </td>
@@ -112,7 +113,7 @@
     <br><br>
 
     <center>
-        <button type="button" data-bs-toggle="modal" class = 'btn btn-primary' data-bs-target="#caretakers" align = "center">
+        <button type="button" data-bs-toggle="modal" class = 'btn btn-dark' data-bs-target="#caretakers" align = "center">
             Add/Update Caretaker
         </button>
     </center>

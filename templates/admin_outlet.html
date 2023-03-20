@@ -7,29 +7,32 @@
 {% block body %}
 
     <h3>Outlet Details</h3>
+    <div class = 'container-sm text-center'>
+        <form action="/admin/outlets" method = "get">
 
-    <form action="/admin/outlets" method = "get">
-
-        <label for="outlet_name">Outlet Name: </label>
-        <input type="text" name="outlet_name" id = "outlet_name" placeholder="Outlet Name">
-        
-        <!-- Hostel -->
-        <label for="hostel_name">Hostel</label>
-        <select name="hostel_name" id="hostel_name">
-            <option value="all">All</option>
-            {% for hostel_name in hostel_names: %}
-                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
-            {% endfor %}
-        </select>  
-        
-        <label for="time">Time: </label>
-        <input type="time" name="time" id = "time" placeholder="Time">
-
-        <!-- Submit button -->
-        <input type="submit" value="Filter">
-
-
-    </form>
+            <label for="outlet_name">Outlet Name: </label>
+            <input type="text" name="outlet_name" id = "outlet_name" placeholder="Outlet Name">
+            
+            <!-- Hostel -->
+            <label for="hostel_name">Hostel</label>
+            <select name="hostel_name" id="hostel_name">
+                <option value="all">All</option>
+                {% for hostel_name in hostel_names: %}
+                    <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                {% endfor %}
+            </select>  
+            
+            <label for="time">Time: </label>
+            <input type="time" name="time" id = "time" placeholder="Time">
+    
+            <!-- Submit button -->
+            <input type="submit" value="Filter">
+    
+    
+        </form>
+    </div>
+    
+    <br>
 
     
 
@@ -108,7 +111,7 @@
             <form method = 'POST' action = '/admin/outlets'>
                 <input type = 'hidden' name="outlet_name" value = {{outlet[0]}}>
                 <input type = 'hidden' name="button" value = "delete">
-                <input type="submit" class = 'btn btn-danger'value="Delete">
+                <input type="submit" class = 'btn btn-dark'value="Delete">
             </form>
         </td>
         </tr>
@@ -120,7 +123,7 @@
     <br><br>
 
     <center>
-        <button type="button" data-bs-toggle="modal" class = 'btn btn-primary' data-bs-target="#outlets" align = "center">
+        <button type="button" data-bs-toggle="modal" class = 'btn btn-dark' data-bs-target="#outlets" align = "center">
             Add/Update Outlet
         </button>
     </center>
