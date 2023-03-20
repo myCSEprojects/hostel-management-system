@@ -81,7 +81,8 @@ Residents filter
 
 # Screenshots of our web app
 ## Homepage (Login Page)
-screenshot
+![image](https://user-images.githubusercontent.com/76489649/226442376-88273631-c79b-4c38-b72d-cb5af4fbeccc.png)
+
 
 ## Admin Dashboard
 ![image](https://user-images.githubusercontent.com/80308830/226423771-aa566b35-72cf-452f-9c76-e058819bac83.png)
