@@ -6,7 +6,7 @@
 
 <div>
     <h3 style="text-align: center; ">Room Details</h3>
-    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_room_details" class="row g-3" method="post">
+    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_room_data" class="row g-3" method="post">
         <div class="col-md-3">
             <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[0]}}" class="form-label">{{room_details_field_names[0]}}</label>
             <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[0]}}" class="form-control"  type="text" name="{{room_details_field_names[0]}}" value="{{room_details[0]}}" disabled>   
@@ -24,7 +24,7 @@
 
         <div class="col-md-3">
             <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[2]}}" class="form-label">{{room_details_field_names[2]}}</label>
-            <select id="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[2]}}" class="form-select">
+            <select name="room_type" id="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[2]}}" class="form-select">
             <option value="{{room_details[2]}}" hidden>{{room_details[2]}}</option>
             {% for room_type in room_types %}
                 <option value="{{room_type[0]}}">{{room_type[0]}}</option>

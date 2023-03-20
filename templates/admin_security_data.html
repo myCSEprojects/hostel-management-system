@@ -13,18 +13,30 @@
 
         <div class="col-md-3">
             <label class="form-label" for="{{security_details[0]}}-{{security_details_field_names[1]}}">{{security_details_field_names[1]}}</label>
-            <input class="form-control" name="{{security_details_field_names[1]}}" type="text" value={{security_details[1]}} id="{{security_details[0]}}-{{security_details_field_names[1]}}">  
+            <input class="form-control" name="{{security_details_field_names[1]}}" type="text" maxlength="15" required value={{security_details[1]}} id="{{security_details[0]}}-{{security_details_field_names[1]}}">  
         </div>
 
         <div class="col-md-3">
             <label class="form-label" for="{{security_details[0]}}-{{security_details_field_names[2]}}">{{security_details_field_names[2]}}</label>
-            <input class="form-control" name="{{security_details_field_names[2]}}" type="text" value={{security_details[2]}} id="{{security_details[0]}}-{{security_details_field_names[2]}}">  
+            <input class="form-control" name="{{security_details_field_names[2]}}" maxlength="15" type="text" value={{security_details[2]}} id="{{security_details[0]}}-{{security_details_field_names[2]}}">  
         </div>
 
         <div class="col-md-3">
             <label class="form-label" for="{{security_details[0]}}-{{security_details_field_names[3]}}">{{security_details_field_names[3]}}</label>
-            <input class="form-control" name="{{security_details_field_names[3]}}" type="text" value={{security_details[3]}} id="{{security_details[0]}}-{{security_details_field_names[3]}}">  
+            <input class="form-control" name="{{security_details_field_names[3]}}" type="text" maxlength="15" value={{security_details[3]}} id="{{security_details[0]}}-{{security_details_field_names[3]}}">  
         </div>
+    <!-- <form action="/admin/security/{{security_details[0]}}/update_details" method="post">
+        <label for="{{security_details[0]}}-{{security_details_field_names[0]}}">{{security_details_field_names[0]}}</label>
+        <input name="{{security_details_field_names[0]}}" type="number"  value={{security_details[0]}} id="{{security_details[0]}}-{{security_details_field_names[0]}}" disabled>
+
+        <label for="{{security_details[0]}}-{{security_details_field_names[1]}}">{{security_details_field_names[1]}}</label>
+        <input name="{{security_details_field_names[1]}}" type="text" maxlength="15" required value={{security_details[1]}} id="{{security_details[0]}}-{{security_details_field_names[1]}}">
+
+        <label for="{{security_details[0]}}-{{security_details_field_names[2]}}">{{security_details_field_names[2]}}</label>
+        <input name="{{security_details_field_names[2]}}" type="text" maxlength="15" value={{security_details[2]}} id="{{security_details[0]}}-{{security_details_field_names[2]}}">
+
+        <label for="{{security_details[0]}}-{{security_details_field_names[3]}}">{{security_details_field_names[3]}}</label>
+        <input name="{{security_details_field_names[3]}}" type="text" maxlength="15" required value={{security_details[3]}} id="{{security_details[0]}}-{{security_details_field_names[3]}}"> -->
 
         <div class="col-md-12">
             <button class="btn btn-dark" style="margin-left: 47%; " type="submit" name="update">Update</button>
@@ -61,8 +73,10 @@
             </div>
             <div class="modal-body">
                 <form action="/admin/security/{{security_details[0]}}/add_phone" method="post">
-                    <input type="number" name="phone_no"  style="margin-bottom: 10px;" class="form-control" placeholder="phone number">
+                    <input type="text" maxlength = "10"  pattern = "[0-9]{10}" title = "Phone Number must be 10 digits" name="phone_no"  style="margin-bottom: 10px;" class="form-control" placeholder="phone number">
                     <button type="submit" class="btn btn-dark" name="add">Add Phone </button>
+                    <!-- <input type="text" maxlength = "10"  pattern = "[0-9]{10}" title = "Phone Number must be 10 digits" name="phone_no" placeholder="phone number">
+                    <button type="submit" name="add">Add Phone </button> -->
                 </form>
             </div>
         </div>
@@ -113,21 +127,38 @@
             </div>
             <div class="modal-body">
                 <form action="/admin/security/{{security_details[0]}}/add_allocation" method="post" class="row g-3">
-                    <div class="col-md-4">
-                        <input name="hostel_name" type="text" class="form-control" placeholder="Hostel Name">    
+                    <div class="col-md-4">  
+                        <label for="hostel" class="form-label">Hostel</label>
+                        <select name="hostel_name" id="hostel" class="form-select">
+                            {% for hostel_name in hostel_names: %}
+                                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                            {% endfor %}
+                        </select>    
                     </div> 
 
                     <div class="col-md-4">
-                        <input name="start_time" type="time" class="form-control" placeholder="Shift Start Time">   
+                        <label for="start_time" class="form-label">Start Time</label>
+                        <input name="start_time" type="time" required class="form-control" placeholder="Shift Start Time">   
                     </div> 
 
                     <div class="col-md-4    ">
-                        <input name="end_time" type="time" class="form-control" placeholder="Shift End Time"> 
+                        <label for="end_time" class="form-label">End Time</label>
+                        <input name="end_time" type="time" required class="form-control" placeholder="Shift End Time"> 
                     </div> 
 
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-dark" name="add">Add Allocation </button>   
                     </div> 
+                    <!-- <input name="hostel_name" type="text" placeholder="Hostel Name">
+                            <label for="hostel">Hostel</label> -->
+                    <!-- <select name="hostel_name" id="hostel">
+                        {% for hostel_name in hostel_names: %}
+                            <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                        {% endfor %}
+                    </select>  
+                    <input name="start_time" type="time" required placeholder="Shift Start Time">
+                    <input name="end_time" type="time" required placeholder="Shift End Time">
+                    <button type="submit" name="add">Add Allocation </button> -->
                 </form>
             </div>
         </div>

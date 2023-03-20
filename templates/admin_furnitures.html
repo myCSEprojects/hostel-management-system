@@ -1,3 +1,5 @@
+
+
 {% extends "base.html" %}
 
 {% block head %}
@@ -25,24 +27,35 @@
                     <form action="/admin/add_furniture" class="row g-3" method="POST">
                         <div class="col-sm-12">
                             <label for="{{furniture_details_field_names[0]}}" class="form-label">{{furniture_details_field_names[0]}}</label>
-                            <input name="{{furniture_details_field_names[0]}}" class="form-control" type="text"  id="{{furniture_details_field_names[0]}}">  
+                            <input name="{{furniture_details_field_names[0]}}" class="form-control" type="text"  type="text" maxlength = "40" id="{{furniture_details_field_names[0]}}">  
                         </div>
 
-                        <div class="col-sm-4">
-                            <label for="{{furniture_details_field_names[1]}}" class="form-label">{{furniture_details_field_names[1]}}</label>
-                            <input name="{{furniture_details_field_names[1]}}" class="form-control" type="text"  id="{{furniture_details_field_names[1]}}"> 
+                        <div class="col-md-6">
+                            <label for="hostel" class="form-label">Hostel</label>
+                            <select name="{{furniture_details_field_names[1]}}" id="hostel" class="form-select">
+                            <option selected hidden>Hostel name</option>
+                            {% for hostel_name in hostel_names: %}
+                                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                            {% endfor %}
+                            </select>
                         </div>
 
-                        <div class="col-sm-4">
-                            <label for="{{furniture_details_field_names[2]}}" class="form-label">{{furniture_details_field_names[2]}}</label>
-                            <input name="{{furniture_details_field_names[2]}}" class="form-control" type="number"  id="{{furniture_details_field_names[2]}}">        
+                        <label for="{{furniture_details_field_names[2]}}">{{furniture_details_field_names[2]}}</label>
+                        <input name="{{furniture_details_field_names[2]}}" type="number"   required  id="{{furniture_details_field_names[2]}}">
+                            
+                        <div class="col-md-6">
+                            <label for="status" class="form-label">Status</label>
+                            <select name="{{furniture_details_field_names[3]}}" id="status" class="form-select">
+                            <option selected hidden>Status</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            </select>
                         </div>
 
-
-                        <div class="col-sm-4">
+                        <!-- <div class="col-sm-4">
                             <label for="{{furniture_details_field_names[3]}}" class="form-label">{{furniture_details_field_names[3]}}</label>
                             <input name="{{furniture_details_field_names[3]}}" class="form-control" type="number" id="{{furniture_details_field_names[3]}}"> 
-                        </div>
+                        </div> -->
 
                         <div class="col-sm-12" style="text-align: center;">
                             <button type="submit" class="btn btn-dark" name="add">Add</button>   

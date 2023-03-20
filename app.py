@@ -267,13 +267,15 @@ def resident_page(page_name = None):
                             on r.hostel_name = hc.hostel_name) as rhc
                             on (ca.hostel_name = rhc.hostel_name AND ca.room_no = rhc.room_no)
                             where resident_id=%s;""",(session['id'],))
+            
             current_allocation=cur.fetchall()[0]
+
 
             # print(current_allocation)
              
             cols=['Room Number','Room Type', 'Hostel_name', 'Hostel Contact', 'Caretaker ID', 'Caretaker Name','Office Number','Email ID','Entry Date','Payment Amount','Payment status','Due Amount', 'Due Status']
 
-            cur.execute(""" select rhc.phone_no
+            cur.execute(f""" select rhc.phone_no
                             from CURRENT_ALLOCATION as ca
                             INNER JOIN 
                             (select  r.room_no, r.room_type ,hc.* from ROOM as r INNER JOIN 
@@ -283,7 +285,7 @@ def resident_page(page_name = None):
                             (select phone_no, CARETAKER.caretaker_id, first_name, middle_name, last_name, office_no, email_id from CARETAKER INNER JOIN CARETAKER_PHONE on CARETAKER.caretaker_id=CARETAKER_PHONE.caretaker_id) as c on h.caretaker_id = c.caretaker_id) as hc
                             on r.hostel_name = hc.hostel_name) as rhc
                             on (ca.hostel_name = rhc.hostel_name AND ca.room_no = rhc.room_no)
-                            where resident_id=%s;""",(session['id'],))
+                            where resident_id='{session['id']}';""")
             contacts=cur.fetchall()
 
 
@@ -1450,7 +1452,7 @@ def security_operations(security_id, operation):
             # Generating the query string
             query_string = ""
             for field in request.form.keys():
-                if (field != "update"):
+                if (field != "update" and request.form[field]!=''):
                     if (query_string != ""):
                         query_string += ", "
                     query_string += f"{security_details_field_names[field]} = '{request.form[field]}'"
@@ -1507,11 +1509,17 @@ def security_operations(security_id, operation):
             #         query_string += f"{security_current_allocation_field_names[field]} = '{request.form[field]}'"
             
             # Adding the update and where clause
-            query_string= f"INSERT INTO SECURITY(security_id, hostel_name, start_time, end_time) VALUES({security_id},'{request.form['hostel_name']}','{request.form['start_time']}','{request.form['end_time']}');"
-            # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
-
+            cur.execute(f"select count(*) from SECURITY where security_id = {security_id} and hostel_name = '{request.form['hostel_name']}' ")
+            no  = cur.fetchall()
+            app.logger.info(no)
+            if no[0][0] == 0 : 
+                    query_string= f"INSERT INTO SECURITY(security_id, hostel_name, start_time, end_time) VALUES({security_id},'{request.form['hostel_name']}','{request.form['start_time']}','{request.form['end_time']}');"
+                    # Executing the query and commiting the changes
+                    cur.execute(query_string)
+                    mysql.connection.commit()
+            else:
+                   cur.execute(f"UPDATE SECURITY SET hostel_name = '{request.form['hostel_name']}',  start_time  = '{request.form['start_time']}',end_time   = '{request.form['end_time']}' where security_id = {security_id} and hostel_name = '{request.form['hostel_name']}' ")
+                   mysql.connection.commit()
             # Redirecting to the resident page
             return redirect(f'/admin/security')
         
@@ -1554,7 +1562,7 @@ def admin_furniture_operations(furniture_id, operation):
             # Generating the query string
             query_string = ""
             for field in request.form.keys():
-                if (field != "update"):
+                if (field != "update"   ):
                     if (query_string != ""):
                         query_string += ", "
                     query_string += f"{furniture_details_field_names[field]} = '{request.form[field]}'"
@@ -1593,7 +1601,7 @@ def admin_hostel_operations(hostel_name, operation):
             # Generating the query string
             query_string = ""
             for field in request.form.keys():
-                if (field != "update"):
+                if (field != "update" and request.form[field]!=''):
                     if (query_string != ""):
                         query_string += ", "
                     query_string += f"{hostel_details_field_names[field]} = '{request.form[field]}'"

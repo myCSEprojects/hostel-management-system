@@ -29,30 +29,47 @@
                     <form action="/admin/add_security" class="row g-3" method="post">
                         <div class="col-sm-12">
                             <label for="{{security_details_field_names[0]}}" class="form-label">{{security_details_field_names[0]}}</label>
-                            <input name="{{security_details_field_names[0]}}" type="number" class="form-control"  id="{{security_details_field_names[0]}}">    
+                            <input name="{{security_details_field_names[0]}}" type="text" class="form-control" maxlength="8" pattern="[0-9]{8}" id="{{security_details_field_names[0]}}" required>    
                         </div>
 
                         <div class="col-sm-4">
                             <label for="{{security_details_field_names[1]}}" class="form-label">{{security_details_field_names[1]}}</label>
-                            <input name="{{security_details_field_names[1]}}" type="text" class="form-control" id="{{security_details_field_names[1]}}">  
+                            <input name="{{security_details_field_names[1]}}" maxlength="15" type="text" class="form-control" id="{{security_details_field_names[1]}}" required>  
                         </div>
 
                         <div class="col-sm-4">
                             <label for="{{security_details_field_names[2]}}" class="form-label">{{security_details_field_names[2]}}</label>
-                            <input name="{{security_details_field_names[2]}}" type="text" class="form-control" id="{{security_details_field_names[2]}}">   
+                            <input name="{{security_details_field_names[2]}}" type="text" class="form-control" id="{{security_details_field_names[2]}}" value="">   
                         </div>
+                    <!-- <form action="/admin/add_security" method="post">
+                        <div>
+                            <label for="{{security_details_field_names[0]}}">{{security_details_field_names[0]}}</label>
+                            <input name="{{security_details_field_names[0]}}" type="text"  maxlength="8" pattern="[0-9]{8}" id="{{security_details_field_names[0]}}" required>
+
+                            <label for="{{security_details_field_names[1]}}">{{security_details_field_names[1]}}</label>
+                            <input name="{{security_details_field_names[1]}}" maxlength="15" type="text"  id="{{security_details_field_names[1]}}"  required>
+
+                            <label for="{{security_details_field_names[2]}}">{{security_details_field_names[2]}}</label>
+                            <input name="{{security_details_field_names[2]}}" type="text"  id="{{security_details_field_names[2]}}" value="">
+
+                            <label for="{{security_details_field_names[3]}}">{{security_details_field_names[3]}}</label>
+                            <input name="{{security_details_field_names[3]}}" maxlength="15" type="text" id="{{security_details_field_names[3]}} " required> -->
 
                         <div class="col-sm-4">
                             <label for="{{security_details_field_names[3]}}" class="form-label">{{security_details_field_names[3]}}</label>
-                            <input name="{{security_details_field_names[3]}}" type="text" class="form-control" id="{{security_details_field_names[3]}}">   
+                            <input name="{{security_details_field_names[3]}}" type="text" maxlength="15" class="form-control" id="{{security_details_field_names[3]}}" required>   
                         </div>
             
                         
                         <!-- Phone Number -->
+                        <!-- <div>
+                            <label for="phone_no">Phone Number</label>
+                            <input name="phone_no" id="phone_no" type="text"  maxlength="10" pattern="[0-9]{10}" required>
+                        </div> -->
 
                         <div class="col-sm-6">
                             <label for="phone_no" class="form-label">Phone Number</label>
-                            <input name="phone_no" type="number" class="form-control" id="phone_no">
+                            <input name="phone_no" type="text" class="form-control" maxlength="10" pattern="[0-9]{10}" id="phone_no" required>
                         </div>
 
                         <div class="col-sm-12" style="text-align: center;">

@@ -12,19 +12,30 @@
 
         <div class="col-md-6">
             <label class="form-label" for="{{hostel_details[0]}}-{{hostel_details_field_names[1]}}">{{hostel_details_field_names[1]}}</label>
-            <input class="form-control" name="{{hostel_details_field_names[1]}}" type="number" value={{hostel_details[1]}} id="{{hostel_details[0]}}-{{hostel_details_field_names[1]}}">
+            <input class="form-control" name="{{hostel_details_field_names[1]}}" type="number" maxlength="10" value={{hostel_details[1]}} id="{{hostel_details[0]}}-{{hostel_details_field_names[1]}}">
    
         </div>
 
         <div class="col-md-6">
             <label class="form-label" for="{{hostel_details[0]}}-{{hostel_details_field_names[2]}}">{{hostel_details_field_names[2]}}</label>
-            <input class="form-control" name="{{hostel_details_field_names[2]}}" type="number" value={{hostel_details[2]}} id="{{hostel_details[0]}}-{{hostel_details_field_names[2]}}">  
+            <input class="form-control" name="{{hostel_details_field_names[2]}}" type="text" pattern="[0-9.]+" title="Should be numerical" value={{hostel_details[2]}} id="{{hostel_details[0]}}-{{hostel_details_field_names[2]}}" required>  
         </div>
 
         <div class="col-md-6">
             <label class="form-label" for="{{hostel_details[0]}}-{{hostel_details_field_names[3]}}">{{hostel_details_field_names[3]}}</label>
-            <input class="form-control" name="{{hostel_details_field_names[3]}}" type="number" value={{hostel_details[3]}} id="{{hostel_details[0]}}-{{hostel_details_field_names[3]}}">  
+            <input class="form-control" name="{{hostel_details_field_names[3]}}" type="text" pattern="[0-9.]+" title="Should be numerical" value={{hostel_details[3]}} id="{{hostel_details[0]}}-{{hostel_details_field_names[3]}}" required>  
         </div>
+        <!-- <label for="{{hostel_details[0]}}-{{hostel_details_field_names[1]}}">{{hostel_details_field_names[1]}}</label>
+        <input name="{{hostel_details_field_names[1]}}" type="number" maxlength="10" value={{hostel_details[1]}} id="{{hostel_details[0]}}-{{hostel_details_field_names[1]}}">
+
+        <label for="{{hostel_details[0]}}-{{hostel_details_field_names[2]}}">{{hostel_details_field_names[2]}}</label>
+        <input name="{{hostel_details_field_names[2]}}" type="text" value={{hostel_details[2]}} pattern="[0-9.]+" title="Should be numerical" id="{{hostel_details[0]}}-{{hostel_details_field_names[2]}}" required >
+
+        <label for="{{hostel_details[0]}}-{{hostel_details_field_names[3]}}">{{hostel_details_field_names[3]}}</label>
+        <input name="{{hostel_details_field_names[3]}}" type="text" value={{hostel_details[3]}} pattern="[0-9.]+" title="Should be numerical" id="{{hostel_details[0]}}-{{hostel_details_field_names[3]}}" required >
+
+        <label for="{{hostel_details[0]}}-{{hostel_details_field_names[4]}}">{{hostel_details_field_names[4]}}</label>
+        <input name="{{hostel_details_field_names[4]}}" type="number" value={{hostel_details[4]}} id="{{hostel_details[0]}}-{{hostel_details_field_names[4]}}" > -->
 
         <div class="col-md-6">
             <label class="form-label" for="{{hostel_details[0]}}-{{hostel_details_field_names[4]}}">{{hostel_details_field_names[4]}}</label>

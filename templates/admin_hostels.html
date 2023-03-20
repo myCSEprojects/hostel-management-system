@@ -30,22 +30,38 @@
 
                         <div class="col-sm-6">
                             <label for="{{hostel_details_field_names[1]}}" class="form-label">{{hostel_details_field_names[1]}}</label>
-                            <input name="{{hostel_details_field_names[1]}}" class="form-control" type="text"  id="{{hostel_details_field_names[1]}}">   
+                            <input name="{{hostel_details_field_names[1]}}" class="form-control" maxlength="10" pattern="[0-9]{10}" type="text"  id="{{hostel_details_field_names[1]}}">   
                         </div>
 
                         <div class="col-sm-6">
                             <label for="{{hostel_details_field_names[2]}}" class="form-label">{{hostel_details_field_names[2]}}</label>
-                            <input name="{{hostel_details_field_names[2]}}" class="form-control" type="number"  id="{{hostel_details_field_names[2]}}">   
+                            <input name="{{hostel_details_field_names[2]}}" class="form-control" type="text" pattern="[0-9.]+" title="Should be numerical" id="{{hostel_details_field_names[2]}}">   
                         </div>
 
                         <div class="col-sm-6">
                             <label for="{{hostel_details_field_names[3]}}" class="form-label">{{hostel_details_field_names[3]}}</label>
-                            <input name="{{hostel_details_field_names[3]}}" class="form-control" type="number" id="{{hostel_details_field_names[3]}}">    
+                            <input name="{{hostel_details_field_names[3]}}" class="form-control" type="text" pattern="[0-9.]+" title="Should be numerical" id="{{hostel_details_field_names[3]}}">    
+                    <!-- <form action="/admin/add_hostel" method="POST">
+                        <div>
+                            <label for="{{hostel_details_field_names[0]}}">{{hostel_details_field_names[0]}}</label>
+                            <input name="{{hostel_details_field_names[0]}}" type="text"  id="{{hostel_details_field_names[0]}}">
+
+                            <label for="{{hostel_details_field_names[1]}}">{{hostel_details_field_names[1]}}</label>
+                            <input name="{{hostel_details_field_names[1]}}" type="text" maxlength="10" pattern="[0-9]{10}" id="{{hostel_details_field_names[1]}}">
+
+                            <label for="{{hostel_details_field_names[2]}}">{{hostel_details_field_names[2]}}</label>
+                            <input name="{{hostel_details_field_names[2]}}" type="text" pattern="[0-9.]+" title="Should be numerical" id="{{hostel_details_field_names[2]}}">
+
+                            <label for="{{hostel_details_field_names[3]}}">{{hostel_details_field_names[3]}}</label>
+                            <input name="{{hostel_details_field_names[3]}}" type="text" pattern="[0-9.]+" title="Should be numerical" id="{{hostel_details_field_names[3]}}">
+                            
+                            <label for="{{hostel_details_field_names[4]}}">{{hostel_details_field_names[4]}}</label>
+                            <input name="{{hostel_details_field_names[4]}}" type="text" maxlength="8" pattern="[0-9]{8}" id="{{hostel_details_field_names[4]}}"> -->
                         </div>
 
                         <div class="col-sm-6">
                             <label for="{{hostel_details_field_names[4]}}" class="form-label">{{hostel_details_field_names[4]}}</label>
-                            <input name="{{hostel_details_field_names[4]}}" class="form-control" type="number" id="{{hostel_details_field_names[4]}}">   
+                            <input name="{{hostel_details_field_names[4]}}" class="form-control" type="text" maxlength="8" pattern="[0-9]{8}" id="{{hostel_details_field_names[4]}}">   
                         </div>
 
                         <div class="col-sm-12" style="text-align: center;">
