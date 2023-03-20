@@ -1,13 +1,200 @@
-{% extends "base.html" %}
+{% extends "base_home.html" %}
 
 {% block head %}
     <title>Home</title>
+    
+
+    <style>
+        .main h3 {
+            animation: slide-down 1s ease-in;
+        }
+
+        .main h1 {
+            animation: slide-down 1s ease-in;
+        }
+
+        .container {
+            animation: fade-in 1s ease-in;
+        }
+
+       
+        
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-down {
+        0% {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        }
+
+        @keyframes zoom-in {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+         .container{
+          background-image: url("/static/images/final.jpeg");
+          
+          background-attachment: fixed;
+
+          background-size: 100% 100%;
+          
+      }   
+
+        .container.scrolled {
+            background-image: none;
+            background-color: white;
+        }
+         
+        .main{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+
+        }
+
+        .later{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 5px;
+            padding: 0 20px;
+            
+
+        }
+
+        .btn{
+            padding: 0 20px;
+            font-size: 18px;
+            
+
+        }
+
+        .btn-group {
+            margin-right: 20px;
+            margin-left: 20px;
+            align-items: center;
+            justify-content: center;
+            size: 20%;         
+        }
+
+        .users{
+            padding: 100px;
+            font-size: 24px; /* increased */
+            font-weight: 200;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .admin{
+            margin: 90px 40px;
+        }
+
+        .resident{
+            margin: 90px 40px;
+        }
+
+      
+        .fa-solid{
+            color: black;
+            padding: 0 30px;
+        }
+
+        @keyframes text-animation {
+            0% { transform: translateX(-50px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(0); opacity: 1; }
+        } */
+
+        .f1, .f2{
+            display: inline-block;
+            font-weight: bolder;
+            font-size: 12px; /* increased */
+        }
+
+        #scroll-indicator {
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+            transform: translateY(0);
+            }
+            50% {
+            transform: translateY(-10px);
+            }
+        }
+        
+    </style>
 {% endblock %}
 
+
 {% block body %}
-    <!-- Code for the home page goes here -->
-    <a href="/resident/login"> resident login </a>
-    <br>
-    <a href="/admin/login"> admin login </a>
+
+<body class="container">
+
+  <div class="main">
+    <div class="d-flex align-items-center mb-4">
+      
+        <div class="rounded text-black p-4 ml-3">
+           
+            <h1 class="text-center my-5" style="font-size: 65px; margin-top: 30px; padding-top: 50px; ">Hostel Management System</h1>
+            
+            <h3 class="text-center my-5" style="font-size: 30px;">IIT Gandhinagar</h3>
+        </div>
+    </div>
+  </div>
+
+  <div class = "later">
+    <div class="d-flex justify-content-center mb-5" >
+        <div class="btn-group";>
+            <a class="btn btn-dark" href="/admin/login"  style="color:white; font-size: 18px;">Admin</a>
+
+           
+        </div>
+
+        <div class="btn-group">
         
+            <a class="btn btn-dark" href="/resident/login" style="color:white; font-size: 18px;">Resident</a> 
+        </div>
+
+       
+    </div>
+  </div>
+
+  <div id="scroll-indicator" class="fixed bottom-1 w-full text-center" style="margin-top: 130px;">
+    <h3 class="text-center" style="font-size: 10px; color:black";>Scroll down</h3>
+    <svg fill="currentColor" viewBox="0 0 15 15" class="animate-bounce text-black" style="width: 2em; height: 2em;">
+      <path d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>
+      <path d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>
+    </svg>
+  </div>
+
+ 
+</body>
+
+
+
 {% endblock %}
+
