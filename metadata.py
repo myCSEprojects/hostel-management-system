@@ -70,6 +70,14 @@ furniture_details_field_names = {
     "Status": "status",
 }
 
+hostel_details_field_names = {
+    "Hostel Name": "hostel_name",
+    "Hostel Contact": "contact", 
+    "Energy Consumption": "energy_consumption",
+    "Water Consumption": "water_consumption",
+    "Caretaker ID": "caretaker_id",
+}
+
 security_current_allocation_field_names = {
     "Hostel Name": "hostel_name", 
     "Start Time": "start_time", 

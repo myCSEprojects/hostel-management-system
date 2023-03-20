@@ -26,6 +26,22 @@ function loadSecurity(security_id){
         }
     });
 }
+
+function loadHostel(hostel_name){
+    selector = '#'+ hostel_name + " div";
+    if($.trim($(selector).html())!=''){
+        return;
+    }
+    $.ajax({
+        dataType: "html",
+        url: '/admin/hostel/' + hostel_name,
+        type: 'POST',
+        success: function(result){
+            $(selector).html(result);
+        }
+    });
+}
+
 function loadFurniture(furniture_id){
     selector = '#'+ furniture_id + " div";
     if($.trim($(selector).html())!=''){

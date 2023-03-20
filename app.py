@@ -40,7 +40,8 @@ admin_pages = {
     "security": "/admin/security",
     "outlets": "/admin/outlets",
     'caretakers': "/admin/caretakers",
-    "furniture": "/admin/furniture"
+    "furniture": "/admin/furniture",
+    "hostel":"/admin/hostel"
 }
 
 resident_pages = {
@@ -298,7 +299,7 @@ def admin_page(page_name = None):
     cur = mysql.connection.cursor()
     print(page_name)
     # error handling
-    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'add_security','academic_period', 'security', "rooms", "add_room", "outlets", "caretakers", "furniture", "add_furniture"]:
+    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'add_security','academic_period', 'security', "rooms", "add_room", "outlets", "caretakers", "furniture", "add_furniture","hostel","add_hostel"]:
         return redirect('/admin/login')    
 
     if (page_name == 'login'):
@@ -388,7 +389,7 @@ def admin_page(page_name = None):
             query_string = ""
             table_order = ""
             for field in request.form:
-                if field != "add" and field != "phone_no" and field != "program" and field != "branch":
+                if field != "add" and field != "phone_no" and field != "program" and field != "branch" and request.form[field]!='':
                     if query_string != "":
                         query_string += ", "
                     if table_order != "":
@@ -417,7 +418,7 @@ def admin_page(page_name = None):
             query_string = ""
             table_order = ""
             for field in request.form:
-                if field != "add":
+                if field != "add" and request.form[field]!='':
                     if query_string != "":
                         query_string += ", "
                     if table_order != "":
@@ -439,7 +440,7 @@ def admin_page(page_name = None):
             query_string = ""
             table_order = ""
             for field in request.form:
-                if field != "add" and field != "phone_no":
+                if field != "add" and field != "phone_no" and request.form[field]!='':
                     if query_string != "":
                         query_string += ", "
                     if table_order != "":
@@ -457,6 +458,29 @@ def admin_page(page_name = None):
             # redirecting to the residents page
             return redirect('/admin/security')
     
+    elif (page_name == 'add_hostel'):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            
+            # adding into resident
+            query_string = ""
+            table_order = ""
+            for field in request.form:
+                if field != "add" and request.form[field]!='':
+                    if query_string != "":
+                        query_string += ", "
+                    if table_order != "":
+                        table_order += ", "
+                    query_string += f'"{request.form[field]}"'
+                    table_order += hostel_details_field_names[field]
+            # executing the query and commiting the changes
+            cur.execute("INSERT INTO HOSTEL (" + table_order + ") VALUES (" + query_string + ");")
+            
+            # Commiting changes
+            mysql.connection.commit()
+            # redirecting to the residents page
+            return redirect('/admin/hostel')
+        
+
     elif (page_name == 'dashboard'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
             cur.execute(""" SELECT hostel_name, occupied, room_type, COUNT(hostel_name)
@@ -904,7 +928,7 @@ def admin_page(page_name = None):
                 # Generating the sql query string
                 query_string = ""
                 if (search_ID != None and search_ID != ""):
-                    query_string += f" FURNITURE.furniture_id = {search_ID} "
+                    query_string += f" FURNITURE.furniture_id = '{search_ID}' "
                 if (hostel != None and hostel != "all"):
                     if (query_string != ""):
                         query_string += "and"
@@ -919,7 +943,7 @@ def admin_page(page_name = None):
                     query_string += f" status = '{status}' "
                 if (query_string != ""):
                     query_string = "where" + query_string
-                
+                # app.logger.info("SELECT FURNITURE.furniture_id, status FROM FURNITURE {query_string}")
                 furniture_query = f"""  SELECT FURNITURE.furniture_id, status
                                         FROM FURNITURE
                                         {query_string}  """
@@ -959,6 +983,23 @@ def admin_page(page_name = None):
         else:
             return redirect('/admin/login')
 
+    elif(page_name=="hostel"):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            if request.method == 'GET':
+                hostel_query = f"""  SELECT HOSTEL.hostel_name
+                                        FROM HOSTEL  order by hostel_name"""
+                # Getting all the data corresponding to the residents
+                cur.execute(hostel_query)
+                hostels = cur.fetchall()
+                # Rendering the template
+                return render_template('admin_hostels.html', 
+                                    pages = admin_pages, 
+                                    hostels=hostels,
+                                    hostel_details_field_names = list(hostel_details_field_names.keys()))
+            else:
+                return "got the request"    
+        else:
+            return redirect('/admin/login')
 
     elif (page_name == 'logout'):
         session.pop('logged_in', None)
@@ -1254,6 +1295,34 @@ def admin_furniture_data(furniture_id):
                                 hostel_names = hostel_names, 
                                 today = datetime.date.today())  
 
+@app.route('/admin/hostel/<hostel_name>', methods=['POST'])
+def admin_hostel_data(hostel_name):
+    cur = mysql.connection.cursor()
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        
+        # Fetching the resident details
+        cur.execute(f"""select hostel_name, contact, energy_consumption, water_consumption, caretaker_id
+                        from (HOSTEL)
+                        where hostel_name = '{hostel_name}';""")
+        hostel_details = cur.fetchall()
+        try:
+            hostel_details = hostel_details[0]
+        except:
+            hostel_details = []
+
+        
+        # Fetching all the availble hostel names
+        cur.execute(""" SELECT hostel_name from
+                        HOSTEL;""")
+        hostel_names = cur.fetchall()
+
+        return render_template('admin_hostel_data.html', 
+                                hostel_details = hostel_details, 
+                                hostel_details_field_names = list(hostel_details_field_names.keys()), 
+                                hostel_names = hostel_names, 
+                                today = datetime.date.today())  
+
+
 @app.route('/admin/residents/<resident_id>/<operation>', methods=['POST'])
 def resident_operations(resident_id, operation):
     
@@ -1358,7 +1427,7 @@ def resident_operations(resident_id, operation):
 def security_operations(security_id, operation):
     
     # Error handling
-    if (operation not in ['update_details', 'add_allocation', 'delete_phone', "add_phone","delete_current_allocation"]):
+    if (operation not in ['update_details', 'add_allocation', 'delete_phone', "add_phone","delete_current_allocation","delete_security"]):
         return redirect('/admin/security')
     
     # Connecting to the database
@@ -1409,6 +1478,12 @@ def security_operations(security_id, operation):
 
             # Redirecting to the resident page
             return redirect(f'/admin/security')
+        elif operation=="delete_security":
+            query_string = f"DELETE FROM GUARD WHERE security_id='{security_id}';"
+            cur.execute(query_string)
+            mysql.connection.commit()
+            return redirect(f'/admin/security')  
+
 
         elif (operation == 'add_allocation'):
             # # Generating the query string
@@ -1491,6 +1566,38 @@ def admin_furniture_operations(furniture_id, operation):
             cur.connection.commit()
 
             return redirect(request.referrer)  
+        
+@app.route('/admin/hostel/<hostel_name>/<operation>', methods=['POST'])
+def admin_hostel_operations(hostel_name, operation):
+    # Error handling
+    if (operation not in ['update_hostel_details', 'delete_hostel']):
+        return redirect('/admin/hostel')
+    
+    # Connecting to the database
+    cur = mysql.connection.cursor()
+
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        if (operation == 'update_hostel_details'):
+            # Generating the query string
+            query_string = ""
+            for field in request.form.keys():
+                if (field != "update"):
+                    if (query_string != ""):
+                        query_string += ", "
+                    query_string += f"{hostel_details_field_names[field]} = '{request.form[field]}'"
+            # Adding the select and where clause
+            query_string = f"UPDATE HOSTEL SET {query_string} WHERE hostel_name = '{hostel_name}';"
+            
+            # Executing the query and commiting the changes
+            cur.execute(query_string)
+            mysql.connection.commit()
+ 
+            return redirect(f'/admin/hostel')
+        if operation == 'delete_hostel':
+            query_string = f"DELETE FROM HOSTEL WHERE hostel_name='{hostel_name}';"
+            cur.execute(query_string)
+            mysql.connection.commit()
+            return redirect(f'/admin/hostel')    
 # Running the app
 if __name__ == '__main__':
     app.run(debug=True)
