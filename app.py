@@ -396,20 +396,25 @@ def admin_page(page_name = None):
                         table_order += ", "
                     query_string += f'"{request.form[field]}"'
                     table_order += resident_details_field_names[field]
-            # executing the query and commiting the changes
-            cur.execute("INSERT INTO RESIDENT (" + table_order + ") VALUES (" + query_string + ");")
-            
-            # adding into phone_number
-            cur.execute("INSERT INTO RESIDENT_PHONE (" + "resident_id, phone_no" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['phone_no']}'" + ");")
-            
-            # Adding branch details for student
-            if (request.form['Resident Type'] == 'student'):
-                cur.execute("INSERT INTO ENROLLED_IN (" + "resident_id, program, branch" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['program']}', '{request.form['branch']}'" + ");")
+            try:
+                # executing the query and commiting the changes
+                cur.execute("INSERT INTO RESIDENT (" + table_order + ") VALUES (" + query_string + ");")
+                
+                # adding into phone_number
+                cur.execute("INSERT INTO RESIDENT_PHONE (" + "resident_id, phone_no" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['phone_no']}'" + ");")
+                
+                # Adding branch details for student
+                if (request.form['Resident Type'] == 'student'):
+                    cur.execute("INSERT INTO ENROLLED_IN (" + "resident_id, program, branch" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['program']}', '{request.form['branch']}'" + ");")
 
-            # Commiting changes
-            mysql.connection.commit()
-            # Sending the response
-            return {"success": True, "reload": True, "message": "Student added successfully"}
+                # Commiting changes
+                mysql.connection.commit()
+                # Sending the response
+                return {"success": True, "reload": True, "message": "Student added successfully"}
+            
+            except Exception as e:
+                app.logger.info(type(e))
+                return {"success": False, "reload": False, "message": str(e.args[1])}
         
     elif (page_name == 'add_furniture'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):

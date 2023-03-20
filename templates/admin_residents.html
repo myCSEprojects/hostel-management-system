@@ -30,22 +30,22 @@
                     <form action="/admin/add_student" id="pop-up-form" class="row g-3" method="post">
                       <div class="col-sm-12">
                         <label for="{{resident_details_field_names[0]}}" class="form-label">{{resident_details_field_names[0]}}</label>
-                        <input name="{{resident_details_field_names[0]}}" type="number" class="form-control" id="{{resident_details_field_names[0]}}">
+                        <input name="{{resident_details_field_names[0]}}" type="text" title="ID must 8 digit number" pattern="[0-9]{8}" required class="form-control" id="{{resident_details_field_names[0]}}">
                       </div>
 
                       <div class="col-md-4">
                         <label for="{{resident_details_field_names[1]}}" class="form-label">{{resident_details_field_names[1]}}</label>
-                        <input name="{{resident_details_field_names[1]}}" type="text" class="form-control"  id="{{resident_details_field_names[1]}}">
+                        <input name="{{resident_details_field_names[1]}}" maxlength="15" type="text" class="form-control"  id="{{resident_details_field_names[1]}}" required>
                       </div>
 
                       <div class="col-md-4">
                         <label for="{{resident_details_field_names[2]}}" class="form-label">{{resident_details_field_names[2]}}</label>
-                        <input name="{{resident_details_field_names[2]}}" type="text" class="form-control"    id="{{resident_details_field_names[2]}}">
+                        <input name="{{resident_details_field_names[2]}}" maxlenght="15" type="text" class="form-control"    id="{{resident_details_field_names[2]}}">
                       </div>
 
                       <div class="col-md-4">
                         <label for="{{resident_details_field_names[3]}}" class="form-label">{{resident_details_field_names[3]}}</label>
-                        <input name="{{resident_details_field_names[3]}}" type="text" class="form-control"  id="{{resident_details_field_names[3]}}">
+                        <input name="{{resident_details_field_names[3]}}" maxlenght="15" type="text" class="form-control"  id="{{resident_details_field_names[3]}}" required>
                       </div>
 
                       <div class="col-md-6">
@@ -59,7 +59,7 @@
 
                       <div class="col-md-6">
                         <label for="{{resident_details_field_names[5]}}" class="form-label">{{resident_details_field_names[5]}}</label>
-                        <select name="{{resident_details_field_names[5]}}" class="form-select" type="text" id="{{resident_details_field_names[5]}}" ">
+                        <select name="{{resident_details_field_names[5]}}" class="form-select" type="text" id="{{resident_details_field_names[5]}}" >
                             {% for blood_type in blood_types: %}
                                 <option value="{{blood_type}}">{{blood_type}}</option>
                             {% endfor %}
@@ -69,24 +69,24 @@
                       <div class="col-md-6">
                         <!-- Phone Number -->
                         <label for="phone_no" class="form-label">Phone Number</label>
-                        <input name="phone_no" type="number" id="phone_no" class="form-control" >
+                        <input name="phone_no" type="text" title="Phone Number must 10 digit number" pattern="[0-9]{10}" id="phone_no" class="form-control"  required>
                       </div>
                       <div class="col-md-6">
                         <label for="{{resident_details_field_names[6]}}" class="form-label">{{resident_details_field_names[6]}}</label>
-                        <input name="{{resident_details_field_names[6]}}"  type="email" class="form-control"  id="{{resident_details_field_names[6]}}">
+                        <input name="{{resident_details_field_names[6]}}"  type="email" class="form-control"  id="{{resident_details_field_names[6]}}" required>
                       </div>
                       <div class="col-md-4">
                           <label for="{{resident_details_field_names[7]}}" class="form-label">{{resident_details_field_names[7]}}</label>
-                          <input name="{{resident_details_field_names[7]}}" type="text" class="form-control"  id="{{resident_details_field_names[7]}}">
+                          <input name="{{resident_details_field_names[7]}}" type="text" maxlength="85"  id="{{resident_details_field_names[7]}}" required>
                       </div>
                       <div class="col-md-4">
                         <label for="{{resident_details_field_names[8]}}" class="form-label">{{resident_details_field_names[8]}}</label>
-                        <input name="{{resident_details_field_names[8]}}" type="text" class="form-control"  id="{{resident_details_field_names[8]}}">
+                        <input name="{{resident_details_field_names[8]}}" type="text" title="Postal Code must 6 digit number" pattern="[0-9]{6}" class="form-control"  id="{{resident_details_field_names[8]}}" required>
                       </div>
 
                       <div class="col-md-4">
                         <label for="{{resident_details_field_names[9]}}" class="form-label">{{resident_details_field_names[9]}}</label>
-                        <input name="{{resident_details_field_names[9]}}" type="number" class="form-control"  id="{{resident_details_field_names[9]}}">
+                        <input name="{{resident_details_field_names[9]}}" type="text" title="Phone Number must 10 digit number" pattern="[0-9]{10}" class="form-control"  id="{{resident_details_field_names[9]}}" required>
                       </div>
 
                       <div class="col-md-4">

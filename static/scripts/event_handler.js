@@ -100,28 +100,40 @@ form.addEventListener('submit', (e) => {
   const formData = new FormData(form);
 
   // Send the form data through Ajax
-  fetch(url, {
-    method: 'POST',
-    dataType: 'json',
-    body: formData
-  })
-  .then(data => data.json())
-  .then(data =>{
-    // Handle the response data
-    console.log(data);
-    const messageModal = new bootstrap.Modal(document.getElementById("message-modal"));
-    $("#message-modal-body").html(data.message);
-    if (data.reload){
-        $("#message-modal-close").attr("onclick", "location.reload()");
-        $("#message-modal-ok").attr("onclick", "location.reload()");
-    }
-    else{
+    fetch(url, {
+        method: 'POST',
+        dataType: 'json',
+        body: formData
+    })
+    .then(data => {
+        if (data.ok){
+            return data.json()
+        }
+        throw new Error('Something went wrong');
+    })
+    .then(data =>{
+        // Handle the response data
+        console.log(data);
+        const messageModal = new bootstrap.Modal(document.getElementById("message-modal"));
+        var toggle_off = "$('#message-modal').modal('hide');"
+        $("#message-modal-body").html(data.message);
+        if (data.reload){
+            $("#message-modal-title").html("Success");
+            $("#message-modal-close").attr("onclick", "location.reload()");
+            $("#message-modal-ok").attr("onclick", "location.reload()");
+        }
+        else{
+            $("#message-modal-title").html("Error");
+            $("#message-modal-close").attr("onclick", toggle_off);
+            $("#message-modal-ok").attr("onclick", toggle_off);
+        }
+        messageModal.toggle();
+    })
+    .catch(error => {
+        // Handle errors
+        const messageModal = new bootstrap.Modal(document.getElementById("message-modal"));
+        $("#message-modal-body").html("Unexpected error occured. Please try again later.");
         $("#message-modal-close").attr("onclick", "");
         $("#message-modal-ok").attr("onclick", "");
-    }
-    messageModal.toggle();
-  })
-  .catch(error => {
-    // Handle errors
-  });
+    });
 });
