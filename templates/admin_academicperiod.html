@@ -7,8 +7,10 @@
 {% block body %}
 <p>{{error}}</p>
 <form action="/admin/academic_period/add_academic_period" method="post">
-    <input type="number" name="semester" placeholder="Semester">
-    <input type="number" name="year" placeholder="Year">
+    <label for="semester">Semester:</label>
+    <input type="number" name="semester" max=8 min=1  placeholder="Semester">
+    <label for="year">Year:</label>
+    <input type="number" name="year" min=2000  placeholder="Year">
     <input type="submit" value="add">
 </form>
 

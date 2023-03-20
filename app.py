@@ -25,30 +25,30 @@ mysql = MySQL(app)
 
 # Defining the pages to support
 pages = {
-    "home" : "/home",
-    "hostel" : "/home/hostel_details" ,
-    "outlet"  : "/home/outlet_details",
-    "caretaker" : "/home/caretaker_details"
+    "Home" : "/home",
+    "Hostel" : "/home/hostel_details" ,
+    "Caretaker" : "/home/caretaker_details",
+    "Outlet"  : "/home/outlet_details",
 }
 
 admin_pages = {
-    "logout": "/admin/logout",
-    "dashboard": "/admin/dashboard",
-    "residents": "/admin/residents",
-    "rooms": "/admin/rooms",
-    "academic period":"/admin/academic_period",
-    "security": "/admin/security",
-    "outlets": "/admin/outlets",
-    'caretakers': "/admin/caretakers",
-    "furniture": "/admin/furniture",
-    "hostel":"/admin/hostel"
+    "Dashboard": "/admin/dashboard",
+    "Residents": "/admin/residents",
+    "Rooms": "/admin/rooms",
+    "Security": "/admin/security",
+    "Furniture": "/admin/furniture",
+    "Hostel":"/admin/hostel",
+    'Caretakers': "/admin/caretakers",
+    "Academic period":"/admin/academic_period",
+    "Outlets": "/admin/outlets",
+    "Logout": "/admin/logout",
 }
 
 resident_pages = {
-    "logout": "/resident/logout",
-    "history": "/resident/history",
-    "profile": "/resident/profile",
-    'current allocation': "/resident/current_allocation",
+    "Profile": "/resident/profile",
+    'Current allocation': "/resident/current_allocation",
+    "History": "/resident/history",
+    "Logout": "/resident/logout",
 }
 
 @app.template_filter('strftime')
@@ -123,7 +123,11 @@ def outlet():
         dict2[i[0]] = ""
     table5 = [list(i) for i in table5]
     for i in table6:
-        dict2[i[1]] += str(i[0]) +" "
+        if len(dict2[i[1]]) == 0 :
+              dict2[i[1]] += str(i[0]) 
+        else:
+            dict2[i[1]] += ", " +str(i[0]) 
+             
     for i in range(len(table5)):
          table5[i].append(dict2[table5[i][0]])
     table5.insert(0,['Name','Open time','Close time','Hostel Name','Owner Name','Outlet Phoneno']) 
@@ -148,7 +152,10 @@ def caretaker_details():
         dict1[i[0]] = ""
     table1 = [list(i) for i in table1]
     for i in table2:
-        dict1[i[1]] += str(i[0]) +" "
+        if len(dict1[i[1]]) == 0 :
+              dict1[i[1]] += str(i[0]) 
+        else:
+            dict1[i[1]] += ", " +str(i[0]) 
     for i in range(len(table1)):
          table1[i].append(dict1[table1[i][0]])
     table1.insert(0,['ID','Name','Office Number','Email ID','Hostel Name','Hostel Contact','Caretaker Phoneno']) 
@@ -1532,7 +1539,7 @@ def academic_period_operations(operation):
                 # Redirecting to the resident page
                 return redirect(f'/admin/academic_period')
             else:
-                return redirect(f'/admin/dashboard')
+                return redirect(f'/admin/academic_period')
 @app.route('/admin/furniture/<furniture_id>/<operation>', methods=['POST'])
 def admin_furniture_operations(furniture_id, operation):
     # Error handling

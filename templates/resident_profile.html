@@ -46,9 +46,10 @@
             <th>Phone numbers:</th>
             <td>
                 <table>
-                    {%for contact in contacts:%}
-                    <td>{{contact[0]}}</td>
+                    {%for contact in contacts[:-1]:%}
+                    <td>{{contact[0]}},</td>
                     {% endfor %}
+                    <td>{{contacts[-1][0]}}</td>
                 </table>
             </td>
         </tr>
