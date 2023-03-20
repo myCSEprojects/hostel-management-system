@@ -52,6 +52,8 @@ Outlets Delete
 ![image](https://user-images.githubusercontent.com/80308830/226428100-5247ffce-b0a1-4ac3-99e2-a8cc4e7713dd.png)
 ### Deleting 
 clicking on delete button 
+![image](https://user-images.githubusercontent.com/80308830/226429972-5a89b455-2a18-453d-9b1f-d89231652f2f.png)
+
 ### After
 ![image](https://user-images.githubusercontent.com/80308830/226428235-22038403-7d59-42d9-b1e0-f4ef544fb039.png)
 ### Pop up
@@ -81,7 +83,7 @@ For each page in the navigation bar, we can update, add, or delete to the databa
 
 
 ## Resident HomePage
-ss
+
 
 
 
@@ -93,7 +95,7 @@ ss
 4. Rajesh
 5. Gnana Sai
 6. Chaitanya
-7. Rishab
+
 
 ## G2 
 1. Sriman 
@@ -101,3 +103,4 @@ ss
 3. Sunny 
 4. Siva Sai 
 5. Karthik
+6. Rishab
