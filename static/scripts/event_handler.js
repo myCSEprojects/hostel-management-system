@@ -68,3 +68,44 @@ function resident_type_event() {
         $("#branch_details #program").attr('disabled', false);
     }
 }
+
+// Handling form submissions
+// Get the form element
+const form = document.getElementById('pop-up-form');
+
+// Add a submit event listener to the form
+form.addEventListener('submit', (e) => {
+  // Prevent the default form submission behavior
+  e.preventDefault();
+
+  var url = form.action;
+
+  // Create a new FormData object from the form data
+  const formData = new FormData(form);
+
+  // Send the form data through Ajax
+  fetch(url, {
+    method: 'POST',
+    dataType: 'json',
+    body: formData
+  })
+  .then(data => data.json())
+  .then(data =>{
+    // Handle the response data
+    console.log(data);
+    const messageModal = new bootstrap.Modal(document.getElementById("message-modal"));
+    $("#message-modal-body").html(data.message);
+    if (data.reload){
+        $("#message-modal-close").attr("onclick", "location.reload()");
+        $("#message-modal-ok").attr("onclick", "location.reload()");
+    }
+    else{
+        $("#message-modal-close").attr("onclick", "");
+        $("#message-modal-ok").attr("onclick", "");
+    }
+    messageModal.toggle();
+  })
+  .catch(error => {
+    // Handle errors
+  });
+});

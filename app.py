@@ -407,8 +407,9 @@ def admin_page(page_name = None):
 
             # Commiting changes
             mysql.connection.commit()
-            # redirecting to the residents page
-            return redirect('/admin/residents')
+            # Sending the response
+            return {"success": True, "reload": True, "message": "Student added successfully"}
+        
     elif (page_name == 'add_furniture'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
             
@@ -430,6 +431,7 @@ def admin_page(page_name = None):
             mysql.connection.commit()
             # redirecting to the residents page
             return redirect('/admin/furniture')
+        
     elif (page_name == 'add_security'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
             
