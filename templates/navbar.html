@@ -1,16 +1,56 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<style>
+    /* Customize the navbar colors */
+    .navbar {
+        background-color: black;
+        color: #fff;
+    
+       
+    }
+    
+    .navbar-brand {
+        font-weight: lighter;
+        font-size: 1.5rem;
+        color: white;
+    }
+    .container-fluid{
+        width: 100%;
+    }
+    
+    .nav-link {
+        color: #fff !important;
+        font-size: 1.2rem;
+    }
+    
+    .nav-link:hover {
+        color: #ffc107 !important;
+    }
+    
+    .logo-image {
+        height: 30px;
+        margin-right: 10px;
+    }
+</style>
+
+<!-- Add the Bootstrap 5 CSS and JS files in the head section of the HTML file -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css" integrity="sha512-x9JFPe/Q4Q4DehyV89FxvPKu90wVjKkDggPbssRpLhGoh9zV8PAdHNuNXofa+1vJkGwW8+06/y0xoaxfN/Sp2Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.min.js" integrity="sha512-HmJmtLY30J6U1r5SSByF6Rj+8LJh6Hhh//Gq1jrXWzg8fse57iZnEEcIv91jWwG8YYhnMsFySyL+5H1NS5lOaw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- Add the navigation bar HTML code -->
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">H.M.S</a>
+        <a class="navbar-brand" href="#">
+            <img src="/static/images/iitgn_logo.png" alt="Logo" class="logo-image" >Hostel Management System
+        </a>
         <!-- Button for the navbar -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav ms-auto">
                 {% for page in pages %}
                 <li class="nav-item">
-                    <a class="nav-link"  href="{{pages[page]}}">{{ page }}</a>
+                    <a class="nav-link" href="{{pages[page]}}">{{ page }}</a>
                 </li>
                 {% endfor %}
             </ul>
