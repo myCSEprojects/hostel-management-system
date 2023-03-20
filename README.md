@@ -89,10 +89,9 @@ Residents filter
 ## Admin Dashboard
 ![image](https://user-images.githubusercontent.com/80308830/226423771-aa566b35-72cf-452f-9c76-e058819bac83.png)
 <br>
-For each page in the navigation bar, we can update, add, or delete to the database. Here, we show only for the admin-resident page.
-
 
 ## Resident HomePage
+![image](https://user-images.githubusercontent.com/80308830/226473617-c095cc39-d321-49ea-a86c-11d74dab5cd6.png)
 
 
 
