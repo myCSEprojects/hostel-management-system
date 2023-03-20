@@ -1,6 +1,6 @@
 <div>
     <h3 style="text-align: center; ">Resident Details</h3>
-    <form class="row g-3 needs-validation" novalidate action="/admin/residents/{{resident_details[0]}}/update_details" method="post">
+    <form class="row g-3 needs-validation pop-up-form" novalidate action="/admin/residents/{{resident_details[0]}}/update_details" method="post">
         <div class="col-md-3">
             <label for="{{resident_details[0]}}-{{resident_details_field_names[0]}}" class="form-label">{{resident_details_field_names[0]}}</label>
             <input name="{{resident_details_field_names[0]}}" type="number" class="form-control" value={{resident_details[0]}} id="{{resident_details[0]}}-{{resident_details_field_names[0]}}" disabled>
@@ -114,7 +114,7 @@
     <hr>
     <h3 style="text-align: center; margin-top: 20px;">Phone Numbers</h3>
     {% for phone_number in resident_phone_details %}
-    <form action="/admin/residents/{{resident_details[0]}}/delete_phone" class="row row-cols-lg-auto g-3 align-items-center" method="post">
+    <form action="/admin/residents/{{resident_details[0]}}/delete_phone" class="row row-cols-lg-auto g-3 align-items-center pop-up-form" method="post">
         <div class="box col-md-6" style="margin-bottom: 10px;">
             <input type="number" name="phone_no" class="form-control" value="{{phone_number[0]}}" readonly>
         </div>  
@@ -139,7 +139,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/admin/residents/{{resident_details[0]}}/add_phone" method="post">
+                <form action="/admin/residents/{{resident_details[0]}}/add_phone" class="pop-up-form" method="post">
                     <input type="number" style="margin-bottom: 10px;" class="form-control" name="phone_no" placeholder="Phone Number">
                     <button class="btn btn-dark btn-sm"  type="submit" name="add">Add Phone</button>
                 </form>
@@ -152,7 +152,7 @@
 <div>
     <hr>
     <h3 style="text-align: center; margin-top: 20px;">Program Details</h3>
-    <form action="/admin/residents/{{resident_details[0]}}/update_program" class="row g-3" method="post">
+    <form action="/admin/residents/{{resident_details[0]}}/update_program" class="row g-3 pop-up-form" method="post">
 
         <div class="col-md-4">
             <label for="program" class="form-label">Program</label>
@@ -186,7 +186,7 @@
     <hr>
     <h3 style="text-align: center; margin-top: 20px;">Current Allocation</h3>
     {%if resident_current_allocation_details | length != 0%}
-    <form action="/admin/residents/{{resident_details[0]}}/update_current_allocation" class="row g-3"  method="post">
+    <form action="/admin/residents/{{resident_details[0]}}/update_current_allocation" class="row g-3 pop-up-form"  method="post">
         <div class="col-md-6">
             <label for="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}" class="form-label">{{resident_current_allocation_field_names[0]}}</label>
             <input name="{{resident_current_allocation_field_names[0]}}" class="form-control" type="number" value={{resident_current_allocation_details[0]}} id="{{resident_details[0]}}-{{resident_current_allocation_field_names[0]}}">
@@ -263,7 +263,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/admin/residents/{{resident_details[0]}}/add_allocation" method="post">
+                <form action="/admin/residents/{{resident_details[0]}}/add_allocation" class="pop-up-form" method="post">
                     <div class="col-md-6">
                         <label for="{{resident_current_allocation_field_names[0]}}" class="form-label">{{resident_current_allocation_field_names[0]}}</label>
                         <input name="{{resident_current_allocation_field_names[0]}}" class="form-control" type="number" value={{resident_current_allocation_details[0]}} id="{{resident_current_allocation_field_names[0]}}">
@@ -333,7 +333,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/residents/{{resident_details[0]}}/deallocate_resident" method="post">
+                    <form action="/admin/residents/{{resident_details[0]}}/deallocate_resident" class="pop-up-form" method="post">
                         <label for="exit_date" class="form-label">Exit Date</label>
                         <input type="date" style="margin-bottom: 10px;"  name="exit_date" class="form-control" id="exit_date" value="{{today}}">
                         <button type="submit" class="btn btn-dark" name="deallocate">Deallocate</button>

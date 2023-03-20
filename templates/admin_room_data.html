@@ -1,12 +1,12 @@
 <!-- Delete Room Button -->
-<form action="/admin/rooms/{{hostel_name}}/{{room_no}}/delete_room" method="post">
+<form action="/admin/rooms/{{hostel_name}}/{{room_no}}/delete_room" class="pop-up-form" method="post">
     <button class="btn btn-dark" type="submit" name="delete">Delete</button>
 </form>
 
 
 <div>
     <h3 style="text-align: center; ">Room Details</h3>
-    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_room_data" class="row g-3" method="post">
+    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_room_data" class="row g-3 pop-up-form" method="post">
         <div class="col-md-3">
             <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[0]}}" class="form-label">{{room_details_field_names[0]}}</label>
             <input id="{{room_details[0]}}-{{room_details[1]}}-{{room_details_field_names[0]}}" class="form-control"  type="text" name="{{room_details_field_names[0]}}" value="{{room_details[0]}}" disabled>   
@@ -50,7 +50,7 @@
     <hr>
     <h3 style="text-align: center; margin-top: 20px;">Current Allocation Details</h3>
     {% for current_allocation in room_current_allocation_details%}
-    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_current_room_allocation" class="row g-3" method="post">
+    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_current_room_allocation" class="row g-3 pop-up-form" method="post">
         <div class="box col-md-6">
             <label for="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[0]}}" class="form-label" >{{room_current_allocation_field_names[0]}}</label>
             <select id="{{room_details[0]}}-{{room_details[1]}}-{{room_current_allocation_field_names[0]}}" name="{{room_current_allocation_field_names[0]}}" class="form-select">
@@ -129,7 +129,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/residents/{{current_allocation[2]}}/deallocate_resident" method="post">
+                    <form class="pop-up-form" action="/admin/residents/{{current_allocation[2]}}/deallocate_resident" method="post">
                         <label for="exit_date" class="form-label">Exit Date</label>
                         <input type="date" name="exit_date" id="exit_date" style="margin-bottom: 10px;" value="{{today}}" class="form-control">
                         <button type="submit" class="btn btn-dark" name="deallocate">Deallocate</button>
@@ -170,7 +170,7 @@
     <hr>
     <h3 style="text-align: center; margin-top: 20px;">Furniture Details</h3>
     {% for furniture in room_furniture_details %}
-    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_furniture_details" class="row g-3" method="post">
+    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/update_furniture_details" class="row g-3 pop-up-form" method="post">
         <div class="col-md-6">
             <label for="furniture_id" class="form-label">Furniture ID</label>
             <input type="text" class="form-control" name="furniture_id" id="furniture_id" value="{{furniture[0]}}" readonly>
@@ -192,7 +192,7 @@
 
     <div class="row" style="margin-top: 2rem;">
         <div class="col-md-6" style="text-align: center;">
-            <form action="/admin/furniture/{{furniture[0]}}/remove_furniture_from_room" method="post">
+            <form class="pop-up-form" action="/admin/furniture/{{furniture[0]}}/remove_furniture_from_room" method="post">
                 <button class="btn btn-dark col-md-6" type="submit" name="delete">Remove from room</button>
             </form>
             {% endfor %}
@@ -218,7 +218,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/rooms/{{hostel_name}}/{{room_no}}/add_furniture_to_room" method="post">
+                    <form class="pop-up-form" action="/admin/rooms/{{hostel_name}}/{{room_no}}/add_furniture_to_room" method="post">
                         <label for="furniture_id" class="form-label">Furniture ID</label>
                         <input type="text" name="furniture_id" style="margin-bottom: 10px;" class="form-control" id="furniture_id">
                         <button type="submit" class="btn btn-dark" name="add">Add furniture</button>

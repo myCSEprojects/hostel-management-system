@@ -242,9 +242,9 @@ def resident_page(page_name = None):
 
                 actual_key = cur.fetchone()
                 if (check_password(current_password, actual_key[0]) == False):
-                    return {"success": False, "reload": True, "message": "Incorrect password"}
+                    return {"success": False, "reload": False, "message": "Incorrect password"}
                 if (new_password != confirm_password):
-                    return {"success": False, "reload": True, "message": "Passwords do not match"}
+                    return {"success": False, "reload": False, "message": "Passwords do not match"}
 
                 new_key = generate_key(new_password)
                 cur.execute(f"UPDATE users SET key_ = '{new_key}' WHERE id = {session['id']};")
@@ -277,7 +277,7 @@ def resident_page(page_name = None):
     elif (page_name == 'current_allocation'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'resident'):
              # your code goes here
-            cur.execute(""" select rhc.*, ca.entry_date, payment_amount, payment_status, due_amount,due_status
+            cur.execute(f""" select rhc.*, ca.entry_date, payment_amount, payment_status, due_amount,due_status
                             from CURRENT_ALLOCATION as ca
                             INNER JOIN 
                             (select  r.room_no, r.room_type ,hc.* from ROOM as r INNER JOIN 
@@ -285,9 +285,11 @@ def resident_page(page_name = None):
                             from HOSTEL as h INNER JOIN CARETAKER as c on h.caretaker_id = c.caretaker_id) as hc
                             on r.hostel_name = hc.hostel_name) as rhc
                             on (ca.hostel_name = rhc.hostel_name AND ca.room_no = rhc.room_no)
-                            where resident_id=%s;""",(session['id'],))
-            
-            current_allocation=cur.fetchall()[0]
+                            where resident_id='{session['id']}';""")
+            try:
+                current_allocation=cur.fetchall()[0]
+            except:
+                current_allocation = []
 
 
             # print(current_allocation)
@@ -309,9 +311,9 @@ def resident_page(page_name = None):
 
 
             stats_dict = {}
-
-            for i in range(len((cols))):
-                stats_dict[cols[i]] = current_allocation[i]
+            if (len(current_allocation) > 0):
+                for i in range(len((cols))):
+                    stats_dict[cols[i]] = current_allocation[i]
             return render_template('resident_current_alloc.html',pages = resident_pages, contacts=contacts, stats=stats_dict)
         else:
             return redirect('/resident/login')
@@ -405,10 +407,12 @@ def admin_page(page_name = None):
         room_no = request.form['Room Number']
 
         query_string = "INSERT INTO ROOM (" + "hostel_name, room_type, room_no, occupied" + ") VALUES (" + f"'{hostel_name}', '{room_type}', '{room_no}', 0" + ");"
-        cur.execute(query_string)
-        mysql.connection.commit()
-        return redirect(request.referrer)
-    
+        try:
+            cur.execute(query_string)
+            mysql.connection.commit()
+            return {"success": True, "reload": True, "message": "Room added successfully"}
+        except Exception as e:
+            return {"success": False, "reload": False, "message": e.args[1]}
     
     elif (page_name == 'add_student'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
@@ -458,13 +462,15 @@ def admin_page(page_name = None):
                         table_order += ", "
                     query_string += f'"{request.form[field]}"'
                     table_order += furniture_details_field_names[field]
-            # executing the query and commiting the changes
-            cur.execute("INSERT INTO FURNITURE (" + table_order + ") VALUES (" + query_string + ");")
-            
-            # Commiting changes
-            mysql.connection.commit()
-            # redirecting to the residents page
-            return redirect('/admin/furniture')
+            try:
+                # executing the query and commiting the changes
+                cur.execute("INSERT INTO FURNITURE (" + table_order + ") VALUES (" + query_string + ");")
+                
+                # Commiting changes
+                mysql.connection.commit()
+                return {"success": True, "reload": True, "message": "Furniture added successfully"}
+            except Exception as e:
+                return {"success": False, "reload": False, "message": str(e.args[1])}
         
     elif (page_name == 'add_security'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
@@ -480,16 +486,18 @@ def admin_page(page_name = None):
                         table_order += ", "
                     query_string += f'"{request.form[field]}"'
                     table_order += security_details_field_names[field]
-            # executing the query and commiting the changes
-            cur.execute("INSERT INTO GUARD (" + table_order + ") VALUES (" + query_string + ");")
-            
-            # adding into phone_number
-            cur.execute("INSERT INTO GUARD_PHONE (" + "security_id, phone_no" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['phone_no']}'" + ");")
-            
-            # Commiting changes
-            mysql.connection.commit()
-            # redirecting to the residents page
-            return redirect('/admin/security')
+            try:
+                # executing the query and commiting the changes
+                cur.execute("INSERT INTO GUARD (" + table_order + ") VALUES (" + query_string + ");")
+                
+                # adding into phone_number
+                cur.execute("INSERT INTO GUARD_PHONE (" + "security_id, phone_no" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['phone_no']}'" + ");")
+                
+                # Commiting changes
+                mysql.connection.commit()
+                return {"success": True, "reload": True, "message": "Security added successfully"}
+            except Exception as e:
+                return {"success": False, "reload": False, "message": str(e.args[1])}
     
     elif (page_name == 'add_hostel'):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
@@ -505,13 +513,15 @@ def admin_page(page_name = None):
                         table_order += ", "
                     query_string += f'"{request.form[field]}"'
                     table_order += hostel_details_field_names[field]
-            # executing the query and commiting the changes
-            cur.execute("INSERT INTO HOSTEL (" + table_order + ") VALUES (" + query_string + ");")
-            
-            # Commiting changes
-            mysql.connection.commit()
-            # redirecting to the residents page
-            return redirect('/admin/hostel')
+            try:
+                # executing the query and commiting the changes
+                cur.execute("INSERT INTO HOSTEL (" + table_order + ") VALUES (" + query_string + ");")
+                
+                # Commiting changes
+                mysql.connection.commit()
+                return {"success": True, "reload": True, "message": "Hostel added successfully"}
+            except Exception as e:
+                return {"success": False, "reload": False, "message": str(e.args[1])}
         
 
     elif (page_name == 'dashboard'):
@@ -631,6 +641,7 @@ def admin_page(page_name = None):
 
 
                     if no[0][0] == 0 :
+                        try:
                             cur.execute(f"INSERT INTO CARETAKER (caretaker_id, first_name, middle_name, last_name, gender, office_no, email_id) VALUES ( '{caretaker_id}','{first_name}','{middle_name}', '{last_name}', '{gender}', '{office_no}', '{email_id}');")
                             
                             cur.execute(f""" INSERT into CARETAKER_PHONE 
@@ -643,35 +654,42 @@ def admin_page(page_name = None):
                             
                             cur.execute(f''' UPDATE HOSTEL SET caretaker_id = '{caretaker_id}' where hostel_name = '{hostel}' ''') 
                             mysql.connection.commit()
-                            
+                            return {"success": True, "reload": True, "message": "Caretaker added successfully"}
+                        except Exception as e:
+                            return {"success": False, "reload":False, "message": e.args[1]}
 
                     else:
-                        cur.execute(f'''UPDATE CARETAKER SET caretaker_id = '{caretaker_id}', first_name ='{first_name}' ,
-                                        middle_name = '{middle_name}', last_name ='{last_name}' , gender = '{gender}', office_no = '{office_no}' ,
-                                        email_id ='{email_id}' where caretaker_id = '{caretaker_id}' ''')
-                        cur.execute(f""" delete from CARETAKER_PHONE
-                                            where caretaker_id = '{caretaker_id}';
-                                    """)
-                        cur.execute(f""" INSERT into CARETAKER_PHONE 
-                                        VALUES ('{phone_no}','{caretaker_id}')
-                                    """)
-                        if (phone_no_ is not None and len(phone_no_) == 10):
+                        try:
+                            cur.execute(f'''UPDATE CARETAKER SET caretaker_id = '{caretaker_id}', first_name ='{first_name}' ,
+                                            middle_name = '{middle_name}', last_name ='{last_name}' , gender = '{gender}', office_no = '{office_no}' ,
+                                            email_id ='{email_id}' where caretaker_id = '{caretaker_id}' ''')
+                            cur.execute(f""" delete from CARETAKER_PHONE
+                                                where caretaker_id = '{caretaker_id}';
+                                        """)
                             cur.execute(f""" INSERT into CARETAKER_PHONE 
-                                        VALUES ('{phone_no_}','{caretaker_id}')
-                                    """)
+                                            VALUES ('{phone_no}','{caretaker_id}')
+                                        """)
+                            if (phone_no_ is not None and len(phone_no_) == 10):
+                                cur.execute(f""" INSERT into CARETAKER_PHONE 
+                                            VALUES ('{phone_no_}','{caretaker_id}')
+                                        """)
 
-                        cur.execute(f''' UPDATE HOSTEL SET caretaker_id = '{caretaker_id}' where hostel_name = '{hostel}' ''') 
-                        mysql.connection.commit()
+                            cur.execute(f''' UPDATE HOSTEL SET caretaker_id = '{caretaker_id}' where hostel_name = '{hostel}' ''') 
+                            mysql.connection.commit()
+                            return {"success":True, "reload": True, "message":"Caretaker updated successfully"}
+                        except Exception as e:
+                            return {"success":False, "reload": False, "message":str(e.args[1])}
                     
-                    return redirect("/admin/caretakers")
 
                 elif (request.form.get('button') == 'delete'):
-                    
-                    cur.execute(f""" DELETE FROM  CARETAKER 
-                                    where caretaker_id = '{request.form.get('caretaker_id')}'
-                                    """)
-                    mysql.connection.commit()
-                    return redirect('/admin/caretakers')
+                    try:
+                        cur.execute(f""" DELETE FROM  CARETAKER 
+                                        where caretaker_id = '{request.form.get('caretaker_id')}'
+                                        """)
+                        mysql.connection.commit()
+                        return {"success":True, "reload": True, "message":"Caretaker deleted successfully"}
+                    except Exception as e:
+                        return {"success":False, "reload": False, "message":str(e.args[1])}
                 
                 else:
                     return redirect('/admin/caretakers')
@@ -751,38 +769,48 @@ def admin_page(page_name = None):
                     cur.execute(f"select count(*) from OUTLET where outlet_name = '{outlet_name}';")
                     no  = cur.fetchall()
                     if no[0][0] == 0 : 
-                        cur.execute(f'''INSERT INTO  OUTLET (outlet_name,open_time, close_time, contact, owner_first_name, owner_middle_name, owner_last_name,hostel_name)
-                                        VALUES ('{outlet_name}','{open_time}', '{close_time}', '{contact}', '{owner_first_name}', '{owner_middle_name}', '{owner_last_name}','{hostel_name}');
-                                    ''')
-                        cur.execute(f""" INSERT into OUTLET_PHONE 
-                                        VALUES ('{contact}','{outlet_name}')
-                                    """)
-                        cur.execute(f""" INSERT into OUTLET_OWNER_PHONE 
-                                        VALUES ('{phone_no}','{outlet_name}')
-                                    """)
-                        mysql.connection.commit()
+                        try:
+                            cur.execute(f'''INSERT INTO  OUTLET (outlet_name,open_time, close_time, contact, owner_first_name, owner_middle_name, owner_last_name,hostel_name)
+                                            VALUES ('{outlet_name}','{open_time}', '{close_time}', '{contact}', '{owner_first_name}', '{owner_middle_name}', '{owner_last_name}','{hostel_name}');
+                                        ''')
+                            cur.execute(f""" INSERT into OUTLET_PHONE 
+                                            VALUES ('{contact}','{outlet_name}')
+                                        """)
+                            cur.execute(f""" INSERT into OUTLET_OWNER_PHONE 
+                                            VALUES ('{phone_no}','{outlet_name}')
+                                        """)
+                            mysql.connection.commit()
+                            return {"success":True, "reload":True, "message":"Outlet Added Successfully"}
+                        except Exception as e:
+                            return {"success":False, "reload": False, "message":e.args[1]}
                     else:
-                        cur.execute(f'''UPDATE  OUTLET  SET outlet_name  = '{outlet_name}' ,open_time = '{open_time}', close_time = '{close_time}',
-                                        contact = {contact}, owner_first_name = '{owner_first_name}', owner_middle_name = '{owner_middle_name}',
-                                        owner_last_name = '{owner_last_name}',hostel_name = '{hostel_name}' where outlet_name ='{outlet_name}';''')
-                        cur.execute(f""" UPDATE OUTLET_PHONE SET   
-                                            phone_no = '{contact}', outlet_name = '{outlet_name}'
-                                            where outlet_name = '{outlet_name}';
-                                    """)
-                        cur.execute(f""" UPDATE OUTLET_OWNER_PHONE SET   
-                                            phone_no = '{phone_no}', outlet_name = '{outlet_name}'
-                                            where outlet_name = '{outlet_name}';
-                                    """)
-                        mysql.connection.commit()
+                        try:
+                            cur.execute(f'''UPDATE  OUTLET  SET outlet_name  = '{outlet_name}' ,open_time = '{open_time}', close_time = '{close_time}',
+                                            contact = {contact}, owner_first_name = '{owner_first_name}', owner_middle_name = '{owner_middle_name}',
+                                            owner_last_name = '{owner_last_name}',hostel_name = '{hostel_name}' where outlet_name ='{outlet_name}';''')
+                            cur.execute(f""" UPDATE OUTLET_PHONE SET   
+                                                phone_no = '{contact}', outlet_name = '{outlet_name}'
+                                                where outlet_name = '{outlet_name}';
+                                        """)
+                            cur.execute(f""" UPDATE OUTLET_OWNER_PHONE SET   
+                                                phone_no = '{phone_no}', outlet_name = '{outlet_name}'
+                                                where outlet_name = '{outlet_name}';
+                                        """)
+                            mysql.connection.commit()
+                            return {"success":True, "reload":True, "message":"Updated Successfully"}
+                        except Exception as e:
+                            return {"success":False, "reload":False, "message":str(e.args[0])}
                     
                     return redirect('/admin/outlets')
                 elif (request.form.get('button') == 'delete'):
-                    
-                    cur.execute(f""" DELETE FROM  OUTLET 
-                                    where outlet_name = '{request.form.get('outlet_name')}'
-                                    """)
-                    mysql.connection.commit()
-                    return redirect('/admin/outlets')
+                    try:
+                        cur.execute(f""" DELETE FROM  OUTLET 
+                                        where outlet_name = '{request.form.get('outlet_name')}'
+                                        """)
+                        mysql.connection.commit()
+                        return {"success":True, "reload":True, "message":"Deleted Successfully"}
+                    except Exception as e:
+                        return {"success":False, "reload":False, "message":str(e.args[0])}
                 else:
                     return redirect('/admin/outlets')
 
@@ -1139,9 +1167,12 @@ def admin_rooms_operations(hostel_name=None, room_no=None, operation=None):
         
         # Updating the room data
         query_string = f"UPDATE ROOM SET room_type='{room_type}' WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"
-        cur.execute(query_string)
-        mysql.connection.commit()
-        return redirect('/admin/rooms')
+        try:
+            cur.execute(query_string)
+            mysql.connection.commit()
+            return {"success":True, "reload":True, "message":"Room Data Updated Successfully"}
+        except Exception as e:
+            return {"success":False, "reload":False, "message":str(e.args[1])}
     
     if operation == 'update_current_room_allocation':
         query_string = ""
@@ -1151,28 +1182,43 @@ def admin_rooms_operations(hostel_name=None, room_no=None, operation=None):
                     query_string += ", "
                 query_string += f"{room_current_allocation_field_names[field]}='{request.form[field]}'"
         query_string = "UPDATE CURRENT_ALLOCATION SET " + query_string + f" WHERE hostel_name='{hostel_name}' AND room_no='{room_no}' AND resident_id='{request.form['ID']}';"
-        cur.execute(query_string)
-        mysql.connection.commit()
+        try:
+            cur.execute(query_string)
+            mysql.connection.commit()
+            return {"success":True, "reload":True, "message":"Room Allocation Updated Successfully"}
+        except Exception as e:
+            return {"success":False, "reload":False, "message":str(e.args[1])}
+    
     if operation == 'update_furniture_details':
         status_value = (1 if (request.form.get("status")!="on") else 0)
         furniture_id = request.form["furniture_id"]
         query_string = f"UPDATE FURNITURE SET status='{status_value}' WHERE furniture_id='{furniture_id}';"
-        cur.execute(query_string)
-        mysql.connection.commit()
+        try:
+            cur.execute(query_string)
+            mysql.connection.commit()
+            return {"success":True, "reload":True, "message":"Furniture Details Updated Successfully"}
+        except Exception as e:
+            return {"success":False, "reload":False, "message":str(e.args[1])}
 
         return redirect('/admin/rooms')
     if operation == 'add_furniture_to_room':
         furniture_id = request.form["furniture_id"]
         query_string = f"UPDATE FURNITURE SET hostel_name='{hostel_name}', room_no='{room_no}' WHERE furniture_id='{furniture_id}';"
-        cur.execute(query_string)
-        mysql.connection.commit()   
-        return redirect(request.referrer)
+        try:
+            cur.execute(query_string)
+            mysql.connection.commit()   
+            return {"success":True, "reload":True, "message":"Furniture Added Successfully to Room"}
+        except Exception as e:
+            return {"success":False, "reload":False, "message":str(e.args[1])}
     
     if operation == 'delete_room':
         query_string = f"DELETE FROM ROOM WHERE hostel_name='{hostel_name}' AND room_no='{room_no}';"
-        cur.execute(query_string)
-        mysql.connection.commit()
-        return redirect(request.referrer)
+        try:
+            cur.execute(query_string)
+            mysql.connection.commit()
+            return {"success":True, "reload":True, "message":"Room Deleted Successfully"}
+        except Exception as e:
+            return {"success":False, "reload":False, "message":str(e.args[1])}
 
 
 # Handling the post request for the admin/residents/<resident_id> page
@@ -1375,24 +1421,28 @@ def resident_operations(resident_id, operation):
                     if (query_string != ""):
                         query_string += ", "
                     query_string += f"{resident_details_field_names[field]} = '{request.form[field]}'"
-            # Adding the select and where clause
-            query_string = f"UPDATE RESIDENT SET {query_string} WHERE resident_id = {resident_id};"
+            try:
+                # Adding the select and where clause
+                query_string = f"UPDATE RESIDENT SET {query_string} WHERE resident_id = {resident_id};"
+                
+                # Executing the query and commiting the changes
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success": True, "reload":True, "message": "Succesfully updated details"}
             
-            # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
-
-            # Redirecting to the resident page
-            return redirect(f'/admin/residents')
+            except Exception as e:
+                return {"success": False, "reload":False, "message":e.args[1]}
         
         elif (operation == 'delete_phone'):
             query_string = f"DELETE FROM RESIDENT_PHONE WHERE resident_id = {resident_id} AND phone_no = '{request.form['phone_no']}';"
-            # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
+            try:
+                # Executing the query and commiting the changes
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success": True, "reload":True, "message": "Succesfully deleted phone number"}
+            except Exception as e:
+                return {"success": False, "reload":False, "message":e.args[1]}
 
-            # Redirecting to the resident page
-            return redirect(f'/admin/residents')
         
         elif (operation == 'add_allocation'):
             query_string = ""
@@ -1406,11 +1456,13 @@ def resident_operations(resident_id, operation):
                     text_string += f"{resident_current_allocation_field_names[field]}"
                     query_string += f"'{request.form[field]}'"
             query_string = f"INSERT INTO CURRENT_ALLOCATION(resident_id, {text_string}) VALUES ({resident_id}, {query_string});"
-            # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
-
-            return redirect(request.referrer)
+            try:
+                # Executing the query and commiting the changes
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success": True, "reload":True, "message": "Succesfully added allocation"}
+            except Exception as e:
+                return {"success": False, "reload":False, "message":e.args[1]}
         
         elif (operation == 'update_program'):
             query_string = f"UPDATE ENROLLED_IN SET program='{request.form['program']}', branch = '{request.form['branch']}' where resident_id = {resident_id};"
@@ -1424,11 +1476,12 @@ def resident_operations(resident_id, operation):
         elif operation == 'add_phone':
             query_string = f"INSERT INTO RESIDENT_PHONE(resident_id, phone_no) VALUES ({resident_id}, '{request.form['phone_no']}');"
             # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
-
-            # Redirecting to the resident page
-            return redirect(f'/admin/residents')
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success": True, "reload":True, "message": "Succesfully added phone number"}
+            except Exception as e:
+                return {"success": False, "reload":False, "message":e.args[1]}
 
         elif (operation == 'update_current_allocation'):
             # Generating the query string
@@ -1450,11 +1503,14 @@ def resident_operations(resident_id, operation):
             return redirect(f'/admin/residents')
         
         elif (operation == 'deallocate_resident'):
-            cur.execute(f"""
-                            CALL DEALLOCATE({resident_id}, STR_TO_DATE('{request.form['exit_date']}', '%Y-%m-%d'));
-                        """)
-            mysql.connection.commit()
-            return redirect('/admin/residents')
+            try:
+                cur.execute(f"""
+                                CALL DEALLOCATE({resident_id}, STR_TO_DATE('{request.form['exit_date']}', '%Y-%m-%d'));
+                            """)
+                mysql.connection.commit()
+                return {"success": True, "reload":True, "message": "Succesfully deallocated"}
+            except Exception as e:
+                return {"success": False, "reload":False, "message":e.args[1]}
  
 @app.route('/admin/security/<security_id>/<operation>', methods=['POST'])
 def security_operations(security_id, operation):
@@ -1477,13 +1533,13 @@ def security_operations(security_id, operation):
                     query_string += f"{security_details_field_names[field]} = '{request.form[field]}'"
             # Adding the select and where clause
             query_string = f"UPDATE GUARD SET {query_string} WHERE security_id = {security_id};"
-            
-            # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
-
-            # Redirecting to the resident page
-            return redirect(f'/admin/security')
+            try:
+                # Executing the query and commiting the changes
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success": True, "reload":True, "message": "Succesfully updated details"}
+            except Exception as e:
+                return {"success": False, "reload":False, "message":e.args[1]}
         
         elif (operation == 'delete_phone'):
             query_string = f"DELETE FROM GUARD_PHONE WHERE security_id = {security_id} AND phone_no = '{request.form['phone_no']}';"
@@ -1497,52 +1553,45 @@ def security_operations(security_id, operation):
         elif operation=='delete_current_allocation':
             query_string = f"DELETE FROM SECURITY WHERE security_id = {security_id} AND hostel_name = '{request.form['hostel_name']}';"
             # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
-
-            # Redirecting to the resident page
-            return redirect(f'/admin/security')
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload": True, "message":"Removed Security from Hostel"}
+            except Exception as e:
+                return {"success":False, "reload": False, "message":str(e.args[1])}
         
         elif operation == 'add_phone':
             query_string = f"INSERT INTO GUARD_PHONE(security_id, phone_no) VALUES ({security_id}, '{request.form['phone_no']}');"
             # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload": True, "message":"Added Phone Number"}
+            except Exception as e:
+                return {"success":False, "reload": False, "message":str(e.args[1])}
 
             # Redirecting to the resident page
             return redirect(f'/admin/security')
         elif operation=="delete_security":
             query_string = f"DELETE FROM GUARD WHERE security_id='{security_id}';"
-            cur.execute(query_string)
-            mysql.connection.commit()
-            return redirect(f'/admin/security')  
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload": True, "message":"Deleted Security"}
+            except Exception as e:
+                return {"success":False, "reload": False, "message":str(e.args[1])}
 
 
         elif (operation == 'add_allocation'):
-            # # Generating the query string
-            # query_string = ""
-            # for field in request.form.keys():
-            #     if (field != "update"):
-            #         if (query_string != ""):
-            #             query_string += ", "
-            #         query_string += f"{security_current_allocation_field_names[field]} = '{request.form[field]}'"
-            
             # Adding the update and where clause
-            cur.execute(f"select count(*) from SECURITY where security_id = {security_id} and hostel_name = '{request.form['hostel_name']}' ")
-            no  = cur.fetchall()
-            app.logger.info(no)
-            if no[0][0] == 0 : 
-                    query_string= f"INSERT INTO SECURITY(security_id, hostel_name, start_time, end_time) VALUES({security_id},'{request.form['hostel_name']}','{request.form['start_time']}','{request.form['end_time']}');"
-                    # Executing the query and commiting the changes
-                    cur.execute(query_string)
-                    mysql.connection.commit()
-            else:
-                   cur.execute(f"UPDATE SECURITY SET hostel_name = '{request.form['hostel_name']}',  start_time  = '{request.form['start_time']}',end_time   = '{request.form['end_time']}' where security_id = {security_id} and hostel_name = '{request.form['hostel_name']}' ")
-                   mysql.connection.commit()
-            # Redirecting to the resident page
-            return redirect(f'/admin/security')
-        
-
+            query_string= f"INSERT INTO SECURITY(security_id, hostel_name, start_time, end_time) VALUES({security_id},'{request.form['hostel_name']}','{request.form['start_time']}','{request.form['end_time']}');"
+            # Executing the query and commiting the changes
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload": True, "message":"Allocated Security"}
+            except Exception as e:
+                return {"success":False, "reload": False, "message":str(e.args[1])}
 
 @app.route('/admin/academic_period/<operation>', methods=['POST'])
 def academic_period_operations(operation):
@@ -1559,14 +1608,15 @@ def academic_period_operations(operation):
             count=cur.fetchall()[0]
             if count[0]==0:
                 query_string = f"INSERT INTO ACADEMIC_PERIOD(semester, year) VALUES ('{request.form['semester']}', '{request.form['year']}');"
-                # Executing the query and commiting the changes
-                cur.execute(query_string)
-                mysql.connection.commit()
-
-                # Redirecting to the resident page
-                return redirect(f'/admin/academic_period')
+                try:
+                    # Executing the query and commiting the changes
+                    cur.execute(query_string)
+                    mysql.connection.commit()
+                    return {"success":True, "reload": True, "message":"Academic Period added successfully"}
+                except Exception as e:
+                    return {"success":False, "reload": False, "message": e.args[1]}
             else:
-                return redirect(f'/admin/academic_period')
+                return {"success":False, "reload": False, "message":"Academic Period already exists"}
 @app.route('/admin/furniture/<furniture_id>/<operation>', methods=['POST'])
 def admin_furniture_operations(furniture_id, operation):
     # Error handling
@@ -1587,24 +1637,31 @@ def admin_furniture_operations(furniture_id, operation):
                     query_string += f"{furniture_details_field_names[field]} = '{request.form[field]}'"
             # Adding the select and where clause
             query_string = f"UPDATE FURNITURE SET {query_string} WHERE FURNITURE.furniture_id = '{furniture_id}';"
-            
-            # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
- 
-            return redirect(f'/admin/furniture')
+            try:
+                # Executing the query and commiting the changes
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload":True, "message":"Furniture details updated"}
+            except Exception as e:
+                return {"success":False, "reload":False, "message":str(e.args[1])}
+
         if operation == 'delete_furniture':
             query_string = f"DELETE FROM FURNITURE WHERE furniture_id='{furniture_id}';"
-            cur.execute(query_string)
-            mysql.connection.commit()
-            return redirect(f'/admin/furniture')   
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload":True, "message":"Furniture deleted"}
+            except Exception as e:
+                return {"success":False, "reload":False, "message":str(e.args[1])}
         
         if operation == 'remove_furniture_from_room':
             query_string = f"UPDATE FURNITURE SET room_no=NULL, hostel_name=NULL WHERE furniture_id='{furniture_id}';"
-            cur.execute(query_string)
-            cur.connection.commit()
-
-            return redirect(request.referrer)  
+            try:
+                cur.execute(query_string)
+                cur.connection.commit()
+                return {"success":True, "reload":True, "message":"Furniture removed from room"}
+            except Exception as e:
+                return {"success":False, "reload":False, "message":str(e.args[1])}
         
 @app.route('/admin/hostel/<hostel_name>/<operation>', methods=['POST'])
 def admin_hostel_operations(hostel_name, operation):
@@ -1626,17 +1683,22 @@ def admin_hostel_operations(hostel_name, operation):
                     query_string += f"{hostel_details_field_names[field]} = '{request.form[field]}'"
             # Adding the select and where clause
             query_string = f"UPDATE HOSTEL SET {query_string} WHERE hostel_name = '{hostel_name}';"
-            
-            # Executing the query and commiting the changes
-            cur.execute(query_string)
-            mysql.connection.commit()
+            try:
+                # Executing the query and commiting the changes
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":False, "reload":False, "message": "Succssfully updated the hostel details"}
+            except Exception as e:
+                return {"success":False, "reload":False, "message": e.args[1]}
  
-            return redirect(f'/admin/hostel')
         if operation == 'delete_hostel':
             query_string = f"DELETE FROM HOSTEL WHERE hostel_name='{hostel_name}';"
-            cur.execute(query_string)
-            mysql.connection.commit()
-            return redirect(f'/admin/hostel')    
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload":True, "message": "Succssfully deleted the hostel"}
+            except Exception as e:
+                return {"success":False, "reload":False, "message": e.args[1]}
 # Running the app
 if __name__ == '__main__':
     app.run(debug=True)

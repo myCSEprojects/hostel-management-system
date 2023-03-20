@@ -33,7 +33,7 @@
         <td>{{val}}</td>
         {% endfor %}
         <td>
-            <form method = 'POST' action = '/admin/caretakers'>
+            <form method = 'POST' class="pop-up-form" action = '/admin/caretakers'>
                 <input type = 'hidden' name="caretaker_id" value = {{row[0]}}>
                 <input type = 'hidden' name="button" value = "delete">
                 <input type="submit" class = 'btn btn-dark'value="Delete">
@@ -68,7 +68,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/caretakers" class="row g-3" method="POST">
+                    <form action="/admin/caretakers" class="row g-3 pop-up-form" method="POST">
                         <div class="'col-sm-12"> 
                             <input type="hidden" class="form-control" name="button" value="add">
                         </div>

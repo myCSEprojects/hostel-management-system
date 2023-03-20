@@ -21,7 +21,11 @@
         </tr>
         {% endfor %}
         <tr>
+            {% if stats_dict|length > 0 %}
             <th>Caretaker phoneNumbers:</th>
+            {% else %}
+            <th>Not Currently allocated</th>
+            {% endif %}
             <td>
                 <table>
                     {%for contact in contacts:%}

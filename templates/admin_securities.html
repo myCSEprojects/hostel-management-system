@@ -11,7 +11,7 @@
     <div style="text-align: center; margin-top: 2rem; margin-left: 1rem;">
         <button class="resident-button" data-bs-toggle="modal" data-bs-target="#add_security">
             <span>Add Security</span>
-        </button>
+    </button>
       </div>
     
 
@@ -109,7 +109,7 @@
             </div>
         </div>       
     </form>
-
+    
     <table class="table table-striped" style="max-width: 95%; margin: 50px auto 0;"  vertical-align: 60%;>
         <thead>
             <tr>
@@ -118,7 +118,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for security in securities: %}
+    {% for security in securities: %}
                 <tr>
                     <td>{{security[0]}}</td>
                     <td>{{security[1]}}</td>
@@ -126,18 +126,18 @@
                     <td style="text-align: end;">
                         <button class="edit-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{security[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadSecurity('{{security[0]}}')">
                             Edit
-                        </button>
+            </button>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="17">
-                        <div class="collapse" id="{{security[0]}}">
-                            <div class="card card-body">
-                            </div>
-                        </div>
+        <div class="collapse" id="{{security[0]}}">
+            <div class="card card-body">
+            </div>
+        </div>
                     </td>
                 </tr>
-            {% endfor %}
+    {% endfor %}
         </tbody>
       </table>
       
