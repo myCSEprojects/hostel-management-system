@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Caretaker</title>
+{% endblock %}
+
+{% block body %}
+
+    <h3>Caretaker Details</h3>
+
+    
+
+    <!-- Modal -->
+    <div class="modal fade" id="caretakers" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Caretaker</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/caretakers" method="POST">
+                        <input type="hidden" name="button" value="add">
+                        
+                        <label for="caretaker_id">Caretaker ID:</label>
+                        <input type="tel" name="caretaker_id" id="caretaker_id" placeholder="Enter caretaker ID" required maxlength = "8">
+                        
+                        <label for="first_name">First Name:</label>
+                        <input type="text" name="first_name" id="first_name" placeholder="Enter first name" required maxlength="15">
+                        
+                        <label for="middle_name">Middle Name:</label>
+                        <input type="text" name="middle_name" id="middle_name" placeholder="Enter middle name" maxlength="15">
+                        
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" name="last_name" id="last_name" placeholder="Enter last name" required maxlength="15">
+                        
+                        <label for="gender">Gender:</label>
+                        <select name="gender" id="gender" required>
+                          <option value="" disabled selected>Select gender</option>
+                          <option value="M">Male</option>
+                          <option value="F">Female</option>
+                          <option value="O">Other</option>
+                        </select>
+                        
+                        <label for="office_no">Office No:</label>
+                        <input type="text" name="office_no" id="office_no" placeholder="Enter office number" required minlength="3" maxlength="5">
+                        
+                        <label for="email_id">Email ID:</label>
+                        <input type="email" name="email_id" id="email_id" placeholder="Enter email address" required>
+                        
+                        <label for="phone_no_1">Phone No 1:</label>
+                        <input type="tel" name="phone_no_1" id="phone_no_1" placeholder="Enter Phone Number 1" required pattern="[0-9]{10}">
+                        
+                        <label for="phone_no_2">Phone No 2:</label>
+                        <input type="tel" name="phone_no_2" id="phone_no_2" placeholder="Enter Phone Number 2" pattern="[0-9]{10}">
+
+                        <!-- Hostel -->
+                        <label for="hostel">Hostel</label>
+                        <select name="hostel" id="hostel">
+                            <option value="all">Select</option>
+                            {% for hostel_name in hostel_names: %}
+                                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                            {% endfor %}
+                        </select>  
+
+
+                        
+                        <button type="submit" name="button" value="submit">ADD/UPDATE</button>
+                      </form>
+                            
+                </div>
+            </div>
+        </div>
+    </div> 
+
+
+
+
+
+    <table border="3" height="50%" width="90%" bordercolor="black"
+        align="center">
+        <tr>
+            {%for field in field_names:%}
+            <th>{{field}}</th>
+            {% endfor %}
+            <th>Actions</th>
+        </tr>
+    
+        {%for i,row in c_dict.items():%}
+        <tr>
+        {%for val in row:%}
+        <td>{{val}}</td>
+        {% endfor %}
+        <td>
+            <form method = 'POST' action = '/admin/caretakers'>
+                <input type = 'hidden' name="caretaker_id" value = {{row[0]}}>
+                <input type = 'hidden' name="button" value = "delete">
+                <input type="submit" class = 'btn btn-danger'value="Delete">
+            </form>
+            
+        </td>
+        </tr>
+
+        
+        
+        {% endfor %}
+    
+    </table>
+
+    <br><br>
+
+    <center>
+        <button type="button" data-bs-toggle="modal" class = 'btn btn-primary' data-bs-target="#caretakers" align = "center">
+            Add/Update Caretaker
+        </button>
+    </center>
+    
+      
+
+{% endblock %}
