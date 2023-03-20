@@ -2,37 +2,67 @@
 
 {% block head %}
 <title>admin academic period</title>
+<link rel="stylesheet" href="{{url_for('static', filename='css/admin_residents.css')}}">
+
 {% endblock %}
 
 {% block body %}
 <p>{{error}}</p>
-<form action="/admin/academic_period/add_academic_period" method="post">
-    <label for="semester">Semester:</label>
-    <input type="number" name="semester" max=8 min=1  placeholder="Semester">
-    <label for="year">Year:</label>
-    <input type="number" name="year" min=2000  placeholder="Year">
-    <input type="submit" value="add">
-</form>
+
+<h2 align = "center" style="color: white; margin-top: 20px;">Academic Period</h2>
+    
+    <form class="row g-3 needs-validation" action="/admin/academic_period/add_academic_period" method="post">
+        <div class="col-md-3" style="margin-left: 350px; margin-top: 42.5px;">
+            <input name="semester" type="number" class="form-control" value="semester" placeholder="Semester">
+            
+        </div>
+        <div class="col-md-3" style="margin-top: 41.5px;">
+            <input type="number" name="year" placeholder="Year" class="form-control">
+        </div>
+        
+        <div class="filter col-sm-3 ">
+            <input type="submit" value="Add" style="color:white;">
+        </div>
+        
+
+    </form>
 
 
 
-<h3 align = "center">Academic Period Details</h3>
+
+
+
+
+
+
+<style>
+    body{
+        /* background-color: #2D2D2D; */
+        background-image: url("/static/images/final_background.jpeg");
+        background-size: 100%;
+        background-attachment: fixed;
+    }
+</style>
+
 
 <table border="3" height="50%" width="50%" bordercolor="black"
-align="center" style="border-spacing: 0 10px;" cellpadding ="10" >
+align="center" style="border-spacing: 0 10px; border-radius: 20px; overflow: hidden; max-width: 50%; margin-top: 25px;" cellpadding="10" class="table table-striped table-light table-hover";>
+ 
+
     {%for row in (table10):%}
     <tr>
         {%if row[0] == 'Semester'%}
         {%for val in row:%}
-        <th>{{val}}</th>
+        <th style="text-align: center;">{{val}}</th>
         {%endfor%}
         {%else%}
         {%for val in row:%}
-        <td>{{val}}</td>
+        <td style="text-align: center;">{{val}}</td>
         {%endfor%}
         {%endif%}
 
     </tr>
     {% endfor %}
 </table>
+
 {% endblock %}
