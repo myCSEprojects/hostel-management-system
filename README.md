@@ -44,7 +44,9 @@ Add Resident
 Resident Details Update
 ### Updating
 ![image](https://user-images.githubusercontent.com/80308830/226427265-88bfb783-2f8e-4294-be90-dfe884cb02f7.png)
-### Pop up
+### After
+![image](https://user-images.githubusercontent.com/80308830/226444197-6eb93c89-ba4d-4bb3-ade0-1050bb6d1077.png)
+
 
 ## DELETE
 Outlets Delete
