@@ -37,7 +37,7 @@ admin_pages = {
     "residents": "/admin/residents",
     "rooms": "/admin/rooms",
     "academic period":"/admin/academic_period",
-    "security": "/admin/security"
+    "security": "/admin/security",
     "outlets": "/admin/outlets",
     'caretakers': "/admin/caretakers",
 }
