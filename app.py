@@ -821,6 +821,11 @@ def admin_page(page_name = None):
                                 DEGREE;""")
                 branch_types = cur.fetchall()
 
+                # Fetching all the available years 
+                cur.execute(""" SELECT distinct year from
+                                ACADEMIC_PERIOD;""")
+                years = cur.fetchall()
+
                 # Rendering the template
                 return render_template('admin_residents.html', 
                                     pages = admin_pages, 
@@ -831,6 +836,7 @@ def admin_page(page_name = None):
                                     program_types = program_types,
                                     branch_types = branch_types,
                                     blood_types = blood_types,
+                                    years = years,
                                     resident_details_field_names = list(resident_details_field_names.keys()))
             else:
                 return "got the request"
