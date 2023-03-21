@@ -44,6 +44,9 @@ Add Resident
 Resident Details Update
 ### Updating
 ![image](https://user-images.githubusercontent.com/80308830/226427265-88bfb783-2f8e-4294-be90-dfe884cb02f7.png)
+### Pop up
+![image](https://user-images.githubusercontent.com/80308830/226491102-8d8be9e0-93d0-4797-9694-a3f91955a257.png)
+
 ### After
 ![image](https://user-images.githubusercontent.com/80308830/226444197-6eb93c89-ba4d-4bb3-ade0-1050bb6d1077.png)
 
@@ -59,6 +62,7 @@ clicking on delete button
 ### After
 ![image](https://user-images.githubusercontent.com/80308830/226428235-22038403-7d59-42d9-b1e0-f4ef544fb039.png)
 ### Pop up
+![image](https://user-images.githubusercontent.com/80308830/226491168-a1155e2c-30f9-435e-a533-daa66f03e104.png)
 
 ## RENAME
 ### Before
