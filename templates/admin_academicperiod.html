@@ -13,11 +13,11 @@
     
     <form class="row g-3 needs-validation pop-up-form" action="/admin/academic_period/add_academic_period" method="post">
         <div class="col-md-3" style="margin-left: 350px; margin-top: 42.5px;">
-            <input name="semester" type="number" class="form-control" value="semester" placeholder="Semester" required>
+            <input name="semester" max=8 min=1 type="number" class="form-control" value="semester" placeholder="Semester" required>
             
         </div>
         <div class="col-md-3" style="margin-top: 41.5px;">
-            <input type="number" name="year" placeholder="Year" class="form-control" required>
+            <input type="number" name="year" min=2000 placeholder="Year" class="form-control" required>
         </div>
         
         <div class="filter col-sm-3 ">

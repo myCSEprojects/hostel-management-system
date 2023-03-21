@@ -220,7 +220,7 @@
                 <div class="modal-body">
                     <form class="pop-up-form" action="/admin/rooms/{{hostel_name}}/{{room_no}}/add_furniture_to_room" method="post">
                         <label for="furniture_id" class="form-label">Furniture ID</label>
-                        <input type="text" name="furniture_id" style="margin-bottom: 10px;" class="form-control" id="furniture_id">
+                        <input type="text" name="furniture_id" style="margin-bottom: 10px;" class="form-control" id="furniture_id" maxlength = "32" required>
                         <button type="submit" class="btn btn-dark" name="add">Add furniture</button>
                     </form>
                 </div>
