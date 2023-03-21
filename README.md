@@ -29,6 +29,14 @@
 2. Resident
 3. Public
 
+Login credentials for Admin:  
+Admin ID : 00000001  
+Admin password : password  
+
+Login credentials for Resident:  
+Resident ID: between 20000000 and 20000300  
+Resident password: password  
+
 # Screenshots for following operations
 
 ## INSERT
