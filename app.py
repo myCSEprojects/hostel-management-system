@@ -382,13 +382,19 @@ def admin_page(page_name = None):
         else:
             id = request.form['ID'] 
             password = request.form['password']
-            if id == admin_id and password == admin_password:
+            query = f"SELECT key_ FROM admins WHERE id = '{id}' AND key_ = '{password}' ;"
+            print('query',query)
+            cur.execute(f"SELECT key_ FROM admins WHERE id = '{id}' AND key_ = '{password}' ;")
+            app.logger.info(query)
+            actual_key = cur.fetchone()
+            print(actual_key)
+            if actual_key == None:
+                return redirect('/admin/login')
+            else :
                 session['logged_in'] = True
                 session['id'] = id
                 session['name'] = 'admin'
                 return redirect('/admin/dashboard')
-            else:
-                return render_template('admin_login.html', pages = pages, error="Invalid Username or Password")
     # Handling the rooms route
     elif page_name == 'rooms':
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
