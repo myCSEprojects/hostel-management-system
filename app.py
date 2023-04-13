@@ -6,6 +6,8 @@ import datetime
 import numpy as np
 import operator
 from dateutil.parser import parse
+import pandas as pd
+
 app = Flask(__name__)
 
 # setting the admin id and password
@@ -36,6 +38,7 @@ admin_pages = {
     "Residents": "/admin/residents",
     "Rooms": "/admin/rooms",
     "Security": "/admin/security",
+    "Housekeeping": "/admin/housekeeping",
     "Furniture": "/admin/furniture",
     "Hostel":"/admin/hostel",
     'Caretakers': "/admin/caretakers",
@@ -329,9 +332,50 @@ def admin_page(page_name = None):
     cur = mysql.connection.cursor()
     print(page_name)
     # error handling
-    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'add_student', 'add_security','academic_period', 'security', "rooms", "add_room", "outlets", "caretakers", "furniture", "add_furniture","hostel","add_hostel"]:
+    if page_name not in ['login', 'dashboard', 'logout', 'residents', 'deallocate_all_students','add_student_csv', 'add_allocation_csv','add_student', 'add_security','add_housekeeping','academic_period', 'security', "housekeeping", "rooms", "add_room", "outlets", "caretakers", "furniture", "add_furniture","hostel","add_hostel"]:
         return redirect('/admin/login')    
 
+    elif(page_name ==  'add_student_csv'):
+        app.logger.info(request)
+        csv_file = request.files['file']
+        df = pd.read_csv(csv_file)
+        # Iterate over the rows of the DataFrame and insert them into the MySQL table
+        try:
+            for i   in range(len(df)):
+                cur  = mysql.connection.cursor();
+                query = "INSERT INTO RESIDENT "  +" VALUES " +  str(tuple(df.iloc[i].tolist()))
+                cur.execute(query)
+                mysql.connection.commit()
+            return {"success": True, "reload": True, "message": "Students added successfully"}
+        except Exception as e:
+            return {"success": False, "reload": False, "message": str(e.args[1])}
+        
+    elif(page_name == "add_allocation_csv"):
+            
+        app.logger.info(request)
+        csv_file = request.files['file']
+        df = pd.read_csv(csv_file)
+        # Iterate over the rows of the DataFrame and insert them into the MySQL table
+        try:
+            for i  in range(len(df)):
+                cur  = mysql.connection.cursor();
+                query = "INSERT INTO CURRENT_ALLOCATION "  +" VALUES " +  str(tuple(df.iloc[i].tolist()))
+                cur.execute(query)
+                mysql.connection.commit()
+            return {"success": True, "reload": True, "message": "Allocated successfully"}
+        except Exception as e:
+            return {"success": False, "reload": False, "message": str(e.args[1])}
+        
+    elif (page_name == 'deallocate_all_students'):
+        try:
+            cur  = mysql.connection.cursor();
+            query = " DELETE FROM CURRENT_ALLOCATION"
+            cur.execute(query)
+            mysql.connection.commit()
+            return {"success": True, "reload": True, "message": "Deallocated successfully"}
+        except Exception as e:
+            return {"success": False, "reload": False, "message": str(e.args[1])}
+        
     if (page_name == 'login'):
         if (request.method == 'GET'):
             return render_template('admin_login.html', pages = pages, error='')
@@ -496,6 +540,33 @@ def admin_page(page_name = None):
                 # Commiting changes
                 mysql.connection.commit()
                 return {"success": True, "reload": True, "message": "Security added successfully"}
+            except Exception as e:
+                return {"success": False, "reload": False, "message": str(e.args[1])}
+            
+    elif (page_name == 'add_housekeeping'):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            
+            # adding into housekeeping
+            query_string = ""
+            table_order = ""
+            for field in request.form:
+                if field != "add" and field != "phone_no" and request.form[field]!='':
+                    if query_string != "":
+                        query_string += ", "
+                    if table_order != "":
+                        table_order += ", "
+                    query_string += f'"{request.form[field]}"'
+                    table_order += housekeeping_details_field_names[field]
+            try:
+                # executing the query and commiting the changes
+                cur.execute("INSERT INTO HOUSE_KEEPING (" + table_order + ") VALUES (" + query_string + ");")
+                
+                # adding into phone_number
+                cur.execute("INSERT INTO HOUSE_KEEPING_PHONE (" + "housekeeper_id, phone_no" + ") VALUES (" + f"'{request.form['ID']}', '{request.form['phone_no']}'" + ");")
+                
+                # Commiting changes
+                mysql.connection.commit()
+                return {"success": True, "reload": True, "message": "House Keeper added successfully"}
             except Exception as e:
                 return {"success": False, "reload": False, "message": str(e.args[1])}
     
@@ -974,6 +1045,64 @@ def admin_page(page_name = None):
                 return "got the request"
         else:
             return redirect('/admin/login')
+        
+    elif (page_name == "housekeeping"):
+        if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+            if request.method == 'GET':
+                
+                # Getting the query parameters
+                search_ID = request.args.get('search_ID')
+                hostel = request.args.get('hostel_name')
+                housekeeping_type = request.args.get('type_name')
+
+                a = [search_ID, hostel, housekeeping_type]
+
+                # Generating the sql query string
+                query_string = ""
+                if (search_ID != None and search_ID != ""):
+                    query_string += f" HOUSE_KEEPING.housekeeper_id = {search_ID} "
+                if (hostel != None and hostel != "all"):
+                    if (query_string != ""):
+                        query_string += "and"
+                    query_string += f" hostel_name = '{hostel}' "
+                if (housekeeping_type != None and housekeeping_type != "all"):
+                    if (query_string != ""):
+                        query_string += "and"
+                    query_string += f" type = '{housekeeping_type}' "
+                if (query_string != ""):
+                    query_string = "where" + query_string
+                app.logger.info(query_string)
+                
+                housekeeping_query = f"""   select HOUSE_KEEPING.housekeeper_id, concat(first_name," ",last_name) as full_name
+                                        from HOUSE_KEEPING LEFT JOIN HOUSE_KEEPING_SHIFTS ON HOUSE_KEEPING.housekeeper_id = HOUSE_KEEPING_SHIFTS.housekeeper_id
+                                        {query_string}  """
+                # Getting all the data corresponding to the residents
+                cur.execute(housekeeping_query)
+                housekeeping = cur.fetchall()
+
+                # Fetching all the availble hostel names
+                cur.execute(""" SELECT hostel_name from
+                                HOSTEL;""")
+                hostel_names = cur.fetchall()
+
+                cur.execute(""" SELECT distinct type from
+                                HOUSE_KEEPING_SHIFTS;""")
+                types = cur.fetchall()
+
+                # Rendering the template
+                return render_template('admin_housekeeping.html', 
+                                        pages = admin_pages, 
+                                        housekeeping = housekeeping,
+                                        housekeeping_details_field_names = list(housekeeping_details_field_names.keys()),
+                                        hostel_names=hostel_names,
+                                        housekeeping_types=housekeeping_types,
+                                        gender_types=gender_types
+                                        )
+            else:
+                return "got the request"
+        else:
+            return redirect('/admin/login')
+        
     elif(page_name=="furniture"):
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
             if request.method == 'GET':
@@ -1228,7 +1357,7 @@ def admin_resident_data(resident_id):
     if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
         
         # Fetching the resident details
-        cur.execute(f"""select RESIDENT.resident_id, first_name, middle_name, last_name, gender, blood_group, email_id, city, postal_code, home_contact, resident_type
+        cur.execute(f"""select RESIDENT.resident_id, first_name, middle_name, last_name, gender, blood_group, email_id, city, postal_code, resident_type, Guardian_first_name, Guardian_type, home_contact
                         from (RESIDENT)
                         where RESIDENT.resident_id = {resident_id};""")
         resident_details = cur.fetchall()[0]
@@ -1345,6 +1474,54 @@ def admin_security_data(security_id):
                                 security_current_allocation_field_names = list(security_current_allocation_field_names.keys()),
                                 security_phone_details = security_phone_details,
                                 hostel_names = hostel_names, 
+                                today = datetime.date.today())  
+
+# Handling the post request for the admin/housekeeping/<housekeeper_id> page
+@app.route('/admin/housekeeping/<housekeeper_id>', methods=['POST'])
+def admin_housekeeping_data(housekeeper_id):
+    cur = mysql.connection.cursor()
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        
+        # Fetching the resident details
+        cur.execute(f"""select HOUSE_KEEPING.housekeeper_id, first_name, middle_name, last_name, gender
+                        from (HOUSE_KEEPING)
+                        where HOUSE_KEEPING.housekeeper_id = {housekeeper_id};""")
+        housekeeping_details = cur.fetchall()[0]
+
+        # Fetching the current allocation details
+        cur.execute(f"""select hostel_name, type
+                        from HOUSE_KEEPING_SHIFTS
+                        where HOUSE_KEEPING_SHIFTS.housekeeper_id = {housekeeper_id};""")
+        housekeeping_current_allocation_details = cur.fetchall()
+        # try:
+        #     resident_current_allocation_details = resident_current_allocation_details[0]
+        # except:
+        #     resident_current_allocation_details = []
+
+        # Fetching the phone numbers
+        cur.execute(f"""select phone_no
+                        from HOUSE_KEEPING_PHONE
+                        where HOUSE_KEEPING_PHONE.housekeeper_id = {housekeeper_id};""")
+        housekeeping_phone_details = cur.fetchall()
+        
+        # Fetching all the availble hostel names
+        cur.execute(""" SELECT hostel_name from
+                        HOSTEL;""")
+        hostel_names = cur.fetchall()
+
+        cur.execute(""" SELECT distinct type from
+                        HOUSE_KEEPING_SHIFTS;""")
+        types = cur.fetchall()
+
+        return render_template('admin_housekeeping_data.html', 
+                                housekeeping_details = housekeeping_details, 
+                                housekeeping_details_field_names = list(housekeeping_details_field_names.keys()), 
+                                housekeeping_current_allocation_details = housekeeping_current_allocation_details,
+                                housekeeping_current_allocation_field_names = list(housekeeping_current_allocation_field_names.keys()),
+                                housekeeping_phone_details = housekeeping_phone_details,
+                                hostel_names = hostel_names, 
+                                housekeeping_types=housekeeping_types,
+                                gender_types=gender_types,
                                 today = datetime.date.today())  
 
 @app.route('/admin/furniture/<furniture_id>', methods=['POST'])
@@ -1592,6 +1769,88 @@ def security_operations(security_id, operation):
                 return {"success":True, "reload": True, "message":"Allocated Security"}
             except Exception as e:
                 return {"success":False, "reload": False, "message":str(e.args[1])}
+
+
+@app.route('/admin/housekeeping/<housekeeper_id>/<operation>', methods=['POST'])
+def housekeeping_operations(housekeeper_id, operation):
+    
+    # Error handling
+    if (operation not in ['update_details', 'add_allocation', 'delete_phone', "add_phone","delete_current_allocation","delete_housekeeping"]):
+        return redirect('/admin/housekeeping')
+    
+    # Connecting to the database
+    cur = mysql.connection.cursor()
+
+    if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
+        if (operation == 'update_details'):
+            # Generating the query string
+            query_string = ""
+            for field in request.form.keys():
+                if (field != "update" and request.form[field]!=''):
+                    if (query_string != ""):
+                        query_string += ", "
+                    query_string += f"{housekeeping_details_field_names[field]} = '{request.form[field]}'"
+            # Adding the select and where clause
+            query_string = f"UPDATE HOUSE_KEEPING SET {query_string} WHERE housekeeper_id = {housekeeper_id};"
+            try:
+                # Executing the query and commiting the changes
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success": True, "reload":True, "message": "Succesfully updated details"}
+            except Exception as e:
+                return {"success": False, "reload":False, "message":e.args[1]}
+        
+        elif (operation == 'delete_phone'):
+            query_string = f"DELETE FROM HOUSE_KEEPING_PHONE WHERE housekeeper_id = {housekeeper_id} AND phone_no = '{request.form['phone_no']}';"
+            # Executing the query and commiting the changes
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success": True, "reload":True, "message": "Succesfully updated details"}
+            except Exception as e:
+                return {"success": False, "reload":False, "message":e.args[1]}
+        
+        elif operation=='delete_current_allocation':
+            query_string = f"DELETE FROM HOUSE_KEEPING_SHIFTS WHERE housekeeper_id = {housekeeper_id} AND hostel_name = '{request.form['hostel_name']}';"
+            # Executing the query and commiting the changes
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload": True, "message":"Removed House Keeper from Hostel"}
+            except Exception as e:
+                return {"success":False, "reload": False, "message":str(e.args[1])}
+        
+        elif operation == 'add_phone':
+            query_string = f"INSERT INTO HOUSE_KEEPING_PHONE(housekeeper_id, phone_no) VALUES ({housekeeper_id}, '{request.form['phone_no']}');"
+            # Executing the query and commiting the changes
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload": True, "message":"Added Phone Number"}
+            except Exception as e:
+                return {"success":False, "reload": False, "message":str(e.args[1])}
+            
+        elif operation=="delete_housekeeping":
+            query_string = f"DELETE FROM HOUSE_KEEPING WHERE housekeeper_id='{housekeeper_id}';"
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload": True, "message":"Deleted Housekeeper"}
+            except Exception as e:
+                return {"success":False, "reload": False, "message":str(e.args[1])}
+
+
+        elif (operation == 'add_allocation'):
+            # Adding the update and where clause
+            query_string= f"INSERT INTO HOUSE_KEEPING_SHIFTS(housekeeper_id, type, hostel_name) VALUES({housekeeper_id},'{request.form['type_name']}','{request.form['hostel_name']}');"
+            # Executing the query and commiting the changes
+            try:
+                cur.execute(query_string)
+                mysql.connection.commit()
+                return {"success":True, "reload": True, "message":"Allocated Housekeeper"}
+            except Exception as e:
+                return {"success":False, "reload": False, "message":str(e.args[1])}
+
 
 @app.route('/admin/academic_period/<operation>', methods=['POST'])
 def academic_period_operations(operation):

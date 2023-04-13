@@ -7,12 +7,59 @@
 
 {% block body %}
     <!-- Add resident button -->
-    <div style="text-align: center; margin-top: 2rem; margin-left: 1rem;">
-      <button class="resident-button" data-bs-toggle="modal" data-bs-target="#add_student">
-        <span>Add a New Resident</span>
-      </button>
+    <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+      <div style="display: inline-block; margin-left: 7rem;">
+        <button class="resident-button" data-bs-toggle="modal" data-bs-target="#add_student">
+          <span>Add a New Resident</span>
+        </button>
+      </div>
+
+      <div style="float: right;">
+        <form action="/admin/deallocate_all_students" class="pop-up-form" method="post">
+          <button type='submit' id="import-btn" class = "btn btn-dark" >Deallocate all students</button>
+        </form>
+      </div>
     </div>
     
+    <!-- Add resident data csv-->
+
+
+    <div class="row g-3" style="margin-bottom: 1rem;">
+      <div class="col-md-6" style="text-align: center;">
+        <form action="/admin/add_student_csv" class="pop-up-form row g-3" method="post">
+          <div class="col-md-4" style="margin-left: 6rem;">
+            <input name='file' type="file" class="form-control" style="margin-bottom: 10px;">
+          </div>
+          <div class="col-md-4">
+            <button type='submit' id="import-btn"  class = "btn btn-dark" >Import Resident Data</button>
+          </div>
+        </form>
+      </div>
+      
+      
+      <!-- Add allocation data csv-->
+
+      <div class="col-md-6">
+        <form action="/admin/add_allocation_csv" class="pop-up-form row g-3" method="post">
+          <div class="col-md-4" style="margin-left: 6rem;">
+            <input name='file' type="file" class="form-control" style="margin-bottom: 10px;">
+          </div>
+          
+          <div class="col-md-4">
+            <button type='submit' id="import-btn" class = "btn btn-dark">Import  Allocation Data</button>
+          </div>
+        </form>
+      </div>
+      
+      
+    </div>
+    
+    
+    
+    
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 
 

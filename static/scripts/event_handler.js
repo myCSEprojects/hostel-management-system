@@ -13,6 +13,22 @@ function loadResident(resident_id){
         }
     });
 }
+function loadHouseKeeping(housekeeper_id){
+    selector = '#'+ housekeeper_id + " div";
+    if($.trim($(selector).html())!=''){
+        return;
+    }
+    $.ajax({
+        dataType: "html",
+        url: '/admin/housekeeping/' + housekeeper_id,
+        type: 'POST',
+        success: function(result){
+            $(selector).html(result);
+            form_handler();
+        }
+    });
+}
+
 function loadSecurity(security_id){
     selector = '#'+ security_id + " div";
     if($.trim($(selector).html())!=''){
@@ -146,4 +162,5 @@ function form_handler(){
     });
 });
 }
+
 form_handler();

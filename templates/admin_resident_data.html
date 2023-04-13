@@ -74,20 +74,31 @@
             <input name="{{resident_details_field_names[8]}}" class="form-control" type="text" value={{resident_details[8]}} id="{{resident_details[0]}}-{{resident_details_field_names[8]}}">
         </div>
 
+        
         <div class="col-md-4">
             <label for="{{resident_details[0]}}-{{resident_details_field_names[9]}}" class="form-label">{{resident_details_field_names[9]}}</label>
-            <input name="{{resident_details_field_names[9]}}" class="form-control" type="number" value={{resident_details[9]}} id="{{resident_details[0]}}-{{resident_details_field_names[9]}}">
-        </div>        
-
-        <div class="col-md-6">
-            <label for="{{resident_details[0]}}-{{resident_details_field_names[10]}}" class="form-label">{{resident_details_field_names[10]}}</label>
-            <select name="{{resident_details_field_names[10]}}" class="form-select" type="text" id="{{resident_details[0]}}-{{resident_details_field_names[10]}}">
-                <option selected hidden>{{resident_details[10]}}</option>
+            <select name="{{resident_details_field_names[9]}}" class="form-select" type="text" id="{{resident_details[0]}}-{{resident_details_field_names[9]}}">
+                <option selected hidden>{{resident_details[9]}}</option>
                 {% for resident_type in resident_types: %}
                     <option value="{{resident_type}}">{{resident_type}}</option>
                 {% endfor %}
             </select>
         </div>
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[10]}}" class="form-label">{{resident_details_field_names[10]}}</label>
+            <input name="{{resident_details_field_names[10]}}" class="form-control" type="text" value={{resident_details[10]}} id="{{resident_details[0]}}-{{resident_details_field_names[10]}}">
+        </div>  
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[11]}}" class="form-label">{{resident_details_field_names[11]}}</label>
+            <input name="{{resident_details_field_names[11]}}" class="form-control" type="text" value={{resident_details[11]}} id="{{resident_details[0]}}-{{resident_details_field_names[11]}}">
+        </div>  
+
+        <div class="col-md-4">
+            <label for="{{resident_details[0]}}-{{resident_details_field_names[12]}}" class="form-label">{{resident_details_field_names[12]}}</label>
+            <input name="{{resident_details_field_names[12]}}" class="form-control" type="number" value={{resident_details[12]}} id="{{resident_details[0]}}-{{resident_details_field_names[12]}}">
+        </div> 
         
 
         <div class="col-md-12">
@@ -371,7 +382,6 @@
  </div>
 
     
-
 
 
 

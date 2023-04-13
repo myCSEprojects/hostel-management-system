@@ -44,6 +44,10 @@ create table RESIDENT(
 	gender char(1) NOT NULL,
 	blood_group char(3) NOT NULL,
 	email_id VARCHAR(320) NOT NULL,
+    Guardian_first_name varchar(15) NOT NULL,
+    Guardian_middle_name varchar(15) NOT NULL,
+    Guardian_last_name varchar(15) NOT NULL,
+    Guardian_type varchar(15) NOT NULL,
 	city varchar(85) NOT NULL,
 	postal_code numeric(6, 0) NOT NULL,
 	home_contact numeric(10, 0) NOT NULL UNIQUE,
@@ -141,7 +145,7 @@ create table ALLOCATION(
 	due_amount INT NOT NULL,
 	due_status INT NOT NULL,
 	payment_amount INT NOT NULL,
-    PRIMARY KEY (semester, year, resident_id, room_no, hostel_name),
+    -- PRIMARY KEY (semester, year, resident_id, room_no, hostel_name),
 --     FOREIGN KEY (semester, year) REFERENCES ACADEMIC_PERIOD(semester, year) ON DELETE CASCADE,
 --     FOREIGN KEY (resident_id) REFERENCES RESIDENT(resident_id) ON DELETE CASCADE,
     CHECK (payment_status <= payment_amount),
@@ -222,6 +226,38 @@ create table FURNITURE(
     room_no varchar(5),
     hostel_name varchar(10) ,
     foreign key (hostel_name,room_no)  references ROOM(hostel_name,room_no) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
+create table HOUSE_KEEPING (
+ 	housekeeper_id numeric(8) PRIMARY KEY NOT NULL UNIQUE,
+	first_name varchar(15) NOT NULL,
+	middle_name varchar(15),
+	last_name varchar(15) NOT NULL,
+	gender char(1) NOT NULL
+);
+
+
+
+
+
+
+create table HOUSE_KEEPING_PHONE(
+	housekeeper_id numeric(8) NOT NULL,
+    phone_no numeric(10, 0) NOT NULL UNIQUE,
+    PRIMARY KEY (phone_no, housekeeper_id),
+    FOREIGN KEY (housekeeper_id) REFERENCES HOUSE_KEEPING(housekeeper_id) ON DELETE CASCADE ON UPDATE CASCADE
+    
+);
+
+create table house_keeping_shifts(
+	housekeeper_id  numeric(8) NOT NULL,
+    type varchar(15) NOT NULL ,
+	hostel_name  varchar(10) NOT NULL ,
+	primary key(housekeeper_id,hostel_name),
+	FOREIGN KEY (hostel_name) REFERENCES  HOSTEL(hostel_name) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (housekeeper_id) REFERENCES  HOUSE_KEEPING(housekeeper_id) ON DELETE CASCADE ON UPDATE CASCADE
+    
 );
 
 

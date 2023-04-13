@@ -145,6 +145,10 @@ BEGIN
     DECLARE gender char(1);
     DECLARE blood_group char(3);
     DECLARE email_id VARCHAR(320);
+	DECLARE Guardian_first_name varchar(15) ;
+    DECLARE Guardian_middle_name varchar(15) ;
+    DECLARE Guardian_last_name varchar(15) ;
+    DECLARE Guardian_type varchar(15) ;
     DECLARE city varchar(85);
     DECLARE postal_code numeric(6,0) DEFAULT 100000;
     DECLARE home_contact numeric(10,0) DEFAULT 5000000000;
@@ -160,16 +164,20 @@ BEGIN
         SET middle_name = concat("residentmn" , CAST(counter as char)) ;
         SET last_name = concat("residentln" , CAST(counter as char)) ;
 		SET gender = CASE WHEN ROUND(RAND()*10,0) % 2 =0 THEN 'M' ELSE 'F' END;
-        SET blood_group = concat(elt(floor(1 + rand() * 3), "O", "A", "B"), elt(floor(1 + rand() * 2), "+", "-"));
-        SET email_id = concat("residentemail", cast(counter as CHAR),"@iitgn.ac.in");
+        SET blood_group = concat(elt(floor(1 + rand() * 3), "o", "a", "b"), elt(floor(1 + rand() * 2), "+", "-"));
+		SET email_id = concat("residentemail", cast(counter as CHAR),"@iitgn.ac.in");
+		SET Guardian_first_name = concat("guardianfn" , CAST(counter as char)) ;
+        SET Guardian_middle_name = concat("guardianmn" , CAST(counter as char)) ;
+        SET Guardian_last_name = concat("guardianln" , CAST(counter as char)) ;
+        SET Guardian_type  = "Father" ;
         SET city = concat("city", CAST(counter as char)) ;
         SET postal_code = postal_code ;
         SET home_contact = home_contact ;
         SET resident_type = elt(floor(1 + rand() * 3), "student", "visitor", "faculty") ;
 --         SET on_campus = CASE WHEN ROUND(RAND()*10,0) % 2 =0 THEN 0 ELSE 1 END;
         
-		INSERT INTO RESIDENT(resident_id, first_name, middle_name, last_name, gender, blood_group, email_id, city, postal_code, home_contact, resident_type)
-		VALUES (resident_id, first_name, middle_name, last_name, gender, blood_group, email_id, city, postal_code, home_contact, resident_type);
+		INSERT INTO RESIDENT(resident_id, first_name, middle_name, last_name, gender, blood_group, email_id, city, postal_code, home_contact, resident_type,Guardian_first_name,Guardian_middle_name,Guardian_last_name,Guardian_type)
+		VALUES (resident_id, first_name, middle_name, last_name, gender, blood_group, email_id, city, postal_code, home_contact, resident_type,Guardian_first_name,Guardian_middle_name,Guardian_last_name,Guardian_type);
 		SET counter = counter + 1;
         SET resident_id = resident_id + 1 ;
         SET postal_code = postal_code + 1 ;
@@ -178,6 +186,7 @@ BEGIN
 
 END //
 delimiter ;
+
 
 # drop procedure populate_acadperiod;
 delimiter //
@@ -548,6 +557,47 @@ BEGIN
 END //
 delimiter ;
 
+# popluate housekeeping
+
+
+delimiter //
+CREATE PROCEDURE populate_house_keeping()
+BEGIN
+    DECLARE housekeeper_id numeric(8) DEFAULT 10000000;
+    DECLARE first_name varchar(15);
+    DECLARE middle_name varchar(15);
+    DECLARE last_name varchar(15);
+    DECLARE gender char(1);
+    DECLARE type varchar(15);
+    DECLARE hostel_name varchar(10);
+    DECLARE counter INT DEFAULT 1;
+    DECLARE phone_no numeric(10,0) DEFAULT 9000000000;
+    WHILE (counter <= 12) DO -- change 10 to the desired number of tuples to insertw
+        SET housekeeper_id = housekeeper_id + 1 ; 
+        SET first_name = concat("hkfname", cast(counter as CHAR(2)));
+        SET middle_name = concat("hkmname", cast(counter as CHAR(2))); 
+        SET last_name = concat("hklname" , cast(counter as CHAR(2))); 
+        SET gender = elt(FLOOR(1 + rand()*2 ), "F", "M") ; 
+        SET hostel_name = elt(counter, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l') ; 
+        set type  =  elt(FLOOR(1 + rand()*2 ), "Bathroom", "Room", "Corridor") ; 
+        INSERT INTO HOUSE_KEEPING (housekeeper_id, first_name, middle_name, last_name, gender)
+        VALUES (housekeeper_id, first_name, middle_name, last_name, gender);
+        INSERT INTO  HOUSE_KEEPING_SHIFTS (housekeeper_id,type,hostel_name)
+        VALUES   (housekeeper_id,type,hostel_name);
+        INSERT INTO HOUSE_KEEPING_PHONE (housekeeper_id,phone_no)
+        VALUES (housekeeper_id,phone_no);
+        SET phone_no = phone_no +1 ;
+	    INSERT INTO HOUSE_KEEPING_PHONE (housekeeper_id,phone_no)
+        VALUES (housekeeper_id,phone_no);
+        SET phone_no = phone_no +1 ;
+        SET counter = counter + 1;
+    END WHILE ;
+
+END //
+delimiter ;
+
+
+
 call populate_caretaker();
 call populate_hostel();
 call populate_caretaker_phone();
@@ -566,3 +616,5 @@ call populate_allocation();
 CALL populate_security();
 call  populate_furniture();
 call populate_enrolled_in();
+call populate_house_keeping()
+

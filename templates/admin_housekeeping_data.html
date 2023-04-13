@@ -1,0 +1,175 @@
+<div>
+    <h3 style="text-align: center; ">Housekeeper Details</h3>
+    <form class="pop-up-form" action="/admin/housekeeping/{{housekeeping_details[0]}}/delete_housekeeping" method="post">
+        <button type="submit" class="btn btn-dark" style="margin-bottom: 2rem;" name="delete">Delete</button>
+    </form>
+    
+    <form class="row g-3 pop-up-form" action="/admin/housekeeping/{{housekeeping_details[0]}}/update_details" method="post">
+        
+        <div class="col-md-3">
+            <label class="form-label" for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[0]}}">{{housekeeping_details_field_names[0]}}</label>
+            <input class="form-control" name="{{housekeeping_details_field_names[0]}}" type="number" value={{housekeeping_details[0]}} id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[0]}}" disabled>  
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label" for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[1]}}">{{housekeeping_details_field_names[1]}}</label>
+            <input class="form-control" name="{{housekeeping_details_field_names[1]}}" type="text" maxlength="15" required value={{housekeeping_details[1]}} id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[1]}}">  
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label" for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[2]}}">{{housekeeping_details_field_names[2]}}</label>
+            <input class="form-control" name="{{housekeeping_details_field_names[2]}}" maxlength="15" type="text" value={{housekeeping_details[2]}} id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[2]}}">  
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label" for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[3]}}">{{housekeeping_details_field_names[3]}}</label>
+            <input class="form-control" name="{{housekeeping_details_field_names[3]}}" type="text" maxlength="15" value={{housekeeping_details[3]}} id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[3]}}">  
+        </div>
+        
+        <div class="col-md-3">
+            <label for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[4]}}" class="form-label">{{housekeeping_details_field_names[4]}}</label>
+            <select name="{{housekeeping_details_field_names[4]}}" class="form-select" type="text" id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[4]}}">
+                <option selected hidden>{{housekeeping_details[4]}}</option>
+                {% for gender in gender_types: %}
+                    <option value="{{gender}}">{{gender}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    <!-- <form action="/admin/housekeeping/{{housekeeping_details[0]}}/update_details" method="post">
+        <label for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[0]}}">{{housekeeping_details_field_names[0]}}</label>
+        <input name="{{housekeeping_details_field_names[0]}}" type="number"  value={{housekeeping_details[0]}} id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[0]}}" disabled>
+
+        <label for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[1]}}">{{housekeeping_details_field_names[1]}}</label>
+        <input name="{{housekeeping_details_field_names[1]}}" type="text" maxlength="15" required value={{housekeeping_details[1]}} id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[1]}}">
+
+        <label for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[2]}}">{{housekeeping_details_field_names[2]}}</label>
+        <input name="{{housekeeping_details_field_names[2]}}" type="text" maxlength="15" value={{housekeeping_details[2]}} id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[2]}}">
+
+        <label for="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[3]}}">{{housekeeping_details_field_names[3]}}</label>
+        <input name="{{housekeeping_details_field_names[3]}}" type="text" maxlength="15" required value={{housekeeping_details[3]}} id="{{housekeeping_details[0]}}-{{housekeeping_details_field_names[3]}}"> -->
+
+        <div class="col-md-12">
+            <button class="btn btn-dark" style="margin-left: 47%; " type="submit" name="update">Update</button>
+        </div>
+    </form>
+</div>
+
+<div>
+    <hr>
+    <h3 style="text-align: center; margin-top: 20px;">Phone Numbers</h3>
+    {% for phone_number in housekeeping_phone_details %}
+    <form class="pop-up-form row row-cols-lg-auto g-3 align-items-center" action="/admin/housekeeping/{{housekeeping_details[0]}}/delete_phone"  method="post">
+        <div class="box col-md-6" style="margin-bottom: 10px;">
+            <input type="number" name="phone_no" class="form-control" value="{{phone_number[0]}}" readonly>
+        </div>  
+        <div class="box col-md-4" style="margin-bottom: 10px;">
+            <button class="btn btn-dark" type="submit" name="delete">Delete</button>
+        </div>  
+    </form>
+    {% endfor %}
+    <!-- Button for adding phone number -->
+    <div class="col-12">
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#add_phone">Add Phone</button>
+    </div>
+    
+    <div class="modal fade" id="add_phone" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Enter phone no:</h5>
+              <button type="button" class="close btn btn-dark btn-sm" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form class="pop-up-form" action="/admin/housekeeping/{{housekeeping_details[0]}}/add_phone" method="post">
+                    <input type="text" maxlength = "10"  pattern = "[0-9]{10}" title = "Phone Number must be 10 digits" name="phone_no"  style="margin-bottom: 10px;" class="form-control" placeholder="phone number">
+                    <button type="submit" class="btn btn-dark" name="add">Add Phone </button>
+                    <!-- <input type="text" maxlength = "10"  pattern = "[0-9]{10}" title = "Phone Number must be 10 digits" name="phone_no" placeholder="phone number">
+                    <button type="submit" name="add">Add Phone </button> -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Current allocation details -->
+<div>
+    <hr>
+    <h3 style="text-align: center; margin-top: 20px;">Current Allocation</h3>
+    {% for housekeeping_allocation in housekeeping_current_allocation_details %}
+    <form action="/admin/housekeeping/{{housekeeping_details[0]}}/delete_current_allocation" class="row g-3 pop-up-form" method="post">
+        <div class="col-md-3">
+            <input name="hostel_name" class="form-control" type="text" value="{{housekeeping_allocation[0]}}" readonly>
+        </div> 
+
+        <div class="col-md-3">
+            <input name="type" class="form-control" type="text" value="{{housekeeping_allocation[1]}}" readonly>
+        </div> 
+
+        <div class="col-md-3">
+            <button class="btn btn-dark" style="margin-bottom: 1rem;" type="submit" name="delete">Delete</button>
+        </div>  
+
+        
+    </form>
+    {% endfor %}
+
+    <div class="col-md-12">
+        <button type="button" class="btn btn-dark" style="margin-bottom: 1rem; margin-left: 47%;" data-bs-toggle="modal" data-bs-target="#add_allocation">Allocate</button>
+    </div>
+ 
+    
+    
+    <div class="modal fade" id="add_allocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Enter New Allocation:</h5>
+              <button type="button" class="close btn btn-dark btn-sm" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form action="/admin/housekeeping/{{housekeeping_details[0]}}/add_allocation" method="post" class="row g-3 pop-up-form">
+                    <div class="col-md-4">  
+                        <label for="hostel" class="form-label">Hostel</label>
+                        <select name="hostel_name" id="hostel" class="form-select">
+                            {% for hostel_name in hostel_names: %}
+                                <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                            {% endfor %}
+                        </select>    
+                    </div> 
+
+                    <div class="col-md-4">  
+                        <label for="type" class="form-label">House Keeping Type</label>
+                        <select name="type_name" id="type" class="form-select">
+                            {% for type_name in housekeeping_types: %}
+                                <option value="{{type_name}}">{{type_name}}</option>
+                            {% endfor %}
+                        </select>    
+                    </div> 
+
+
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-dark" name="add">Add Allocation </button>   
+                    </div> 
+                    <!-- <input name="hostel_name" type="text" placeholder="Hostel Name">
+                            <label for="hostel">Hostel</label> -->
+                    <!-- <select name="hostel_name" id="hostel">
+                        {% for hostel_name in hostel_names: %}
+                            <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                        {% endfor %}
+                    </select>  
+                    <input name="start_time" type="time" required placeholder="Shift Start Time">
+                    <input name="end_time" type="time" required placeholder="Shift End Time">
+                    <button type="submit" name="add">Add Allocation </button> -->
+                </form>
+            </div>
+        </div>
+    </div>
+ </div>
+
+
+

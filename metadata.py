@@ -19,6 +19,12 @@ resident_types = [
     "faculty"
 ]
 
+housekeeping_types = [
+    "Bathroom",
+    "Room",
+    "Corridor"
+]
+
 # Blood types for the residents
 blood_types = [
     "A+",
@@ -40,9 +46,12 @@ resident_details_field_names = {
     "Blood Group": "blood_group", 
     "Email id": "email_id", 
     "City": "city", 
-    "Postal Code": "postal_code", 
-    "Home Contact": "home_contact", 
+    "Postal Code": "postal_code",  
     "Resident Type": "resident_type", 
+    "Guardian Name" : "Guardian_first_name",
+    "Guardian Type": "Guardian_type",
+    "Home Contact": "home_contact",
+
 }
 
 resident_current_allocation_field_names = {
@@ -63,6 +72,14 @@ security_details_field_names = {
     "Last Name": "last_name",
 }
 
+housekeeping_details_field_names = {
+    "ID": "housekeeper_id",
+    "First Name": "first_name", 
+    "Middle Name": "middle_name", 
+    "Last Name": "last_name",
+    "Gender": "gender",
+}
+
 furniture_details_field_names = {
     "ID": "furniture_id",
     "Hostel Name": "hostel_name", 
@@ -78,11 +95,17 @@ hostel_details_field_names = {
     "Caretaker ID": "caretaker_id",
 }
 
+housekeeping_current_allocation_field_names = {
+    "Hostel Name": "hostel_name", 
+    "House Keeping Type": "type"
+}
+
 security_current_allocation_field_names = {
     "Hostel Name": "hostel_name", 
     "Start Time": "start_time", 
     "End Time": "end_time",
 }
+
 resident_program_field_names = {
     "Program": "program", 
     "Branch": "branch", 

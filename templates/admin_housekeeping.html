@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Admin</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/admin_securities.css')}}">
+{% endblock %}
+
+{% block body %}
+    <!-- Add housekeeping button -->
+    <!-- Button trigger modal -->
+    <div style="text-align: center; margin-top: 2rem; margin-left: 1rem;">
+        <button class="resident-button" data-bs-toggle="modal" data-bs-target="#add_housekeeping">
+            <span>Add Housekeeper</span>
+        </button>
+    </div>
+    
+
+    <!-- Modal -->
+    <div class="modal fade" id="add_housekeeping" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Housekeeper</h5>
+                    <button type="button" class="close btn btn-dark btn-sm " data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/add_housekeeping" class="row g-3 pop-up-form"  method="post">
+                        <div class="col-sm-12">
+                            <label for="{{housekeeping_details_field_names[0]}}" class="form-label">{{housekeeping_details_field_names[0]}}</label>
+                            <input name="{{housekeeping_details_field_names[0]}}" type="text" class="form-control" maxlength="8" pattern="[0-9]{8}" id="{{housekeeping_details_field_names[0]}}" required>    
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label for="{{housekeeping_details_field_names[1]}}" class="form-label">{{housekeeping_details_field_names[1]}}</label>
+                            <input name="{{housekeeping_details_field_names[1]}}" maxlength="15" type="text" class="form-control" id="{{housekeeping_details_field_names[1]}}" required>  
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label for="{{housekeeping_details_field_names[2]}}" class="form-label">{{housekeeping_details_field_names[2]}}</label>
+                            <input name="{{housekeeping_details_field_names[2]}}" type="text" class="form-control" id="{{housekeeping_details_field_names[2]}}" maxlength="15" value="">   
+                        </div>
+                    <!-- <form action="/admin/add_housekeeping" method="post">
+                        <div>
+                            <label for="{{housekeeping_details_field_names[0]}}">{{housekeeping_details_field_names[0]}}</label>
+                            <input name="{{housekeeping_details_field_names[0]}}" type="text"  maxlength="8" pattern="[0-9]{8}" id="{{housekeeping_details_field_names[0]}}" required>
+
+                            <label for="{{housekeeping_details_field_names[1]}}">{{housekeeping_details_field_names[1]}}</label>
+                            <input name="{{housekeeping_details_field_names[1]}}" maxlength="15" type="text"  id="{{housekeeping_details_field_names[1]}}"  required>
+
+                            <label for="{{housekeeping_details_field_names[2]}}">{{housekeeping_details_field_names[2]}}</label>
+                            <input name="{{housekeeping_details_field_names[2]}}" type="text"  id="{{housekeeping_details_field_names[2]}}" value="">
+
+                            <label for="{{housekeeping_details_field_names[3]}}">{{housekeeping_details_field_names[3]}}</label>
+                            <input name="{{housekeeping_details_field_names[3]}}" maxlength="15" type="text" id="{{housekeeping_details_field_names[3]}} " required> -->
+
+                        <div class="col-sm-4">
+                            <label for="{{housekeeping_details_field_names[3]}}" class="form-label">{{housekeeping_details_field_names[3]}}</label>
+                            <input name="{{housekeeping_details_field_names[3]}}" type="text" maxlength="15" class="form-control" id="{{housekeeping_details_field_names[3]}}" required>   
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="{{housekeeping_details_field_names[4]}}" class="form-label">{{housekeeping_details_field_names[4]}}</label>
+                            <select name="{{housekeeping_details_field_names[4]}}" class="form-select" type="text" id="{{housekeeping_details_field_names[4]}}">
+                                    {% for gender in gender_types: %}
+                                        <option value="{{gender}}">{{gender}}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Phone Number -->
+                        <!-- <div>
+                            <label for="phone_no">Phone Number</label>
+                            <input name="phone_no" id="phone_no" type="text"  maxlength="10" pattern="[0-9]{10}" required>
+                        </div> -->
+
+                        <div class="col-sm-6">
+                            <label for="phone_no" class="form-label">Phone Number</label>
+                            <input name="phone_no" type="text" class="form-control" maxlength="10" pattern="[0-9]{10}" id="phone_no" required>
+                        </div>
+
+                        <div class="col-sm-12" style="text-align: center;">
+                            <button type="submit" class="btn btn-dark" name="add">Add</button>    
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <!-- The form for the search query -->
+    <p style="margin-left: 1.5rem;" class="search">Housekeeper Details</p>
+    <form class="filterform" action="/admin/housekeeping" method = "get" >
+
+        <div class="row">
+            <div class="filter col-sm-3" >
+                <!-- Search for the ID -->
+                <label for="search_ID">ID</label>
+                <input type="number" name="search_ID" id = "search_ID" placeholder="ID">
+            </div>
+            <div class="filter col-sm-3">
+                <!-- Hostel -->
+                <label for="hostel">Hostel</label>
+                <select name="hostel_name" id="hostel">
+                    <option value="all">All</option>
+                    {% for hostel_name in hostel_names: %}
+                        <option value="{{hostel_name[0]}}">{{hostel_name[0]}}</option>
+                    {% endfor %}
+                </select>  
+            </div>
+            <div class="filter col-sm-3">
+                <!-- Hostel -->
+                <label for="type">House Keeping Type</label>
+                <select name="type_name" id="type">
+                    <option value="all">All</option>
+                    {% for type_name in housekeeping_types: %}
+                        <option value="{{type_name}}">{{type_name}}</option>
+                    {% endfor %}
+                </select>  
+            </div>
+
+            <div class="filter col-sm-3" style="text-align: center;" >
+                <!-- Submit button -->
+                <input type="submit" value="Apply Filters" style="color: white;">
+            </div>
+        </div>       
+    </form>
+    
+    <table class="table table-striped" style="max-width: 95%; margin: 50px auto 0;"  vertical-align: 60%;>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for housekeep in housekeeping: %}
+                <tr>
+                    <td>{{housekeep[0]}}</td>
+                    <td>{{housekeep[1]}}</td>
+                    
+                    <td style="text-align: end;">
+                        <button class="edit-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{housekeep[0]}}" aria-expanded="false" aria-controls="collapseExample" onclick="loadHouseKeeping('{{housekeep[0]}}')">
+                            Edit
+            </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="17">
+        <div class="collapse" id="{{housekeep[0]}}">
+            <div class="card card-body">
+            </div>
+        </div>
+                    </td>
+                </tr>
+    {% endfor %}
+        </tbody>
+      </table>
+      
+{% endblock %}
