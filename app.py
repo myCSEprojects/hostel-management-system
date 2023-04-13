@@ -10,9 +10,6 @@ import pandas as pd
 
 app = Flask(__name__)
 
-# setting the admin id and password
-admin_id = "00000001"
-admin_password = 'password'
 
 # setting the secret key
 app.secret_key = 'DONT TELL ANYONE'
