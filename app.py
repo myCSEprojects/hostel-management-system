@@ -7,6 +7,7 @@ import numpy as np
 import operator
 from dateutil.parser import parse
 import pandas as pd
+import time
 
 app = Flask(__name__)
 
@@ -50,6 +51,9 @@ resident_pages = {
     "History": "/resident/history",
     "Logout": "/resident/logout",
 }
+
+# To prevent dictionary attacks or bruteforce attacks
+resident_login_attempts = {}
 
 @app.template_filter('strftime')
 def _jinja2_filter_datetime(time_, fmt):
@@ -379,19 +383,36 @@ def admin_page(page_name = None):
         else:
             id = request.form['ID'] 
             password = request.form['password']
-            query = f"SELECT key_ FROM admins WHERE id = '{id}' AND key_ = '{password}' ;"
-            print('query',query)
-            cur.execute(f"SELECT key_ FROM admins WHERE id = '{id}' AND key_ = '{password}' ;")
-            app.logger.info(query)
-            actual_key = cur.fetchone()
-            print(actual_key)
-            if actual_key == None:
+            import time
+            # Preventing multiple logins(after 3 attempts) for 10 mins
+            if (id in resident_login_attempts):
+                if (resident_login_attempts[id][0] >= 3):
+                    if (time.time() - resident_login_attempts[id][1] < 600):
+                        return render_template('admin_login.html', pages = pages, error='Too many attempts. Try again after 10 minutes')
+                    else:
+                        resident_login_attempts[id] = [0, time.time()]
+                else:
+                    resident_login_attempts[id][1] = time.time()
+                    resident_login_attempts[id][0] += 1
+
+            else:
+                resident_login_attempts[id] = [0, time.time()]
+            if resident_login_attempts[id][0] < 3:
+                query = f"SELECT key_ FROM admins WHERE id = '{id}' AND key_ = '{password}' ;"
+                print('query',query)
+                cur.execute(f"SELECT key_ FROM admins WHERE id = '{id}' AND key_ = '{password}' ;")
+                app.logger.info(query)
+                actual_key = cur.fetchone()
+                print(actual_key)
+                if actual_key == None:
+                    return redirect('/admin/login')
+                else :
+                    session['logged_in'] = True
+                    session['id'] = id
+                    session['name'] = 'admin'
+                    return redirect('/admin/dashboard')
+            else:
                 return redirect('/admin/login')
-            else :
-                session['logged_in'] = True
-                session['id'] = id
-                session['name'] = 'admin'
-                return redirect('/admin/dashboard')
     # Handling the rooms route
     elif page_name == 'rooms':
         if ('logged_in' in session and "name" in session and session['logged_in'] == True and session['name'] == 'admin'):
