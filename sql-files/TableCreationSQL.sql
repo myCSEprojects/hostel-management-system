@@ -250,7 +250,7 @@ create table HOUSE_KEEPING_PHONE(
     
 );
 
-create table house_keeping_shifts(
+create table HOUSE_KEEPING_SHIFTS(
 	housekeeper_id  numeric(8) NOT NULL,
     type varchar(15) NOT NULL ,
 	hostel_name  varchar(10) NOT NULL ,

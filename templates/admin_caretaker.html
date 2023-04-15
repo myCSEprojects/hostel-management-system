@@ -6,6 +6,7 @@
 
 
 {% block body %}
+{% autoescape false %}
 
     <h2 style="color: white; text-align: center; margin-top: 30px;">Caretaker Details</h2>
 
@@ -150,6 +151,6 @@
             </div>
         </div>
     </div> 
-      
+    {% endautoescape %}
 
 {% endblock %}

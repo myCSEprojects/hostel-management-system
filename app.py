@@ -20,6 +20,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config["MYSQL_USER"] = "admin"
 app.config["MYSQL_PASSWORD"] = "Password@1234"
 app.config["MYSQL_DB"] = "hostelmng"
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 mysql = MySQL(app)
 

@@ -65,116 +65,118 @@
 
     <!-- Modal -->
     <div class="modal fade" id="add_student" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add a New Resident</h5>
-                    <button class="btn btn-dark close" type="button" data-bs-dismiss="modal" aria-label="Close" >
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="/admin/add_student" class="row g-3 pop-up-form" method="post">
-                      <div class="col-sm-12">
-                        <label for="{{resident_details_field_names[0]}}" class="form-label">{{resident_details_field_names[0]}}</label>
-                        <input name="{{resident_details_field_names[0]}}" type="text" title="ID must 8 digit number" pattern="[0-9]{8}" required class="form-control" id="{{resident_details_field_names[0]}}">
-                      </div>
+      <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title">Add a New Resident</h5>
+                  <button class="btn btn-dark close" type="button" data-bs-dismiss="modal" aria-label="Close" >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form action="/admin/add_student" class="row g-3 pop-up-form" method="post">
+                    <div class="col-sm-12">
+                      <label for="{{resident_details_field_names[0]}}" class="form-label">{{resident_details_field_names[0]}}</label>
+                      <input name="{{resident_details_field_names[0]}}" type="text" title="ID must 8 digit number" pattern="[0-9]{8}" required class="form-control" id="{{resident_details_field_names[0]}}">
+                    </div>
 
-                      <div class="col-md-4">
-                        <label for="{{resident_details_field_names[1]}}" class="form-label">{{resident_details_field_names[1]}}</label>
-                        <input name="{{resident_details_field_names[1]}}" maxlength="15" type="text" class="form-control"  id="{{resident_details_field_names[1]}}" required>
-                      </div>
+                    <div class="col-md-4">
+                      <label for="{{resident_details_field_names[1]}}" class="form-label">{{resident_details_field_names[1]}}</label>
+                      <input name="{{resident_details_field_names[1]}}" maxlength="15" type="text" class="form-control"  id="{{resident_details_field_names[1]}}" required>
+                    </div>
 
-                      <div class="col-md-4">
-                        <label for="{{resident_details_field_names[2]}}" class="form-label">{{resident_details_field_names[2]}}</label>
-                        <input name="{{resident_details_field_names[2]}}" maxlenght="15" type="text" class="form-control"    id="{{resident_details_field_names[2]}}">
-                      </div>
+                    <div class="col-md-4">
+                      <label for="{{resident_details_field_names[2]}}" class="form-label">{{resident_details_field_names[2]}}</label>
+                      <input name="{{resident_details_field_names[2]}}" maxlenght="15" type="text" class="form-control"    id="{{resident_details_field_names[2]}}">
+                    </div>
 
-                      <div class="col-md-4">
-                        <label for="{{resident_details_field_names[3]}}" class="form-label">{{resident_details_field_names[3]}}</label>
-                        <input name="{{resident_details_field_names[3]}}" maxlenght="15" type="text" class="form-control"  id="{{resident_details_field_names[3]}}" required>
-                      </div>
+                    <div class="col-md-4">
+                      <label for="{{resident_details_field_names[3]}}" class="form-label">{{resident_details_field_names[3]}}</label>
+                      <input name="{{resident_details_field_names[3]}}" maxlenght="15" type="text" class="form-control"  id="{{resident_details_field_names[3]}}" required>
+                    </div>
 
-                      <div class="col-md-6">
-                        <label for="{{resident_details_field_names[4]}}" class="form-label">{{resident_details_field_names[4]}}</label>
-                        <select name="{{resident_details_field_names[4]}}" class="form-select" type="text" id="{{resident_details_field_names[4]}}">
-                                {% for gender in gender_types: %}
-                                    <option value="{{gender}}">{{gender}}</option>
-                                {% endfor %}
-                        </select>
-                      </div>
+                    <div class="col-md-6">
+                      <label for="{{resident_details_field_names[4]}}" class="form-label">{{resident_details_field_names[4]}}</label>
+                      <select name="{{resident_details_field_names[4]}}" class="form-select" type="text" id="{{resident_details_field_names[4]}}">
+                              {% for gender in gender_types: %}
+                                  <option value="{{gender}}">{{gender}}</option>
+                              {% endfor %}
+                      </select>
+                    </div>
 
-                      <div class="col-md-6">
-                        <label for="{{resident_details_field_names[5]}}" class="form-label">{{resident_details_field_names[5]}}</label>
-                        <select name="{{resident_details_field_names[5]}}" class="form-select" type="text" id="{{resident_details_field_names[5]}}" >
-                            {% for blood_type in blood_types: %}
-                                <option value="{{blood_type}}">{{blood_type}}</option>
-                            {% endfor %}
-                        </select>
-                      </div>
+                    <div class="col-md-6">
+                      <label for="{{resident_details_field_names[5]}}" class="form-label">{{resident_details_field_names[5]}}</label>
+                      <select name="{{resident_details_field_names[5]}}" class="form-select" type="text" id="{{resident_details_field_names[5]}}" >
+                          {% for blood_type in blood_types: %}
+                              <option value="{{blood_type}}">{{blood_type}}</option>
+                          {% endfor %}
+                      </select>
+                    </div>
 
-                      <div class="col-md-6">
-                        <!-- Phone Number -->
-                        <label for="phone_no" class="form-label">Phone Number</label>
-                        <input name="phone_no" type="text" title="Phone Number must 10 digit number" pattern="[0-9]{10}" id="phone_no" class="form-control"  required>
-                      </div>
-                      <div class="col-md-6">
-                        <label for="{{resident_details_field_names[6]}}" class="form-label">{{resident_details_field_names[6]}}</label>
-                        <input name="{{resident_details_field_names[6]}}"  type="email" class="form-control"  id="{{resident_details_field_names[6]}}" required>
-                      </div>
-                      <div class="col-md-4">
-                          <label for="{{resident_details_field_names[7]}}" class="form-label">{{resident_details_field_names[7]}}</label>
-                          <input name="{{resident_details_field_names[7]}}" type="text" maxlength="85"  id="{{resident_details_field_names[7]}}" required>
-                      </div>
-                      <div class="col-md-4">
-                        <label for="{{resident_details_field_names[8]}}" class="form-label">{{resident_details_field_names[8]}}</label>
-                        <input name="{{resident_details_field_names[8]}}" type="text" title="Postal Code must 6 digit number" pattern="[0-9]{6}" class="form-control"  id="{{resident_details_field_names[8]}}" required>
-                      </div>
+                    <div class="col-md-6">
+                      <!-- Phone Number -->
+                      <label for="phone_no" class="form-label">Phone Number</label>
+                      <input name="phone_no" type="text" title="Phone Number must 10 digit number" pattern="[0-9]{10}" id="phone_no" class="form-control"  required>
+                    </div>
 
-                      <div class="col-md-4">
-                        <label for="{{resident_details_field_names[9]}}" class="form-label">{{resident_details_field_names[9]}}</label>
-                        <input name="{{resident_details_field_names[9]}}" type="text" title="Phone Number must 10 digit number" pattern="[0-9]{10}" class="form-control"  id="{{resident_details_field_names[9]}}" required>
-                      </div>
+                    <div class="col-md-6">
+                      <label for="{{resident_details_field_names[6]}}" class="form-label">{{resident_details_field_names[6]}}</label>
+                      <input name="{{resident_details_field_names[6]}}"  type="email" class="form-control"  id="{{resident_details_field_names[6]}}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{resident_details_field_names[7]}}" class="form-label">{{resident_details_field_names[7]}}</label>
+                        <input name="{{resident_details_field_names[7]}}" type="text" maxlength="85"  id="{{resident_details_field_names[7]}}" required>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="{{resident_details_field_names[8]}}" class="form-label">{{resident_details_field_names[8]}}</label>
+                      <input name="{{resident_details_field_names[8]}}" type="text" title="Postal Code must 6 digit number" pattern="[0-9]{6}" class="form-control"  id="{{resident_details_field_names[8]}}" required>
+                    </div>
 
-                      <div class="col-md-4">
-                        <label for="{{resident_details_field_names[10]}}" class="form-label">{{resident_details_field_names[10]}}</label>
-                        <select name="{{resident_details_field_names[10]}}" class="form-select" type="text" id="{{resident_details_field_names[10]}}" onchange="resident_type_event()">
-                            {% for resident_type in resident_types: %}
-                                <option value="{{resident_type}}">{{resident_type}}</option>
-                            {% endfor %}
-                        </select>
-                      </div>
 
-                      
+                    <div class="col-md-4">
+                      <label for="{{resident_details_field_names[9]}}" class="form-label">{{resident_details_field_names[9]}}</label>
+                      <select name="{{resident_details_field_names[9]}}" class="form-select" type="text" id="{{resident_details_field_names[9]}}" onchange="resident_type_event()">
+                          {% for resident_type in resident_types: %}
+                              <option value="{{resident_type}}">{{resident_type}}</option>
+                          {% endfor %}
+                      </select>
+                    </div>
 
-                      <div id="branch_details" class="col-md-6">
-                        <label for="branch" class="form-label">Branch</label>
-                        <select name="branch" type="text" id="branch" class="form-select">
-                            {% for branch in branch_types: %}
-                                <option value="{{branch[0]}}">{{branch[0]}}</option>
-                            {% endfor %}
-                        </select>
-                      </div>
+                    <div class="col-md-4">
+                      <label for="{{resident_details_field_names[10]}}" class="form-label">{{resident_details_field_names[10]}}</label>
+                      <input name="{{resident_details_field_names[10]}}" maxlength="15" type="text" class="form-control"  id="{{resident_details_field_names[10]}}" required>
+                    </div>
 
-                      <!-- Branch details -->
+                    
 
-                      <div class="col-md-6" id="branch_details">
-                        <label for="program" class="form-label">Program</label>
-                        <select name="program" type="text" id="program" class="form-select">
-                            {% for program_type in program_types: %}
-                                <option value="{{program_type[0]}}">{{program_type[0]}}</option>
-                            {% endfor %}
-                        </select> 
-                      </div>
+                    <div id="branch_details" class="col-md-6">
+                      <label for="branch" class="form-label">Branch</label>
+                      <select name="branch" type="text" id="branch" class="form-select">
+                          {% for branch in branch_types: %}
+                              <option value="{{branch[0]}}">{{branch[0]}}</option>
+                          {% endfor %}
+                      </select>
+                    </div>
 
-                      <div class="col-md-12" style="text-align: center;">
-                        <button class="btn btn-dark" type="submit" name="add">ADD</button>
-                      </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> 
+                    <!-- Branch details -->
+
+                    <div class="col-md-6" id="program_details">
+                      <label for="program" class="form-label">Program</label>
+                      <select name="program" type="text" id="program" class="form-select">
+                          {% for program_type in program_types: %}
+                              <option value="{{program_type[0]}}">{{program_type[0]}}</option>
+                          {% endfor %}
+                      </select> 
+                    </div>
+
+                    <div class="col-md-12" style="text-align: center;">
+                      <button class="btn btn-dark" type="submit" name="add">ADD</button>
+                    </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div> 
 
 
 
