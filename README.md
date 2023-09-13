@@ -106,24 +106,3 @@ Residents filter
 
 ## Resident HomePage
 ![image](https://user-images.githubusercontent.com/80308830/226473617-c095cc39-d321-49ea-a86c-11d74dab5cd6.png)
-
-
-
-
-# Contribution 
-## G1
-1. Kareena
-2. Bhavini
-3. Hamsini
-4. Rajesh
-5. Gnana Sai
-6. Chaitanya
-
-
-## G2 
-1. Sriman 
-2. Manish 
-3. Sunny 
-4. Siva Sai 
-5. Karthik
-6. Rishab
